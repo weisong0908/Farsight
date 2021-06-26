@@ -31,12 +31,16 @@
         </tr>
       </tbody>
     </table>
+    <div>
+      <canvas id="historicalPrice"></canvas>
+    </div>
   </page>
 </template>
 
 <script>
 import Page from "../components/Page.vue";
 import stockService from "../services/stockService";
+import Chart from "chart.js/auto";
 
 export default {
   components: { Page },
@@ -57,7 +61,9 @@ export default {
         high: "",
         low: "",
         volume: ""
-      }
+      },
+      trend: [],
+      chartItem: {}
     };
   },
   created() {
@@ -79,7 +85,8 @@ export default {
       this.stock.low = result.l;
       this.stock.volume = result.v;
     });
-
+  },
+  mounted() {
     stockService.getTrend("AAPL").then(resp => {
       const trend = resp.results.map(r => {
         const date = new Date(r.t);
@@ -88,8 +95,25 @@ export default {
           date: date.toDateString()
         };
       });
+      const labels = trend.map(t => t.date);
+      const data = {
+        labels: labels,
+        datasets: [
+          {
+            label: "Close price",
+            data: trend.map(t => t.close),
+            fill: "start",
+            borderColor: "rgb(75, 192, 192)",
+            backgroundColor: "rgb(75, 192, 192)"
+          }
+        ]
+      };
 
-      console.log("trend", trend);
+      console.log("data", data);
+      new Chart(document.getElementById("historicalPrice"), {
+        type: "line",
+        data: data
+      });
     });
   }
 };
