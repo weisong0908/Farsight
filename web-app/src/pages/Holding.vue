@@ -40,7 +40,7 @@
 <script>
 import Page from "../components/Page.vue";
 import stockService from "../services/stockService";
-import Chart from "chart.js/auto";
+import charting from "../utils/charting";
 
 export default {
   components: { Page },
@@ -70,6 +70,8 @@ export default {
     this.holdingId = this.$route.params.id;
 
     stockService.getDetails("AAPL").then(resp => {
+      console.log(resp);
+      console.log(resp.logo);
       this.details.logo = resp.logo;
       this.details.name = resp.name;
       this.details.sector = resp.sector;
@@ -89,31 +91,14 @@ export default {
   mounted() {
     stockService.getTrend("AAPL").then(resp => {
       const trend = resp.results.map(r => {
-        const date = new Date(r.t);
         return {
-          close: r.c,
-          date: date.toDateString()
+          value: r.c,
+          cost: 100,
+          date: new Date(r.t).toDateString()
         };
       });
-      const labels = trend.map(t => t.date);
-      const data = {
-        labels: labels,
-        datasets: [
-          {
-            label: "Close price",
-            data: trend.map(t => t.close),
-            fill: "start",
-            borderColor: "rgb(75, 192, 192)",
-            backgroundColor: "rgb(75, 192, 192)"
-          }
-        ]
-      };
 
-      console.log("data", data);
-      new Chart(document.getElementById("historicalPrice"), {
-        type: "line",
-        data: data
-      });
+      charting.plotPriceTrend("historicalPrice", trend);
     });
   }
 };
