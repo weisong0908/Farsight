@@ -4,6 +4,7 @@ import Portfolios from "./pages/Portfolios";
 import Portfolio from "./pages/Portfolio";
 import Holdings from "./pages/Holdings";
 import Holding from "./pages/Holding";
+import AddHoldingForm from "./pages/AddHoldingForm";
 
 const routerConfig = new VueRouter({
   mode: "history",
@@ -27,10 +28,16 @@ const routerConfig = new VueRouter({
       title: "Portfolio"
     },
     {
-      name: "holding",
+      name: "holdings",
       path: "/holdings",
       component: Holdings,
       title: "Holdings"
+    },
+    {
+      name: "addNewHolding",
+      path: "/holdings/new",
+      component: AddHoldingForm,
+      title: "Add New Holding"
     },
     {
       name: "holding",
