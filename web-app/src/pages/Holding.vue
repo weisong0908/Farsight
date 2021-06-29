@@ -70,8 +70,6 @@ export default {
     this.holdingId = this.$route.params.id;
 
     stockService.getDetails("AAPL").then(resp => {
-      console.log(resp);
-      console.log(resp.logo);
       this.details.logo = resp.logo;
       this.details.name = resp.name;
       this.details.sector = resp.sector;
