@@ -92,7 +92,7 @@ export default {
         { id: 2, title: "two" }
       ],
       ticker: "AAPL",
-      selectedPortfolio: "one",
+      selectedPortfolio: this.$route.query.portfolioId,
       date: dateConverter.toString(new Date()),
       quantity: 0,
       unitPrice: 0,

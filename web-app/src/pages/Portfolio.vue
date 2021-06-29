@@ -5,6 +5,7 @@
       :holdings="holdings"
       :totalPageCount="2"
       :pageSize="3"
+      :portfolioId="portfolioId"
     ></holding-list>
   </page>
 </template>

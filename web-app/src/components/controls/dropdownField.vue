@@ -9,11 +9,7 @@
           :value="value"
         >
           <option>Select dropdown</option>
-          <option
-            v-for="option in options"
-            :key="option.id"
-            :value="option.title"
-          >
+          <option v-for="option in options" :key="option.id" :value="option.id">
             {{ option.title }}</option
           >
         </select>

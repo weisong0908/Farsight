@@ -32,6 +32,11 @@
       :totalPageCount="2"
       @goToPage="goToPage"
     ></pagination>
+    <router-link
+      class="button is-primary"
+      :to="{ name: 'addNewHolding', query: { portfolioId: portfolioId } }"
+      >Add Holding</router-link
+    >
   </div>
 </template>
 
@@ -40,7 +45,7 @@ import Pagination from "./Pagination.vue";
 
 export default {
   components: { Pagination },
-  props: ["holdings", "totalPageCount", "pageSize"],
+  props: ["holdings", "totalPageCount", "pageSize", "portfolioId"],
   data() {
     return {
       currentPageNumber: 1
