@@ -31,5 +31,25 @@ export default {
         }
       }
     });
+  },
+  plotPie(contextId) {
+    new Chart(document.getElementById(contextId), {
+      type: "doughnut",
+      data: {
+        labels: ["Holding 1", "Holding 2", "Holding 3"],
+        datasets: [
+          {
+            label: "Weighting",
+            data: [809, 4356, 2011],
+            backgroundColor: [
+              "rgb(255, 99, 132)",
+              "rgb(54, 162, 235)",
+              "rgb(255, 205, 86)"
+            ],
+            hoverOffset: 4
+          }
+        ]
+      }
+    });
   }
 };
