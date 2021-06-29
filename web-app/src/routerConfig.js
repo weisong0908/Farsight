@@ -5,16 +5,12 @@ import Portfolio from "./pages/Portfolio";
 import Holdings from "./pages/Holdings";
 import Holding from "./pages/Holding";
 import AddHoldingForm from "./pages/AddHoldingForm";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 const routerConfig = new VueRouter({
   mode: "history",
   routes: [
-    {
-      name: "dashboard",
-      path: "/",
-      component: Dashboard,
-      title: "Dashboard"
-    },
     {
       name: "portfolios",
       path: "/portfolios",
@@ -44,6 +40,24 @@ const routerConfig = new VueRouter({
       path: "/holdings/:id",
       component: Holding,
       title: "Holding"
+    },
+    {
+      name: "login",
+      path: "/login",
+      component: Login,
+      title: "Log In"
+    },
+    {
+      name: "signup",
+      path: "/signup",
+      component: Signup,
+      title: "Sign Up"
+    },
+    {
+      name: "dashboard",
+      path: "/",
+      component: Dashboard,
+      title: "Dashboard"
     }
   ]
 });

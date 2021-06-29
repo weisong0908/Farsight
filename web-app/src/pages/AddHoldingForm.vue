@@ -65,12 +65,12 @@
 
 <script>
 import Page from "../components/Page.vue";
-import TickerField from "../components/controls/tickerField.vue";
-import DropdownField from "../components/controls/dropdownField.vue";
-import DateField from "../components/controls/dateField.vue";
-import NumberField from "../components/controls/numberField.vue";
-import MoneyField from "../components/controls/moneyField.vue";
-import TextareaField from "../components/controls/textareaField.vue";
+import TickerField from "../components/controls/TickerField.vue";
+import DropdownField from "../components/controls/DropdownField.vue";
+import DateField from "../components/controls/DateField.vue";
+import NumberField from "../components/controls/NumberField.vue";
+import MoneyField from "../components/controls/MoneyField.vue";
+import TextareaField from "../components/controls/TextareaField.vue";
 import Preview from "../components/Preview.vue";
 import dateConverter from "../utils/dateConverter";
 

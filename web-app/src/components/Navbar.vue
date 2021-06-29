@@ -50,12 +50,22 @@
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-primary" @click="signUp">
-              <strong>Sign up</strong>
-            </a>
-            <a class="button is-light" @click="logInOrOut">
-              Log in
-            </a>
+            <router-link
+              class="button is-primary"
+              :to="{ name: 'signup', query: { redirectTo: this.$route.path } }"
+              @click.native="isBurgerMenuActive = false"
+              ><strong>Sign Up</strong></router-link
+            >
+            <a v-if="isAuth == true" class="button is-warning" @click="logout"
+              >Log Out</a
+            >
+            <router-link
+              v-else
+              class="button is-light"
+              :to="{ name: 'login', query: { redirectTo: this.$route.path } }"
+              @click.native="isBurgerMenuActive = false"
+              >Log In</router-link
+            >
           </div>
         </div>
       </div>
@@ -70,14 +80,19 @@ export default {
       isBurgerMenuActive: false
     };
   },
+  computed: {
+    isAuth() {
+      return this.$store.state.auth.isAuth;
+    }
+  },
+  mounted() {
+    console.log(this.$route);
+  },
   methods: {
-    signUp() {
-      alert("sign up");
+    logout() {
+      this.$store.dispatch("auth/logout");
       this.isBurgerMenuActive = false;
-    },
-    logInOrOut() {
-      alert("logInOrOut");
-      this.isBurgerMenuActive = false;
+      this.$router.push({ name: "login" });
     }
   }
 };
