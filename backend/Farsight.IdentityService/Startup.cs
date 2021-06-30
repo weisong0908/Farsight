@@ -44,14 +44,13 @@ namespace Farsight.IdentityService
                 .AddEntityFrameworkStores<FarsightIdentityServiceDbContext>();
 
             services.AddIdentityServer()
-                .AddInMemoryClients(Config.Clients())
-                .AddInMemoryIdentityResources(Config.IdentityResources())
-                .AddInMemoryApiResources(Config.ApiResources())
-                .AddInMemoryApiScopes(Config.ApiScopes())
+                .AddInMemoryClients(Configuration.GetSection("IdentityServer:Clients"))
+                .AddInMemoryIdentityResources(Configuration.GetSection("IdentityServer:IdentityResources"))
+                .AddInMemoryApiResources(Configuration.GetSection("IdentityServer:ApiResources"))
+                .AddInMemoryApiScopes(Configuration.GetSection("IdentityServer:ApiScopes"))
                 .AddAspNetIdentity<FarsightUser>()
                 .AddDeveloperSigningCredential()
                 .AddResourceOwnerValidator<CustomResourceOwnerPasswordValidator>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

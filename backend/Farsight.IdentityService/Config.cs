@@ -16,7 +16,7 @@ namespace Farsight.IdentityService
                 new Client()
                 {
                     ClientId = "webapp",
-                    ClientName = "Web app",
+                    ClientName = "Web App",
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     ClientSecrets = new List<Secret> { new Secret("ClientSecret".Sha256()) },
                     AllowOfflineAccess = true,
@@ -54,11 +54,11 @@ namespace Farsight.IdentityService
             {
                 new ApiResource()
                 {
-                    Name = "BackendApi",
+                    Name = "backendApi",
                     DisplayName = "Farsight backend API",
                     Description = "Allow client to access Farsight backend API",
+                    ApiSecrets = new List<Secret>() { new Secret("ApiSecret".Sha256()) },
                     Scopes = new List<string>() { "read", "write" },
-                    ApiSecrets = new List<Secret>() { new Secret("ScopeSecret".Sha256()) },
                     UserClaims = new List<string>() { "role" }
                 }
             };
