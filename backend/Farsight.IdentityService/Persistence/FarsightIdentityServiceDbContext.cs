@@ -14,7 +14,7 @@ namespace Farsight.IdentityService.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // SeedUser(modelBuilder);
+            SeedUser(modelBuilder);
             base.OnModelCreating(modelBuilder);
         }
 
