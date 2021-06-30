@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Farsight.Backend.Mappings;
 using Farsight.Backend.Persistence;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,6 +37,12 @@ namespace Farsight.Backend
             });
 
             services.AddDbContext<FarsightBackendDbContext>(optionsAction => optionsAction.UseNpgsql(Configuration.GetConnectionString("Default")));
+            services.AddScoped<IPortfolioRepository, PortfolioRepository>();
+            services.AddScoped<IHoldingRepository, HoldingRepository>();
+            services.AddScoped<ITradeRepository, TradeRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddAutoMapper(configAction => configAction.AddProfile<MappingProfile>(), typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
