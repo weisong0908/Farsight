@@ -1,0 +1,10 @@
+using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+
+namespace Farsight.IdentityService.Models
+{
+    public class FarsightUser : IdentityUser
+    {
+    }
+}
