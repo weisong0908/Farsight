@@ -56,5 +56,19 @@ namespace Farsight.IdentityService.Controllers
 
             return result.Succeeded ? Ok() : BadRequest();
         }
+
+        [HttpPost("signup")]
+        public async Task<IActionResult> SignUp(SignUpRequest signUpRequest)
+        {
+            var user = new FarsightUser()
+            {
+                UserName = signUpRequest.Username,
+                Email = signUpRequest.Email
+            };
+
+            var result = await _userManager.CreateAsync(user, signUpRequest.Password);
+
+            return result.Succeeded ? Ok() : BadRequest();
+        }
     }
 }
