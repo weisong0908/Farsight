@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Farsight.IdentityService.ExtensionGrantValidators;
 using Farsight.IdentityService.Models;
 using Farsight.IdentityService.Persistence;
+using Farsight.IdentityService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,7 +32,6 @@ namespace Farsight.IdentityService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -41,7 +41,8 @@ namespace Farsight.IdentityService
             services.AddDbContext<FarsightIdentityServiceDbContext>(optionsAction => optionsAction.UseNpgsql(Configuration.GetConnectionString("Default")));
 
             services.AddIdentity<FarsightUser, IdentityRole>()
-                .AddEntityFrameworkStores<FarsightIdentityServiceDbContext>();
+                .AddEntityFrameworkStores<FarsightIdentityServiceDbContext>()
+                .AddDefaultTokenProviders();
 
             services.AddIdentityServer()
                 .AddInMemoryClients(Configuration.GetSection("IdentityServer:Clients"))
@@ -51,6 +52,9 @@ namespace Farsight.IdentityService
                 .AddAspNetIdentity<FarsightUser>()
                 .AddDeveloperSigningCredential()
                 .AddResourceOwnerValidator<CustomResourceOwnerPasswordValidator>();
+
+            services.AddTransient<IEmailService, EmailService>();
+            services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
