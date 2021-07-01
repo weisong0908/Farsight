@@ -40,5 +40,21 @@ namespace Farsight.IdentityService.Controllers
 
             return Ok(response);
         }
+
+        [HttpGet("confirmEmail")]
+        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+                return BadRequest();
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return NotFound();
+
+            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            var result = await _userManager.ConfirmEmailAsync(user, code);
+
+            return result.Succeeded ? Ok() : BadRequest();
+        }
     }
 }
