@@ -1,21 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Farsight.IdentityService.ExtensionGrantValidators;
 using Farsight.IdentityService.Models;
 using Farsight.IdentityService.Persistence;
 using Farsight.IdentityService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace Farsight.IdentityService
@@ -46,12 +39,13 @@ namespace Farsight.IdentityService
 
             services.AddIdentityServer()
                 .AddInMemoryClients(Configuration.GetSection("IdentityServer:Clients"))
-                .AddInMemoryIdentityResources(Configuration.GetSection("IdentityServer:IdentityResources"))
+                .AddInMemoryIdentityResources(Config.IdentityResources())
                 .AddInMemoryApiResources(Configuration.GetSection("IdentityServer:ApiResources"))
                 .AddInMemoryApiScopes(Configuration.GetSection("IdentityServer:ApiScopes"))
                 .AddAspNetIdentity<FarsightUser>()
                 .AddDeveloperSigningCredential()
-                .AddResourceOwnerValidator<CustomResourceOwnerPasswordValidator>();
+                .AddResourceOwnerValidator<CustomResourceOwnerPasswordValidator>()
+                .AddProfileService<ProfileService>();
 
             services.AddTransient<IEmailService, EmailService>();
             services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));

@@ -3,15 +3,17 @@ using System;
 using Farsight.IdentityService.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Farsight.IdentityService.Migrations
 {
     [DbContext(typeof(FarsightIdentityServiceDbContext))]
-    partial class FarsightIdentityServiceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210701112731_AddProfilePicture")]
+    partial class AddProfilePicture
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

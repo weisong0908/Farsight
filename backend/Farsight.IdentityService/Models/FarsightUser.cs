@@ -6,5 +6,7 @@ namespace Farsight.IdentityService.Models
 {
     public class FarsightUser : IdentityUser
     {
+        [PersonalData]
+        public byte[] ProfilePicture { get; set; }
     }
 }
