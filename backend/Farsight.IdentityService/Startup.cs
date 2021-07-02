@@ -1,3 +1,4 @@
+using System;
 using Farsight.IdentityService.ExtensionGrantValidators;
 using Farsight.IdentityService.Models;
 using Farsight.IdentityService.Persistence;
@@ -47,8 +48,12 @@ namespace Farsight.IdentityService
                 .AddResourceOwnerValidator<CustomResourceOwnerPasswordValidator>()
                 .AddProfileService<ProfileService>();
 
-            services.AddTransient<IEmailService, EmailService>();
-            services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
+            services.AddScoped<IEmailService, EmailService>();
+
+            services.AddHttpClient("common service", configureClient =>
+            {
+                configureClient.BaseAddress = new Uri(Configuration["Services:Common"]);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

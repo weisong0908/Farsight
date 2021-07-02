@@ -25,9 +25,9 @@ namespace Farsight.IdentityService.Controllers
 
         [HttpPost("resendEmailConfirmation")]
         [Consumes(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> SendEmailConfirmation(SendEmailRequest request)
+        public async Task<IActionResult> SendEmailConfirmation(string email)
         {
-            var user = await _userManager.FindByEmailAsync(request.Email);
+            var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
                 return NotFound();
 
@@ -36,9 +36,10 @@ namespace Farsight.IdentityService.Controllers
             var subject = "Confirm your email";
             var callbackUrl = $"https://localhost:8080/confirmEmail?userId={user.Id}&code={code}";
             var content = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
-            var response = await _emailSender.SendEmailAsync(request.Email, subject, content);
 
-            return Ok(response);
+            await _emailSender.SendEmailAsync(email, subject, content);
+
+            return Ok();
         }
 
         [HttpGet("confirmEmail")]

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Farsight.IdentityService.Models
+namespace Farsight.CommonService.Models
 {
     public class SendEmailRequest
     {

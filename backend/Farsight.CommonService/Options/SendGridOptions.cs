@@ -1,4 +1,4 @@
-namespace Farsight.IdentityService.Services
+namespace Farsight.CommonService.Options
 {
     public class SendGridOptions
     {

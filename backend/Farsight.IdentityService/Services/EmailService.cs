@@ -1,4 +1,10 @@
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Mime;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Farsight.IdentityService.Models;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -7,28 +13,31 @@ namespace Farsight.IdentityService.Services
 {
     public class EmailService : IEmailService
     {
-        private readonly SendGridOptions _sendGridOptions;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public EmailService(IOptions<SendGridOptions> options)
+        public EmailService(IHttpClientFactory httpClientFactory)
         {
-            _sendGridOptions = options.Value;
+            _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<Response> SendEmailAsync(string email, string subject, string content)
+        public async Task SendEmailAsync(string email, string subject, string content)
         {
-            var client = new SendGridClient(_sendGridOptions.ApiKey);
-            var message = new SendGridMessage()
+            var request = new SendEmailRequest()
             {
-                From = new EmailAddress(_sendGridOptions.SenderEmail, _sendGridOptions.SenderName),
+                Recipients = new List<string>()
+                {
+                    email
+                },
                 Subject = subject,
-                PlainTextContent = content,
-                HtmlContent = content
+                Content = content
             };
-            message.AddTo(new EmailAddress(email));
+            var client = _httpClientFactory.CreateClient("common service");
 
-            var response = await client.SendEmailAsync(message);
+            var httpContent = new StringContent(JsonSerializer.Serialize<SendEmailRequest>(request), Encoding.UTF8, MediaTypeNames.Application.Json);
 
-            return response;
+            var response = await client.PostAsync("/email", httpContent);
+
+            response.EnsureSuccessStatusCode();
         }
     }
 }
