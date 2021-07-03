@@ -86,7 +86,7 @@ namespace Farsight.IdentityService
 
             app.UseCors("farsight");
 
-            app.UseIdentityServer();
+            app.UseIdentityServer().UseCors("farsight");
 
             app.UseAuthorization();
 

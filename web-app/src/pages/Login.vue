@@ -46,9 +46,13 @@ export default {
       authService
         .login(this.username, this.password)
         .then(resp => {
-          console.log(resp);
-          localStorage.setItem("accessToken", "1234");
-          this.$store.dispatch("auth/login", { username: this.username });
+          this.$store.dispatch("auth/login", {
+            username: this.username,
+            data: resp.data
+          });
+          this.$store.dispatch("alert/success", {
+            heading: "Logged in"
+          });
           this.$router.push(this.$route.query.redirectTo || "/");
         })
         .catch(resp => {

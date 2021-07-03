@@ -2,10 +2,24 @@ import axios from "axios";
 
 export default {
   async login(username, password) {
-    return new Promise((resolve, reject) =>
-      username === "username" && password === "password"
-        ? resolve("logged in")
-        : reject(new Error("wrong username or password"))
+    const params = new URLSearchParams();
+    params.append("grant_type", "password");
+    params.append(
+      "scope",
+      "read write openid profile email role offline_access"
+    );
+    params.append("client_id", "webapp");
+    params.append("client_secret", process.env.VUE_APP_CLIENT_SECRET);
+    params.append("username", username);
+    params.append("password", password);
+    return await axios.post(
+      `${process.env.VUE_APP_IDENTITY_SERVICE}/connect/token`,
+      params,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      }
     );
   },
   isAuth() {

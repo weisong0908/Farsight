@@ -88,9 +88,13 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch("auth/logout");
+
       this.isBurgerMenuActive = false;
       this.$router.push({ name: "login" });
     }
+  },
+  beforeCreate() {
+    this.$store.dispatch("auth/initialise");
   }
 };
 </script>
