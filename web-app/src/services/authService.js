@@ -20,5 +20,10 @@ export default {
         password: password
       }
     );
+  },
+  async confirmEmail(userId, code) {
+    return await axios.get(
+      `${process.env.VUE_APP_IDENTITY_SERVICE}/accounts/confirmEmail?userId=${userId}&code=${code}`
+    );
   }
 };

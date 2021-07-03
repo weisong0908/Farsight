@@ -1,6 +1,7 @@
 using System;
 using Farsight.IdentityService.ExtensionGrantValidators;
 using Farsight.IdentityService.Models;
+using Farsight.IdentityService.Options;
 using Farsight.IdentityService.Persistence;
 using Farsight.IdentityService.Services;
 using Microsoft.AspNetCore.Builder;
@@ -52,12 +53,12 @@ namespace Farsight.IdentityService
 
             services.AddHttpClient("common service", configureClient =>
             {
-                configureClient.BaseAddress = new Uri(Configuration["Services:Common"]);
+                configureClient.BaseAddress = new Uri(Configuration["Integration:CommonService"]);
             });
 
             services.AddCors(setupAction =>
             {
-                setupAction.AddPolicy("webapp", configurePolicy =>
+                setupAction.AddPolicy("farsight", configurePolicy =>
                 {
                     configurePolicy
                         .WithOrigins(Configuration.GetSection("Security:AllowedOrigins").Get<string[]>())
@@ -65,6 +66,8 @@ namespace Farsight.IdentityService
                         .AllowAnyMethod();
                 });
             });
+
+            services.Configure<IntegrationOptions>(Configuration.GetSection("Integration"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,7 +84,7 @@ namespace Farsight.IdentityService
 
             app.UseRouting();
 
-            app.UseCors("webapp");
+            app.UseCors("farsight");
 
             app.UseIdentityServer();
 

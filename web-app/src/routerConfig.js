@@ -7,6 +7,7 @@ import Holding from "./pages/Holding";
 import AddHoldingForm from "./pages/AddHoldingForm";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ConfirmEmail from "./pages/ConfirmEmail";
 
 const routerConfig = new VueRouter({
   mode: "history",
@@ -52,6 +53,12 @@ const routerConfig = new VueRouter({
       path: "/signup",
       component: Signup,
       title: "Sign Up"
+    },
+    {
+      name: "confirmEmail",
+      path: "/confirmEmail",
+      component: ConfirmEmail,
+      title: "Confirm Email"
     },
     {
       name: "dashboard",

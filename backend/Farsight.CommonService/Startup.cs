@@ -34,6 +34,17 @@ namespace Farsight.CommonService
             });
 
             services.Configure<SendGridOptions>(Configuration.GetSection("SendGrid"));
+
+            services.AddCors(setupAction =>
+            {
+                setupAction.AddPolicy("farsight", configurePolicy =>
+                {
+                    configurePolicy
+                        .WithOrigins(Configuration.GetSection("Security:AllowedOrigins").Get<string[]>())
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +60,8 @@ namespace Farsight.CommonService
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("farsight");
 
             app.UseAuthorization();
 

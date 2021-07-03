@@ -3,10 +3,12 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Farsight.IdentityService.Models;
+using Farsight.IdentityService.Options;
 using Farsight.IdentityService.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
 
 namespace Farsight.IdentityService.Controllers
 {
@@ -16,11 +18,13 @@ namespace Farsight.IdentityService.Controllers
     {
         private readonly IEmailService _emailSender;
         private readonly UserManager<FarsightUser> _userManager;
+        private readonly IntegrationOptions _options;
 
-        public AccountsController(IEmailService emailSender, UserManager<FarsightUser> userManager)
+        public AccountsController(IEmailService emailSender, UserManager<FarsightUser> userManager, IOptions<IntegrationOptions> optionAccessor)
         {
             _emailSender = emailSender;
             _userManager = userManager;
+            _options = optionAccessor.Value;
         }
 
         [HttpPost("resendEmailConfirmation")]
@@ -68,6 +72,14 @@ namespace Farsight.IdentityService.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, signUpRequest.Password);
+
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var subject = "Confirm your email";
+            var callbackUrl = $"{_options.WebApp}/confirmEmail?userId={user.Id}&code={code}";
+            var content = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
+
+            await _emailSender.SendEmailAsync(user.Email, subject, content);
 
             return result.Succeeded ? Ok() : BadRequest();
         }
