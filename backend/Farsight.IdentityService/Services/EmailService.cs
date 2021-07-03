@@ -6,8 +6,6 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Farsight.IdentityService.Models;
 using Microsoft.Extensions.Options;
-using SendGrid;
-using SendGrid.Helpers.Mail;
 
 namespace Farsight.IdentityService.Services
 {

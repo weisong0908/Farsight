@@ -85,9 +85,6 @@ export default {
       return this.$store.state.auth.isAuth;
     }
   },
-  mounted() {
-    console.log(this.$route);
-  },
   methods: {
     logout() {
       this.$store.dispatch("auth/logout");

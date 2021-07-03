@@ -1,12 +1,12 @@
 <template>
   <div class="field">
     <label :for="name" class="label">{{ title }}</label>
-    <div class="control has-icons-left">
-      <span class="icon is-small is-left">
+    <div :class="icon !== undefined ? 'control has-icons-left' : 'control'">
+      <span v-if="icon !== undefined" class="icon is-small is-left">
         <i :class="'fas ' + icon"></i>
       </span>
       <input
-        type="password"
+        :type="type"
         :id="name"
         :class="anyError ? 'input is-danger' : 'input'"
         :value="value"
@@ -16,9 +16,8 @@
     <slot name="errorMessages"></slot>
   </div>
 </template>
-
 <script>
 export default {
-  props: ["name", "title", "value", "icon", "anyError"]
+  props: ["name", "title", "value", "icon", "type", "validation", "anyError"]
 };
 </script>

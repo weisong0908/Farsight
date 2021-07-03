@@ -8,16 +8,17 @@
       <input
         type="email"
         :id="name"
-        class="input"
+        :class="anyError ? 'input is-danger' : 'input'"
         :value="value"
         @input="$emit('input', $event.target.value)"
       />
     </div>
+    <slot name="errorMessages"></slot>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["name", "title", "value", "icon"]
+  props: ["name", "title", "value", "icon", "anyError"]
 };
 </script>

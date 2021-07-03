@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export default {
   async login(username, password) {
     return new Promise((resolve, reject) =>
@@ -8,5 +10,15 @@ export default {
   },
   isAuth() {
     return true;
+  },
+  async signup(username, password, email) {
+    return await axios.post(
+      `${process.env.VUE_APP_IDENTITY_SERVICE}/accounts/signup`,
+      {
+        username: username,
+        email: email,
+        password: password
+      }
+    );
   }
 };

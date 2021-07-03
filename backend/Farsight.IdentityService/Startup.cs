@@ -54,6 +54,17 @@ namespace Farsight.IdentityService
             {
                 configureClient.BaseAddress = new Uri(Configuration["Services:Common"]);
             });
+
+            services.AddCors(setupAction =>
+            {
+                setupAction.AddPolicy("webapp", configurePolicy =>
+                {
+                    configurePolicy
+                        .WithOrigins(Configuration.GetSection("Security:AllowedOrigins").Get<string[]>())
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,6 +80,8 @@ namespace Farsight.IdentityService
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("webapp");
 
             app.UseIdentityServer();
 
