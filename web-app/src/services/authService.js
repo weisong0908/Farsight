@@ -39,5 +39,15 @@ export default {
     return await axios.get(
       `${process.env.VUE_APP_IDENTITY_SERVICE}/accounts/confirmEmail?userId=${userId}&code=${code}`
     );
+  },
+  async getUserInfo(accessToken) {
+    return await axios.get(
+      `${process.env.VUE_APP_IDENTITY_SERVICE}/connect/userinfo`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
   }
 };

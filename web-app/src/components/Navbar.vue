@@ -45,6 +45,14 @@
         >
           Holdings
         </router-link>
+
+        <router-link
+          to="/userinfo"
+          class="navbar-item"
+          @click.native="isBurgerMenuActive = false"
+        >
+          User Info
+        </router-link>
       </div>
 
       <div class="navbar-end">
