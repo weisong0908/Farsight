@@ -147,6 +147,13 @@ export default {
           .then(resp => {
             console.log("signed up", resp);
             this.$router.push(this.$route.query.redirectTo || "/");
+          })
+          .catch(err => {
+            const errorDescriptions = err.response.data.map(d => d.description);
+            this.$store.dispatch("alert/danger", {
+              heading: "Unable to sign up",
+              message: errorDescriptions.join(" ")
+            });
           });
       }
     }

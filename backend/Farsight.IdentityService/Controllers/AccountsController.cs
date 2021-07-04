@@ -72,6 +72,8 @@ namespace Farsight.IdentityService.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, signUpRequest.Password);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
 
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
