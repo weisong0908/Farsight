@@ -49,5 +49,16 @@ export default {
         }
       }
     );
+  },
+  async updateUserInfo(userInfo, accessToken) {
+    return await axios.put(
+      `${process.env.VUE_APP_IDENTITY_SERVICE}/accounts/update`,
+      userInfo,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
   }
 };

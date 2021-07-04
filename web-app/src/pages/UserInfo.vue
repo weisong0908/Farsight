@@ -1,43 +1,71 @@
 <template>
   <page>
-    <p>User Information</p>
     <div class="columns">
       <div class="column">
-        <figure class="image is-128x128">
-          <img
-            :src="
-              profilePicture == undefined
-                ? defaultProfilePicture
-                : profilePicturePreview
-            "
-          />
-        </figure>
-        <div class="file has-name">
-          <label class="file-label">
-            <input
-              class="file-input"
-              type="file"
-              name="resume"
-              @change="uploadProfilePicture"
+        <div class="field">
+          <figure class="image is-128x128">
+            <img
+              :src="
+                profilePicture == undefined
+                  ? defaultProfilePicture
+                  : profilePicturePreview
+              "
             />
-            <span class="file-cta">
-              <span class="file-icon">
-                <i class="fas fa-upload"></i>
+          </figure>
+          <div class="file has-name">
+            <label class="file-label">
+              <input
+                class="file-input"
+                type="file"
+                name="resume"
+                @change="uploadProfilePicture"
+              />
+              <span class="file-cta">
+                <span class="file-icon">
+                  <i class="fas fa-upload"></i>
+                </span>
+                <span class="file-label">
+                  Choose a file…
+                </span>
               </span>
-              <span class="file-label">
-                Choose a file…
+              <span class="file-name">
+                {{ profilePictureName }}
               </span>
-            </span>
-            <span class="file-name">
-              {{ profilePictureName }}
-            </span>
-          </label>
+            </label>
+          </div>
         </div>
-        <p>Username: {{ username }}</p>
-        <p>Email: {{ email }}</p>
-        <p>Is email verified: {{ email_verified }}</p>
-        <p>Name: {{ name }}</p>
-        <p>Name: {{ name }}</p>
+        <field
+          name="username"
+          title="Username"
+          :value="username"
+          type="text"
+          icon="fa-user"
+          :readonly="true"
+        ></field>
+        <field
+          name="email"
+          title="Email"
+          :value="email"
+          type="email"
+          icon="fa-envelope"
+          :readonly="true"
+        >
+          <template v-slot:errorMessages>
+            <p class="help is-success" v-if="email_verified">
+              Email is verified
+            </p>
+            <p class="help is-warning" v-else>
+              Email has not been verified yet
+            </p>
+          </template>
+        </field>
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-primary" @click="updateUserInfo">
+              Update
+            </button>
+          </div>
+        </div>
       </div>
       <div class="column"></div>
     </div>
@@ -46,11 +74,12 @@
 
 <script>
 import Page from "../components/Page.vue";
+import Field from "../components/Field.vue";
 import imageConverter from "../utils/imageConverter";
 import authService from "../services/authService";
 
 export default {
-  components: { Page },
+  components: { Page, Field },
   data() {
     return {
       userId: this.$store.state.auth.user.userId,
@@ -72,7 +101,8 @@ export default {
       this.email = resp.data.email;
       this.email_verified = resp.data.email_verified;
       this.name = resp.data.name;
-      this.profilePicture = resp.data.profilePicture;
+      this.profilePicture = resp.data.picture;
+      this.profilePicturePreview = "data:image/png;base64," + resp.data.picture;
     });
   },
   methods: {
@@ -84,6 +114,28 @@ export default {
       imageConverter.imageToBase64(file).then(result => {
         this.profilePicture = result.split(",")[1];
       });
+    },
+    updateUserInfo() {
+      const accessToken = localStorage.getItem("accessToken");
+
+      authService
+        .updateUserInfo(
+          { userId: this.userId, profilePicture: this.profilePicture },
+          accessToken
+        )
+        .then(resp => {
+          this.$store.dispatch("alert/success", {
+            heading: "User info updated",
+            message: resp.data
+          });
+        })
+        .catch(err => {
+          const errorDescriptions = err.response.data.map(d => d.description);
+          this.$store.dispatch("alert/danger", {
+            heading: "Error updating user info",
+            message: errorDescriptions.join(" ")
+          });
+        });
     }
   }
 };

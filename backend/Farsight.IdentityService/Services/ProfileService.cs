@@ -31,8 +31,11 @@ namespace Farsight.IdentityService.Services
 
             var claims = principalClaims.Where(c => context.RequestedClaimTypes.Contains(c.Type)).ToList();
 
-            var profilePicture = user.ProfilePicture.IsNullOrEmpty() ? "" : Convert.ToBase64String(user.ProfilePicture);
-            claims.Add(new Claim("profile_picture", profilePicture));
+            if (context.Caller == IdentityServer4.IdentityServerConstants.ProfileDataCallers.UserInfoEndpoint && requestedClaims.Contains("picture"))
+            {
+                var profilePicture = user.ProfilePicture.IsNullOrEmpty() ? "" : Convert.ToBase64String(user.ProfilePicture);
+                claims.Add(new Claim("picture", profilePicture));
+            }
 
             context.IssuedClaims = claims;
         }

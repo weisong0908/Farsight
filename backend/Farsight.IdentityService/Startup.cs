@@ -4,6 +4,7 @@ using Farsight.IdentityService.Models;
 using Farsight.IdentityService.Options;
 using Farsight.IdentityService.Persistence;
 using Farsight.IdentityService.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Serilog;
 
 namespace Farsight.IdentityService
 {
@@ -68,6 +70,17 @@ namespace Farsight.IdentityService
             });
 
             services.Configure<IntegrationOptions>(Configuration.GetSection("Integration"));
+
+            services.AddAuthentication(configureOptions =>
+                {
+                    configureOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    configureOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(configureOptions =>
+                {
+                    configureOptions.Authority = Configuration["Authentication:Authority"];
+                    configureOptions.Audience = Configuration["Authentication:Audience"];
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,6 +93,8 @@ namespace Farsight.IdentityService
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Farsight.IdentityService v1"));
             }
 
+            app.UseSerilogRequestLogging();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -88,6 +103,7 @@ namespace Farsight.IdentityService
 
             app.UseIdentityServer().UseCors("farsight");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -11,6 +11,7 @@
         :class="anyError ? 'input is-danger' : 'input'"
         :value="value"
         @input="$emit('input', $event.target.value)"
+        :readonly="readonly"
       />
     </div>
     <slot name="errorMessages"></slot>
@@ -18,6 +19,15 @@
 </template>
 <script>
 export default {
-  props: ["name", "title", "value", "icon", "type", "validation", "anyError"]
+  props: [
+    "name",
+    "title",
+    "value",
+    "icon",
+    "type",
+    "validation",
+    "anyError",
+    "readonly"
+  ]
 };
 </script>

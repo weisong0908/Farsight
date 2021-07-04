@@ -1,10 +1,12 @@
 using System.Net.Mime;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Farsight.IdentityService.Models;
 using Farsight.IdentityService.Options;
 using Farsight.IdentityService.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -12,6 +14,7 @@ using Microsoft.Extensions.Options;
 
 namespace Farsight.IdentityService.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class AccountsController : ControllerBase
@@ -59,7 +62,7 @@ namespace Farsight.IdentityService.Controllers
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
 
-            return result.Succeeded ? Ok() : BadRequest();
+            return result.Succeeded ? Ok() : BadRequest(result.Errors);
         }
 
         [HttpPost("signup")]
@@ -83,7 +86,28 @@ namespace Farsight.IdentityService.Controllers
 
             await _emailSender.SendEmailAsync(user.Email, subject, content);
 
-            return result.Succeeded ? Ok() : BadRequest();
+            return result.Succeeded ? Ok() : BadRequest(result.Errors);
+        }
+
+        [HttpPut("update")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> UpdateUserInfo(UserInfoUpdateRequest request)
+        {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userRole = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            if (userId != request.UserId && userRole != "Admin")
+                return Unauthorized();
+
+            var user = await _userManager.FindByIdAsync(request.UserId);
+            if (user == null)
+                return NotFound();
+
+            if (user.ProfilePicture != request.ProfilePicture)
+                user.ProfilePicture = request.ProfilePicture;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            return result.Succeeded ? Ok() : BadRequest(result.Errors);
         }
     }
 }
