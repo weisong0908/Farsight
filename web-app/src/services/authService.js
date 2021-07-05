@@ -35,9 +35,9 @@ export default {
       }
     );
   },
-  async confirmEmail(userId, code) {
+  async confirmEmail(userId, token) {
     return await axios.get(
-      `${process.env.VUE_APP_IDENTITY_SERVICE}/accounts/confirmEmail?userId=${userId}&code=${code}`
+      `${process.env.VUE_APP_IDENTITY_SERVICE}/accounts/confirmEmail?userId=${userId}&token=${token}`
     );
   },
   async getUserInfo(accessToken) {

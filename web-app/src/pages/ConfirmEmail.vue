@@ -11,7 +11,7 @@ export default {
   data() {
     return {
       userId: "",
-      code: ""
+      token: ""
     };
   },
   created() {
@@ -24,9 +24,9 @@ export default {
   methods: {
     confirmEmail() {
       this.userId = this.$route.query.userId;
-      this.code = this.$route.query.code;
+      this.token = this.$route.query.token;
 
-      authService.confirmEmail(this.userId, this.code).then(resp => {
+      authService.confirmEmail(this.userId, this.token).then(resp => {
         this.$store.dispatch("alert/success", {
           heading: "Email is confirmed",
           message: resp.data

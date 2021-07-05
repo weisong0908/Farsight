@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using System.Web;
 using Farsight.IdentityService.Models;
 using Farsight.IdentityService.Options;
 using Farsight.IdentityService.Services;
@@ -50,17 +51,17 @@ namespace Farsight.IdentityService.Controllers
         }
 
         [HttpGet("confirmEmail")]
-        public async Task<IActionResult> ConfirmEmail(string userId, string code)
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
-            if (userId == null || code == null)
+            if (userId == null || token == null)
                 return BadRequest();
 
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
                 return NotFound();
 
-            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-            var result = await _userManager.ConfirmEmailAsync(user, code);
+            token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            var result = await _userManager.ConfirmEmailAsync(user, token);
 
             return result.Succeeded ? Ok() : BadRequest(result.Errors);
         }
@@ -78,20 +79,20 @@ namespace Farsight.IdentityService.Controllers
             if (!result.Succeeded)
                 return BadRequest(result.Errors);
 
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
             var subject = "Confirm your email";
-            var callbackUrl = $"{_options.WebApp}/confirmEmail?userId={user.Id}&code={code}";
+            var callbackUrl = $"{_options.WebApp}/confirmEmail?userId={user.Id}&token={token}";
             var content = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
 
             await _emailSender.SendEmailAsync(user.Email, subject, content);
 
-            return result.Succeeded ? Ok() : BadRequest(result.Errors);
+            return Ok();
         }
 
         [HttpPut("update")]
         [Consumes(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> UpdateUserInfo(UserInfoUpdateRequest request)
+        public async Task<IActionResult> UpdateUserInfo(UpdateUserInfoRequest request)
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var userRole = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
@@ -106,6 +107,59 @@ namespace Farsight.IdentityService.Controllers
                 user.ProfilePicture = request.ProfilePicture;
 
             var result = await _userManager.UpdateAsync(user);
+
+            return result.Succeeded ? Ok() : BadRequest(result.Errors);
+        }
+
+        [HttpPost("changePassword")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
+        {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userRole = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
+            if (userId != request.UserId && userRole != "Admin")
+                return Unauthorized();
+
+            var user = await _userManager.FindByIdAsync(request.UserId);
+            if (user == null)
+                return NotFound();
+
+            var result = await _userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
+
+            return result.Succeeded ? Ok() : BadRequest(result.Errors);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("generatePasswordResetToken")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> GeneratePasswordResetToken(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(HttpUtility.UrlDecode(email));
+            if (user == null)
+                return NotFound();
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var subject = "Reset your password";
+            var callbackUrl = $"{_options.WebApp}/resetPassword?userId={user.Id}&code={token}";
+            var content = $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
+
+            await _emailSender.SendEmailAsync(user.Email, subject, content);
+
+            return Ok();
+        }
+
+        [AllowAnonymous]
+        [HttpPost("resetPassword")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(request.UserId);
+            if (user == null)
+                return NotFound();
+
+            var token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
+            var result = await _userManager.ResetPasswordAsync(user, token, request.NewPassword);
 
             return result.Succeeded ? Ok() : BadRequest(result.Errors);
         }
