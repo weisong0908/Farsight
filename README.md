@@ -1,20 +1,32 @@
 # Introduction 
-TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project. 
+**Farsight** is an investment portfolio tracker that:
+* manages holdings in each portfolio,
+* displays portfolio performance over time, and
+* shows component allocation for each portfolio. 
 
 # Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+This project consists of several frontend and backend components
+| Name | Group | Type | Framework | Description |
+| --- | --- | --- | --- | --- |
+| web-app | Frontend | Single page application | Vue.js 2.x | The web application or UI |  
+| Farsight.Backend | Backend | Web API  | .NET 5 | Manages the endpoints for project backend |
+| Farsight.IdentityService | Backend | Web API  | .NET 5 | Provides the security tokens and account management |
+| Farsight.CommonService | Backend | Web API  | .NET 5 | Provides common endpoints available for both Backend and IdentityService |
 
-# Build and Test
-TODO: Describe and show how to build your code and run the tests. 
+The project also requires PostgreSQL databases:
+| Database Name | Description |
+| --- | --- |
+| farsight_identity_service | Database for Farsight.IdentityService |
+| farsight_backend | Database for Farsight.Backend |
 
-# Contribute
-TODO: Explain how other users and developers can contribute to make your code better. 
+The API endpoints can be found in the Postman collection.
 
-If you want to learn more about creating good readme files then refer the following [guidelines](https://docs.microsoft.com/en-us/azure/devops/repos/git/create-a-readme?view=azure-devops). You can also seek inspiration from the below readme files:
-- [ASP.NET Core](https://github.com/aspnet/Home)
-- [Visual Studio Code](https://github.com/Microsoft/vscode)
-- [Chakra Core](https://github.com/Microsoft/ChakraCore)
+# Build and Run
+Navigate to each of the directories to start the app:
+
+| Name | Directory | Command to use | URL |
+| --- | --- | --- | --- | --- |
+| web-app | web-app | npm run serve | http://localhost:8080 |  
+| Farsight.Backend | backend/Farsight.Backend | dotnet run  | https://localhost:5001 |
+| Farsight.IdentityService | backend/Farsight.IdentityService | dotnet run  | https://localhost:5101 |
+| Farsight.CommonService | backend/Farsight.CommonService | dotnet run  | https://localhost:5201 |
