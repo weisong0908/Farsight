@@ -19,7 +19,7 @@ The project also requires PostgreSQL databases:
 | farsight_identity_service | Database for Farsight.IdentityService |
 | farsight_backend | Database for Farsight.Backend |
 
-The API endpoints can be found in the Postman collection.
+The API endpoints can be found in the [Postman collection](https://www.getpostman.com/collections/651e605bf9feb84a0af2).
 
 # Build and Run
 Navigate to each of the directories to start the app:
