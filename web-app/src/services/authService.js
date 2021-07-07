@@ -60,5 +60,29 @@ export default {
         }
       }
     );
+  },
+  async changePassword(payload, accessToken) {
+    return await axios.post(
+      `${process.env.VUE_APP_IDENTITY_SERVICE}/accounts/changePassword`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+  },
+  async resetPassword(email) {
+    return await axios.post(
+      `${
+        process.env.VUE_APP_IDENTITY_SERVICE
+      }/accounts/generatePasswordResetToken?email=${encodeURIComponent(email)}`
+    );
+  },
+  async confirmResetPassword(payload) {
+    return await axios.post(
+      `${process.env.VUE_APP_IDENTITY_SERVICE}/accounts/resetPassword`,
+      payload
+    );
   }
 };

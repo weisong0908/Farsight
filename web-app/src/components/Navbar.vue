@@ -53,6 +53,13 @@
         >
           User Info
         </router-link>
+        <router-link
+          to="/changePassword"
+          class="navbar-item"
+          @click.native="isBurgerMenuActive = false"
+        >
+          Change Password
+        </router-link>
       </div>
 
       <div class="navbar-end">

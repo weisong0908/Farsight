@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "path": "web-app"
+    },
+    {
+      "path": "backend/Farsight.IdentityService"
+    },
+    {
+      "path": "backend/Farsight.Backend"
+    },
+    {
+      "path": "backend/Farsight.CommonService"
+    }
+  ],
+  "settings": {}
+}

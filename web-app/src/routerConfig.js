@@ -9,6 +9,9 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ConfirmEmail from "./pages/ConfirmEmail";
 import UserInfo from "./pages/UserInfo";
+import ChangePassword from "./pages/ChangePassword";
+import ResetPassword from "./pages/ResetPassword";
+import ConfirmResetPassword from "./pages/ConfirmResetPassword";
 
 const routerConfig = new VueRouter({
   mode: "history",
@@ -66,6 +69,24 @@ const routerConfig = new VueRouter({
       path: "/userinfo",
       component: UserInfo,
       title: "User Information"
+    },
+    {
+      name: "changePassword",
+      path: "/changePassword",
+      component: ChangePassword,
+      title: "Change Password"
+    },
+    {
+      name: "resetPassword",
+      path: "/resetPassword",
+      component: ResetPassword,
+      title: "Reset Password"
+    },
+    {
+      name: "confirmResetPassword",
+      path: "/confirmResetPassword",
+      component: ConfirmResetPassword,
+      title: "Confirm Reset Password"
     },
     {
       name: "dashboard",

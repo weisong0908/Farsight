@@ -131,17 +131,18 @@ namespace Farsight.IdentityService.Controllers
 
         [AllowAnonymous]
         [HttpPost("generatePasswordResetToken")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> GeneratePasswordResetToken(string email)
+        public async Task<IActionResult> GeneratePasswordResetToken([FromQuery] string email)
         {
-            var user = await _userManager.FindByEmailAsync(HttpUtility.UrlDecode(email));
+            Serilog.Log.Information("{@email}", email);
+            var user = await _userManager.FindByEmailAsync(email.ToUpper());
+            Serilog.Log.Information("{@user}", user);
             if (user == null)
                 return NotFound();
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
             var subject = "Reset your password";
-            var callbackUrl = $"{_options.WebApp}/resetPassword?userId={user.Id}&code={token}";
+            var callbackUrl = $"{_options.WebApp}/confirmResetPassword?userId={user.Id}&token={token}";
             var content = $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
 
             await _emailSender.SendEmailAsync(user.Email, subject, content);
