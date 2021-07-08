@@ -107,9 +107,6 @@ export default {
       this.isBurgerMenuActive = false;
       this.$router.push({ name: "login" });
     }
-  },
-  beforeCreate() {
-    this.$store.dispatch("auth/initialise");
   }
 };
 </script>

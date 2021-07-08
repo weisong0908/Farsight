@@ -94,10 +94,9 @@ export default {
     };
   },
   created() {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = this.$store.state.auth.accessToken;
 
     authService.getUserInfo(accessToken).then(resp => {
-      console.log("user info", resp.data);
       this.email = resp.data.email;
       this.email_verified = resp.data.email_verified;
       this.name = resp.data.name;
@@ -116,7 +115,7 @@ export default {
       });
     },
     updateUserInfo() {
-      const accessToken = localStorage.getItem("accessToken");
+      const accessToken = this.$store.state.auth.accessToken;
 
       authService
         .updateUserInfo(

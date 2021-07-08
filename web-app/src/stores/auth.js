@@ -4,10 +4,13 @@ export default {
   state: {
     isAuth: false,
     user: {
-      username: "",
       userId: "",
+      username: "",
       profilePicture: ""
-    }
+    },
+    accessToken: "",
+    refreshToken: "",
+    expiresIn: ""
   },
   mutations: {
     setStatus(state, status) {
@@ -15,40 +18,39 @@ export default {
     },
     setUser(state, user) {
       state.user = user;
+    },
+    setAccessToken(state, accessToken) {
+      state.accessToken = accessToken;
+    },
+    setRefreshToken(state, refreshToken) {
+      state.refreshToken = refreshToken;
+    },
+    setExpiresIn(state, expiresIn) {
+      state.expiresIn = expiresIn;
     }
   },
   actions: {
-    initialise({ commit }) {
-      const isAuth = localStorage.getItem("isAuth");
-
-      if (isAuth) commit("setStatus", true);
-    },
     login({ commit }, payload) {
-      localStorage.setItem("isAuth", true);
-      localStorage.setItem("accessToken", payload.data.access_token);
-      localStorage.setItem(
-        "expiresAt",
-        Date.now() + payload.data.expires_in * 1000
-      );
-      localStorage.setItem("refreshToken", payload.data.refresh_token);
-
-      const payloadData = jwt.decode(payload.data.access_token);
+      console.log("payload", payload);
+      const { access_token, refresh_token, expires_in } = payload.data;
+      const { sub, profilePicture } = jwt.decode(access_token);
 
       commit("setStatus", true);
       commit("setUser", {
+        userId: sub,
         username: payload.username,
-        userId: payloadData.sub,
-        profilePicture: payloadData.profilePicture
+        profilePicture: profilePicture
       });
+      commit("setAccessToken", access_token);
+      commit("setRefreshToken", refresh_token);
+      commit("setExpiresIn", expires_in);
     },
     logout({ commit }) {
-      localStorage.removeItem("isAuth");
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("expiresAt");
-      localStorage.removeItem("refreshToken");
-
       commit("setStatus", false);
       commit("setUser", null);
+      commit("setAccessToken", "");
+      commit("setRefreshToken", "");
+      commit("setExpiresIn", "");
     }
   }
 };

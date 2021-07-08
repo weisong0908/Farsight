@@ -141,7 +141,7 @@ export default {
     changePassword() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
-        const accessToken = localStorage.getItem("accessToken");
+        const accessToken = this.$store.state.auth.accessToken;
 
         authService
           .changePassword(

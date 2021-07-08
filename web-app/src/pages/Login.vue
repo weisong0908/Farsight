@@ -69,22 +69,26 @@ export default {
         authService
           .login(this.username, this.password)
           .then(resp => {
-            this.$store.dispatch("auth/login", {
-              username: this.username,
-              data: resp.data
-            });
-            this.$store.dispatch("alert/success", {
-              heading: "Logged in"
-            });
-            this.$router.push(this.$route.query.redirectTo || "/");
+            this.$store
+              .dispatch("auth/login", {
+                username: this.username,
+                data: resp.data
+              })
+              .then(() => {
+                this.$store.dispatch("alert/success", {
+                  heading: "Logged in"
+                });
+              })
+              .then(() => {
+                this.$router.push(this.$route.query.redirectTo || "/");
+              });
           })
-          .catch(resp => {
-            console.log(resp);
-            localStorage.removeItem("accessToken");
-            this.$store.dispatch("auth/logout");
-            this.$store.dispatch("alert/danger", {
-              heading: "Unable to log in",
-              message: "Wrong username or password."
+          .catch(() => {
+            this.$store.dispatch("auth/logout").then(() => {
+              this.$store.dispatch("alert/danger", {
+                heading: "Unable to log in",
+                message: "Incorrect username or password."
+              });
             });
           });
       }

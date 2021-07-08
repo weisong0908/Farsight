@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import createPersistedState from "vuex-persistedstate";
 import holding from "./holding.js";
 import auth from "./auth.js";
 import alert from "./alert";
@@ -20,5 +21,6 @@ export default new Vuex.Store({
       namespaced: true,
       ...alert
     }
-  }
+  },
+  plugins: [createPersistedState()]
 });
