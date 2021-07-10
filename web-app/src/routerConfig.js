@@ -1,4 +1,6 @@
 import VueRouter from "vue-router";
+import store from "./stores/store";
+
 import Dashboard from "./pages/Dashboard";
 import Portfolios from "./pages/Portfolios";
 import Portfolio from "./pages/Portfolio";
@@ -95,6 +97,24 @@ const routerConfig = new VueRouter({
       title: "Dashboard"
     }
   ]
+});
+
+routerConfig.beforeEach((to, from, next) => {
+  const publicPages = [
+    "dashboard",
+    "login",
+    "signup",
+    "confirmEmail",
+    "resetPassword",
+    "confirmResetPassword"
+  ];
+
+  if (
+    publicPages.find(p => p == to.name) == undefined &&
+    !store.state.auth.isAuth
+  )
+    next({ name: "login" });
+  else next();
 });
 
 export default routerConfig;
