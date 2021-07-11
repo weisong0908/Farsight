@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Farsight.Backend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,13 @@ namespace Farsight.Backend.Persistence
         public async Task<IEnumerable<Trade>> GetTrades()
         {
             return await _dbContext.Trades.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Trade>> GetTrades(Guid holdingId)
+        {
+            return await _dbContext.Trades
+                .Where(t => t.HoldingId == holdingId)
+                .ToListAsync();
         }
 
         public async Task<Trade> GetTrade(Guid id)
@@ -39,6 +47,17 @@ namespace Farsight.Backend.Persistence
         public void DeleteTrade(Trade trade)
         {
             _dbContext.Remove<Trade>(trade);
+        }
+
+        public async Task<bool> IsOwner(Guid holdingId, Guid ownerId)
+        {
+            var holding = await _dbContext.Holdings.Include(h => h.Portfolio).SingleOrDefaultAsync(h => h.Id == holdingId);
+            if (holding == null)
+                return false;
+
+            _dbContext.Entry(holding).State = EntityState.Detached;
+
+            return holding.Portfolio.OwnerId == ownerId;
         }
     }
 }

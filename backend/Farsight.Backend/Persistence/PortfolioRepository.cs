@@ -55,6 +55,9 @@ namespace Farsight.Backend.Persistence
             var portfolio = await _dbContext.Portfolios
                 .SingleOrDefaultAsync(p => p.Id == portfolioId);
 
+            if (portfolio == null)
+                return false;
+
             _dbContext.Entry(portfolio).State = EntityState.Detached;
 
             return portfolio.OwnerId == ownerId;
