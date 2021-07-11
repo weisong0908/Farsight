@@ -8,5 +8,6 @@ namespace Farsight.Backend.Models.DTOs
         public Guid Id { get; set; }
         public string Ticker { get; set; }
         public IList<TradeSimple> Trades { get; set; }
+        public Guid PortfolioId { get; set; }
     }
 }

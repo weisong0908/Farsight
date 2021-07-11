@@ -13,5 +13,6 @@ namespace Farsight.Backend.Persistence
         Task<IEnumerable<Portfolio>> GetPortfolios();
         Task<IEnumerable<Portfolio>> GetPortfolios(Guid ownerId);
         void UpdatePortfolio(Portfolio portfolio);
+        Task<bool> IsOwner(Guid portfolioId, Guid ownerId);
     }
 }

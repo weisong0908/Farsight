@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Mime;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Farsight.Backend.Models;
@@ -11,28 +12,37 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Farsight.Backend.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "read")]
     [ApiController]
     [Route("[controller]")]
     public class HoldingsController : ControllerBase
     {
         private readonly IHoldingRepository _holdingRepository;
+        private readonly IPortfolioRepository _portfolioRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public HoldingsController(IHoldingRepository holdingRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        public HoldingsController(IHoldingRepository holdingRepository, IPortfolioRepository portfolioRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _holdingRepository = holdingRepository;
+            _portfolioRepository = portfolioRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetHoldings()
+        public async Task<IActionResult> GetHoldings([FromQuery] Guid portfolioId)
         {
-            var holdings = _mapper.Map<IList<HoldingSimple>>(await _holdingRepository.GetHoldings());
+            if (portfolioId == Guid.Empty)
+                return BadRequest();
 
-            return Ok(holdings);
+            var ownerId = new Guid(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (!await _portfolioRepository.IsOwner(portfolioId, ownerId))
+                return BadRequest();
+
+            var holdings = await _holdingRepository.GetHoldings(portfolioId);
+
+            return Ok(_mapper.Map<IList<HoldingSimple>>(holdings));
         }
 
         [HttpGet("{id}")]
@@ -43,10 +53,15 @@ namespace Farsight.Backend.Controllers
             return Ok(holding);
         }
 
+        [Authorize(Policy = "write")]
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<ActionResult> CreateHolding(HoldingCreate holdingCreate)
         {
+            var ownerId = new Guid(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (!await _portfolioRepository.IsOwner(holdingCreate.PortfolioId, ownerId))
+                return BadRequest();
+
             var holding = _mapper.Map<Holding>(holdingCreate);
 
             _holdingRepository.CreateHolding(holding);
@@ -56,11 +71,16 @@ namespace Farsight.Backend.Controllers
             return CreatedAtAction(nameof(GetHolding), new { Id = holding.Id }, _mapper.Map<HoldingSimple>(holding));
         }
 
+        [Authorize(Policy = "write")]
         [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<ActionResult> UpdateHolding(Guid id, HoldingUpdate holdingUpdate)
         {
             if (id != holdingUpdate.Id)
+                return BadRequest();
+
+            var ownerId = new Guid(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (!await _portfolioRepository.IsOwner(holdingUpdate.PortfolioId, ownerId))
                 return BadRequest();
 
             var holding = _mapper.Map<Holding>(holdingUpdate);
@@ -72,12 +92,17 @@ namespace Farsight.Backend.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "write")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteHolding(Guid id)
         {
             var holding = await _holdingRepository.GetHolding(id);
             if (holding == null)
                 return NotFound();
+
+            var ownerId = new Guid(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (!await _portfolioRepository.IsOwner(holding.PortfolioId, ownerId))
+                return BadRequest();
 
             _holdingRepository.DeleteHolding(holding);
 

@@ -49,5 +49,13 @@ namespace Farsight.Backend.Persistence
         {
             _dbContext.Remove<Portfolio>(portfolio);
         }
+
+        public async Task<bool> IsOwner(Guid portfolioId, Guid ownerId)
+        {
+            var portfolio = await _dbContext.Portfolios
+                .SingleOrDefaultAsync(p => p.Id == portfolioId);
+
+            return portfolio.OwnerId == ownerId;
+        }
     }
 }
