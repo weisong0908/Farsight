@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Farsight.Backend.Mappings;
 using Farsight.Backend.Persistence;
 using Farsight.Backend.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -47,6 +48,28 @@ namespace Farsight.Backend
 
             services.AddAutoMapper(configAction => configAction.AddProfile<MappingProfile>(), typeof(Startup));
 
+            services.AddCors(setupAction =>
+                {
+                    setupAction.AddPolicy("farsight", configurePolicy =>
+                    {
+                        configurePolicy
+                            .WithOrigins(Configuration.GetSection("Security:AllowedOrigins").Get<string[]>())
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+                });
+
+            services.AddAuthentication(configureOptions =>
+                {
+                    configureOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    configureOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(configureOptions =>
+                {
+                    configureOptions.Authority = Configuration["Authentication:Authority"];
+                    configureOptions.Audience = Configuration["Authentication:Audience"];
+                });
+
             services.AddHttpClient("stock service", configureClient =>
             {
                 configureClient.BaseAddress = new Uri(Configuration["StockService:Url"]);
@@ -67,6 +90,9 @@ namespace Farsight.Backend
 
             app.UseRouting();
 
+            app.UseCors("farsight");
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

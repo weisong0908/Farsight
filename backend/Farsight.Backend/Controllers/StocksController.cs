@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Farsight.Backend.Models.DTOs;
 using Farsight.Backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Farsight.Backend.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class StocksController : ControllerBase
