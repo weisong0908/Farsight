@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Farsight.Backend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,13 @@ namespace Farsight.Backend.Persistence
         public async Task<IEnumerable<Portfolio>> GetPortfolios()
         {
             return await _dbContext.Portfolios.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Portfolio>> GetPortfolios(Guid ownerId)
+        {
+            return await _dbContext.Portfolios
+                .Where(p => p.OwnerId == ownerId)
+                .ToListAsync();
         }
 
         public async Task<Portfolio> GetPortfolio(Guid id)

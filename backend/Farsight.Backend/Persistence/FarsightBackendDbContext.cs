@@ -29,7 +29,8 @@ namespace Farsight.Backend.Persistence
                 new Portfolio()
                 {
                     Id = new Guid("108e7c96-ea21-44f2-9cbe-db4237c2d1dd"),
-                    Name = "Portfolio 1"
+                    Name = "Portfolio 1",
+                    OwnerId = new Guid("8e445865-a24d-4543-a6c6-9443d048cdb9")
                 },
                 new Portfolio()
                 {

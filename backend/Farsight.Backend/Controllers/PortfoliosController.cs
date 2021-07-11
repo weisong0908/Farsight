@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Farsight.Backend.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "read")]
     [ApiController]
     [Route("[controller]")]
     public class PortfoliosController : ControllerBase
@@ -31,7 +31,9 @@ namespace Farsight.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPortfolios()
         {
-            var portfolios = _mapper.Map<IList<PortfolioSimple>>(await _portfolioRepository.GetPortfolios());
+            var ownerId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var portfolios = _mapper.Map<IList<PortfolioSimple>>(await _portfolioRepository.GetPortfolios(new Guid(ownerId)));
 
             return Ok(portfolios);
         }
@@ -39,11 +41,16 @@ namespace Farsight.Backend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetPortfolio(Guid id)
         {
-            var portfolio = _mapper.Map<PortfolioDetailed>(await _portfolioRepository.GetPortfolio(id));
+            var portfolio = await _portfolioRepository.GetPortfolio(id);
 
-            return Ok(portfolio);
+            var ownerId = new Guid(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (portfolio.OwnerId != ownerId)
+                return BadRequest();
+
+            return Ok(_mapper.Map<PortfolioDetailed>(portfolio));
         }
 
+        [Authorize(Policy = "write")]
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<ActionResult> CreatePortfolio(PortfolioCreate portfolioCreate)
@@ -57,11 +64,16 @@ namespace Farsight.Backend.Controllers
             return CreatedAtAction(nameof(GetPortfolio), new { Id = portfolio.Id }, _mapper.Map<PortfolioSimple>(portfolio));
         }
 
+        [Authorize(Policy = "write")]
         [HttpPut("{id}")]
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<ActionResult> UpdatePortfolio(Guid id, PortfolioUpdate portfolioUpdate)
         {
             if (id != portfolioUpdate.Id)
+                return BadRequest();
+
+            var ownerId = new Guid(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (portfolioUpdate.OwnerId != ownerId)
                 return BadRequest();
 
             var portfolio = _mapper.Map<Portfolio>(portfolioUpdate);
@@ -73,12 +85,17 @@ namespace Farsight.Backend.Controllers
             return NoContent();
         }
 
+        [Authorize(Policy = "write")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeletePortfolio(Guid id)
         {
             var portfolio = await _portfolioRepository.GetPortfolio(id);
             if (portfolio == null)
                 return NotFound();
+
+            var ownerId = new Guid(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            if (portfolio.OwnerId != ownerId)
+                return BadRequest();
 
             _portfolioRepository.DeletePortfolio(portfolio);
 

@@ -7,6 +7,7 @@ namespace Farsight.Backend.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public Guid OwnerId { get; set; }
         public IList<Holding> Holdings { get; set; }
     }
 }

@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Farsight.Backend.Mappings;
 using Farsight.Backend.Persistence;
+using Farsight.Backend.Requirements;
 using Farsight.Backend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -69,6 +71,14 @@ namespace Farsight.Backend
                     configureOptions.Authority = Configuration["Authentication:Authority"];
                     configureOptions.Audience = Configuration["Authentication:Audience"];
                 });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("read", policy => policy.Requirements.Add(new HasPermissionRequirement("read", Configuration["Authentication:Authority"])));
+                options.AddPolicy("write", policy => policy.Requirements.Add(new HasPermissionRequirement("write", Configuration["Authentication:Authority"])));
+            });
+
+            services.AddSingleton<IAuthorizationHandler, HasPermissionHandler>();
 
             services.AddHttpClient("stock service", configureClient =>
             {
