@@ -1,3 +1,4 @@
+using System;
 using AutoMapper;
 using Farsight.Backend.Models;
 using Farsight.Backend.Models.DTOs;
@@ -21,6 +22,10 @@ namespace Farsight.Backend.Mappings
             CreateMap<Trade, TradeSimple>();
             CreateMap<TradeCreate, Trade>();
             CreateMap<TradeUpdate, Trade>();
+
+            CreateMap<AlphavantageWeeklyAdjustedResponseTimeSeriesElement, StockClosePrice>()
+                .ForMember(scp => scp.ClosePrice, memberOptions => memberOptions.MapFrom(awartse => decimal.Parse(awartse.ClosePrice)))
+                .ForMember(scp => scp.WeekStartDate, memberOptions => memberOptions.MapFrom(awartse => DateTime.Parse(awartse.Date).AddDays(-7)));
         }
     }
 }

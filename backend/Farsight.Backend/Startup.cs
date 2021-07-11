@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Farsight.Backend.Mappings;
 using Farsight.Backend.Persistence;
+using Farsight.Backend.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -42,7 +43,14 @@ namespace Farsight.Backend
             services.AddScoped<ITradeRepository, TradeRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            services.AddScoped<IStockService, StockService>();
+
             services.AddAutoMapper(configAction => configAction.AddProfile<MappingProfile>(), typeof(Startup));
+
+            services.AddHttpClient("stock service", configureClient =>
+            {
+                configureClient.BaseAddress = new Uri(Configuration["StockService:Url"]);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
