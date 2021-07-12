@@ -9,7 +9,8 @@ namespace Farsight.Backend.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<Portfolio, PortfolioSimple>();
+            CreateMap<Portfolio, PortfolioSimple>()
+                .ForMember(ps => ps.HoldingCount, memberOptions => memberOptions.MapFrom(p => p.Holdings.Count));
             CreateMap<Portfolio, PortfolioDetailed>();
             CreateMap<PortfolioCreate, Portfolio>();
             CreateMap<PortfolioUpdate, Portfolio>();
