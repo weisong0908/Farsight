@@ -60,7 +60,7 @@ namespace Farsight.Backend.Persistence
                 new Trade()
                 {
                     Id = new Guid("5df7c00b-3cfd-48e7-a674-6aee0f120313"),
-                    tradeType = TradeType.Buy,
+                    TradeType = TradeType.Buy,
                     Quantity = 10,
                     UnitPrice = 100,
                     Fees = 0,
@@ -69,7 +69,7 @@ namespace Farsight.Backend.Persistence
                  new Trade()
                 {
                     Id = new Guid("850941ee-b257-4439-b8b6-95a0edc55200"),
-                    tradeType = TradeType.Buy,
+                    TradeType = TradeType.Buy,
                     Quantity = 6,
                     UnitPrice = 250,
                     Fees = 1,

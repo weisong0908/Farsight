@@ -5,7 +5,7 @@ namespace Farsight.Backend.Models
     public class Trade
     {
         public Guid Id { get; set; }
-        public TradeType tradeType { get; set; }
+        public TradeType TradeType { get; set; }
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal Fees { get; set; }

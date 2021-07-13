@@ -1,7 +1,9 @@
 using System;
+using System.Linq;
 using AutoMapper;
 using Farsight.Backend.Models;
 using Farsight.Backend.Models.DTOs;
+using Farsight.Backend.Helpers;
 
 namespace Farsight.Backend.Mappings
 {
@@ -15,7 +17,13 @@ namespace Farsight.Backend.Mappings
             CreateMap<PortfolioCreate, Portfolio>();
             CreateMap<PortfolioUpdate, Portfolio>();
 
-            CreateMap<Holding, HoldingSimple>();
+            CreateMap<Holding, HoldingSimple>()
+                .ForMember(hs => hs.Quantity, memberOptions => memberOptions.MapFrom(h => h.Trades.Select(t => t.Quantity).Sum()))
+                .ForMember(hs => hs.Cost, memberOptions =>
+                {
+                    memberOptions.PreCondition(h => h.Trades.Count > 0);
+                    memberOptions.MapFrom(h => h.Trades.GetHoldingCost());// Calculator.GetHoldingCost(h.Trades));
+                });
             CreateMap<Holding, HoldingDetailed>();
             CreateMap<HoldingCreate, Holding>();
             CreateMap<HoldingUpdate, Holding>();
