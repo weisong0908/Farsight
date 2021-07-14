@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Farsight.Backend.Models;
@@ -15,7 +16,7 @@ namespace Farsight.Backend.Helpers
             var profit = sellTrades.Sum(t => t.Quantity * t.UnitPrice + t.Fees);
             var quantityRemaining = buyTrades.Sum(t => t.Quantity) - sellTrades.Sum(t => t.Quantity);
 
-            return (cost - profit) / quantityRemaining;
+            return Math.Round((cost - profit) / quantityRemaining, 2);
         }
 
         public static int GetHoldingQuantity(this IEnumerable<Trade> trades)
