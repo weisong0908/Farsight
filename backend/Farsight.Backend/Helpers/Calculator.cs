@@ -17,5 +17,13 @@ namespace Farsight.Backend.Helpers
 
             return (cost - profit) / quantityRemaining;
         }
+
+        public static int GetHoldingQuantity(this IEnumerable<Trade> trades)
+        {
+            var buyTrades = trades.Where(t => t.TradeType == TradeType.Buy);
+            var sellTrades = trades.Where(t => t.TradeType == TradeType.Sell);
+
+            return buyTrades.Sum(t => t.Quantity) - sellTrades.Sum(t => t.Quantity);
+        }
     }
 }

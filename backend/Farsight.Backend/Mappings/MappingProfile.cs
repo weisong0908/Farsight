@@ -18,11 +18,15 @@ namespace Farsight.Backend.Mappings
             CreateMap<PortfolioUpdate, Portfolio>();
 
             CreateMap<Holding, HoldingSimple>()
-                .ForMember(hs => hs.Quantity, memberOptions => memberOptions.MapFrom(h => h.Trades.Select(t => t.Quantity).Sum()))
+                .ForMember(hs => hs.Quantity, memberOptions =>
+                {
+                    memberOptions.PreCondition(h => h.Trades.Count > 0);
+                    memberOptions.MapFrom(h => h.Trades.GetHoldingQuantity());
+                })
                 .ForMember(hs => hs.Cost, memberOptions =>
                 {
                     memberOptions.PreCondition(h => h.Trades.Count > 0);
-                    memberOptions.MapFrom(h => h.Trades.GetHoldingCost());// Calculator.GetHoldingCost(h.Trades));
+                    memberOptions.MapFrom(h => h.Trades.GetHoldingCost());
                 });
             CreateMap<Holding, HoldingDetailed>();
             CreateMap<HoldingCreate, Holding>();
