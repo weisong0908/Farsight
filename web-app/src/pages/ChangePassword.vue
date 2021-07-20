@@ -2,84 +2,41 @@
   <page>
     <div class="columns">
       <div class="column">
-        <field
+        <form-field
           name="username"
           title="Username"
-          :value="username"
+          v-model="username"
           type="text"
           icon="fa-user"
           :readonly="true"
-        ></field>
-        <field
+        ></form-field>
+        <form-field
           name="currentPassword"
           title="Current Password"
-          :value="currentPassword"
           icon="fa-lock"
           type="password"
-          v-model="$v.currentPassword.$model"
-          :anyError="$v.currentPassword.$anyError"
+          v-model="currentPassword"
+          :errorMessage="validationErrors.currentPassword"
         >
-          <template v-slot:errorMessages>
-            <p class="help is-danger" v-if="!$v.currentPassword.required">
-              Password is required
-            </p>
-          </template>
-        </field>
-        <field
+        </form-field>
+        <form-field
           name="newPassword"
           title="New Password"
-          :value="newPassword"
           icon="fa-lock"
           type="password"
-          v-model="$v.newPassword.$model"
-          :anyError="$v.newPassword.$anyError"
+          v-model="newPassword"
+          :errorMessage="validationErrors.newPassword"
         >
-          <template v-slot:errorMessages>
-            <p class="help is-danger" v-if="!$v.newPassword.required">
-              Password is required
-            </p>
-            <p class="help is-danger" v-if="!$v.newPassword.minLength">
-              Password must have at least 6 characters
-            </p>
-            <p class="help is-danger" v-if="!$v.newPassword.containsUppercase">
-              Password must have at least 1 uppercase character
-            </p>
-            <p class="help is-danger" v-if="!$v.newPassword.containsLowercase">
-              Password must have at least 1 lowercase character
-            </p>
-            <p class="help is-danger" v-if="!$v.newPassword.containsNumber">
-              Password must have at least 1 digit
-            </p>
-            <p class="help is-danger" v-if="!$v.newPassword.containsSpecial">
-              Password must have at least 1 non-alphanumeric character e.g.
-              special characters like '#' or '$'
-            </p>
-            <!-- <p
-              class="help is-danger"
-              v-if="!$v.newPassword.notSameAsCurrentPassword"
-            >
-              New password cannot be same as current password
-            </p> -->
-          </template>
-        </field>
-        <field
+        </form-field>
+        <form-field
           name="confirmPassword"
           title="Please type your password again"
-          :value="confirmPassword"
           icon="fa-lock"
           type="password"
-          v-model="$v.confirmPassword.$model"
-          :anyError="$v.confirmPassword.$anyError"
+          v-model="confirmPassword"
+          :errorMessage="validationErrors.confirmPassword"
         >
-          <template v-slot:errorMessages>
-            <p class="help is-danger" v-if="!$v.confirmPassword.required">
-              Password must be confirmed
-            </p>
-            <p class="help is-danger" v-if="!$v.confirmPassword.sameAsPassword">
-              This value must be same as new password
-            </p>
-          </template></field
-        >
+        </form-field>
         <div class="field is-grouped">
           <div class="control">
             <button class="button is-primary" @click="changePassword">
@@ -95,77 +52,95 @@
 
 <script>
 import Page from "../components/Page.vue";
-import Field from "../components/Field.vue";
-import { required, minLength, sameAs } from "vuelidate/lib/validators";
+import FormField from "../components/FormField.vue";
+import Joi from "joi";
 import authService from "../services/authService";
 
+const schema = Joi.object({
+  currentPassword: Joi.string()
+    .required()
+    .label("Current Password"),
+  newPassword: Joi.string()
+    .min(6)
+    .required()
+    .pattern(/[A-Z]/, "containsUppercase")
+    .pattern(/[a-z]/, "containsLowercase")
+    .pattern(/[0-9]/, "containsNumber")
+    .pattern(/[#?!@$%^&*-]/, "containsSpecial")
+    .messages({
+      "string.pattern.name":
+        '"New Password" must contains at least 1 upper case, at least 1 lower case, at least 1 digit, and at least 1 non-alphanumeric character e.g. special characters like "#" or "$"'
+    })
+    .label("New Password"),
+  repeatedPassword: Joi.equal(Joi.ref("password"))
+    .messages({
+      "any.only": '"Repeated Password" must be same as "New Password"'
+    })
+    .label("Repeated Password")
+});
+
 export default {
-  components: { Page, Field },
+  components: { Page, FormField },
   data() {
     return {
       userId: this.$store.state.auth.user.userId,
       username: this.$store.state.auth.user.username,
       currentPassword: "",
       newPassword: "",
-      confirmPassword: ""
+      confirmPassword: "",
+      validationErrors: {}
     };
   },
-  validations: {
-    currentPassword: {
-      required
-    },
-    newPassword: {
-      required,
-      minLength: minLength(6),
-      containsUppercase: function(value) {
-        return /[A-Z]/.test(value);
-      },
-      containsLowercase: function(value) {
-        return /[a-z]/.test(value);
-      },
-      containsNumber: function(value) {
-        return /[0-9]/.test(value);
-      },
-      containsSpecial: function(value) {
-        return /[#?!@$%^&*-]/.test(value);
-      }
-      // notSameAsCurrentPassword: not(sameAs("currentPassword"))
-    },
-    confirmPassword: {
-      required,
-      sameAsPassword: sameAs("newPassword")
-    }
-  },
-  created() {},
   methods: {
     changePassword() {
-      this.$v.$touch();
-      if (!this.$v.$invalid) {
-        const accessToken = this.$store.state.auth.accessToken;
+      if (!this.validate()) return;
 
-        authService
-          .changePassword(
-            {
-              userId: this.userId,
-              oldPassword: this.currentPassword,
-              newPassword: this.newPassword
-            },
-            accessToken
-          )
-          .then(resp => {
-            this.$store.dispatch("alert/success", {
-              heading: "Password changed",
-              message: resp.data
-            });
-          })
-          .catch(err => {
-            const errorDescriptions = err.response.data.map(d => d.description);
-            this.$store.dispatch("alert/danger", {
-              heading: "Error changing password",
-              message: errorDescriptions.join(" ")
-            });
+      const accessToken = this.$store.state.auth.accessToken;
+
+      authService
+        .changePassword(
+          {
+            userId: this.userId,
+            oldPassword: this.currentPassword,
+            newPassword: this.newPassword
+          },
+          accessToken
+        )
+        .then(resp => {
+          this.$store.dispatch("alert/success", {
+            heading: "Password changed",
+            message: resp.data
           });
-      }
+        })
+        .catch(err => {
+          const errorDescriptions = err.response
+            ? err.response.data.map(d => d.description).join(" ")
+            : "No connection";
+          this.$store.dispatch("alert/danger", {
+            heading: "Error changing password",
+            message: errorDescriptions
+          });
+        });
+    },
+    validate() {
+      const validationResults = schema.validate({
+        currentPassword: this.currentPassword,
+        newPassword: this.newPassword,
+        repeatedPassword: this.repeatedPassword
+      });
+      this.validationErrors = {};
+      if (validationResults.error) {
+        for (let item of validationResults.error.details) {
+          const validationError = {};
+          validationError[item.path[0]] = item.message;
+
+          this.validationErrors = {
+            ...this.validationErrors,
+            ...validationError
+          };
+        }
+        return false;
+      } else return true;
     }
   }
 };

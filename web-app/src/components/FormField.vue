@@ -8,26 +8,18 @@
       <input
         :type="type"
         :id="name"
-        :class="anyError ? 'input is-danger' : 'input'"
         :value="value"
+        :class="errorMessage ? 'input is-danger' : 'input'"
         @input="$emit('input', $event.target.value)"
         :readonly="readonly"
       />
     </div>
-    <slot name="errorMessages"></slot>
+    <p class="help is-danger" v-if="errorMessage">{{ errorMessage }}</p>
   </div>
 </template>
+
 <script>
 export default {
-  props: [
-    "name",
-    "title",
-    "value",
-    "icon",
-    "type",
-    "validation",
-    "anyError",
-    "readonly"
-  ]
+  props: ["name", "title", "value", "icon", "type", "errorMessage", "readonly"]
 };
 </script>

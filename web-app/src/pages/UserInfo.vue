@@ -34,31 +34,26 @@
             </label>
           </div>
         </div>
-        <field
+        <form-field
           name="username"
           title="Username"
-          :value="username"
+          v-model="username"
           type="text"
           icon="fa-user"
           :readonly="true"
-        ></field>
-        <field
+        ></form-field>
+        <form-field
           name="email"
           title="Email"
-          :value="email"
+          v-model="email"
           type="email"
           icon="fa-envelope"
           :readonly="true"
+          :errorMessage="
+            email_verified ? '' : 'Email has not been verified yet'
+          "
         >
-          <template v-slot:errorMessages>
-            <p class="help is-success" v-if="email_verified">
-              Email is verified
-            </p>
-            <p class="help is-warning" v-else>
-              Email has not been verified yet
-            </p>
-          </template>
-        </field>
+        </form-field>
         <div class="field is-grouped">
           <div class="control">
             <button class="button is-primary" @click="updateUserInfo">
@@ -74,12 +69,12 @@
 
 <script>
 import Page from "../components/Page.vue";
-import Field from "../components/Field.vue";
+import FormField from "../components/FormField.vue";
 import imageConverter from "../utils/imageConverter";
 import authService from "../services/authService";
 
 export default {
-  components: { Page, Field },
+  components: { Page, FormField },
   data() {
     return {
       userId: this.$store.state.auth.user.userId,
