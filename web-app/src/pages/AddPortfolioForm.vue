@@ -2,19 +2,21 @@
   <page>
     <div class="columns">
       <div class="column">
-        <form-field
-          name="name"
-          title="Portfolio Name"
-          type="text"
-          icon="fa-align-left"
-          v-model="name"
-          :errorMessage="validationErrors.name"
-        ></form-field>
-        <div class="field is-grouped">
-          <div class="control">
-            <button class="button is-primary" @click="create">
-              Create Portfolio
-            </button>
+        <div class="box">
+          <form-field
+            name="name"
+            title="Portfolio Name"
+            type="text"
+            icon="fa-align-left"
+            v-model="name"
+            :errorMessage="validationErrors.name"
+          ></form-field>
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-primary" @click="create">
+                Create Portfolio
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -32,7 +34,7 @@ import portfolioService from "../services/portfolioService";
 const schema = Joi.object({
   name: Joi.string()
     .required()
-    .label("Name")
+    .label("Portfolio Name")
 });
 
 export default {

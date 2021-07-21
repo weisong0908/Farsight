@@ -2,46 +2,48 @@
   <page>
     <div class="columns">
       <div class="column">
-        <form-field
-          name="username"
-          title="Username"
-          v-model="username"
-          type="text"
-          icon="fa-user"
-          :readonly="true"
-        ></form-field>
-        <form-field
-          name="currentPassword"
-          title="Current Password"
-          icon="fa-lock"
-          type="password"
-          v-model="currentPassword"
-          :errorMessage="validationErrors.currentPassword"
-        >
-        </form-field>
-        <form-field
-          name="newPassword"
-          title="New Password"
-          icon="fa-lock"
-          type="password"
-          v-model="newPassword"
-          :errorMessage="validationErrors.newPassword"
-        >
-        </form-field>
-        <form-field
-          name="confirmPassword"
-          title="Please type your password again"
-          icon="fa-lock"
-          type="password"
-          v-model="confirmPassword"
-          :errorMessage="validationErrors.confirmPassword"
-        >
-        </form-field>
-        <div class="field is-grouped">
-          <div class="control">
-            <button class="button is-primary" @click="changePassword">
-              Change Password
-            </button>
+        <div class="box">
+          <form-field
+            name="username"
+            title="Username"
+            v-model="username"
+            type="text"
+            icon="fa-user"
+            :readonly="true"
+          ></form-field>
+          <form-field
+            name="currentPassword"
+            title="Current Password"
+            icon="fa-lock"
+            type="password"
+            v-model="currentPassword"
+            :errorMessage="validationErrors.currentPassword"
+          >
+          </form-field>
+          <form-field
+            name="newPassword"
+            title="New Password"
+            icon="fa-lock"
+            type="password"
+            v-model="newPassword"
+            :errorMessage="validationErrors.newPassword"
+          >
+          </form-field>
+          <form-field
+            name="confirmPassword"
+            title="Please type your password again"
+            icon="fa-lock"
+            type="password"
+            v-model="confirmPassword"
+            :errorMessage="validationErrors.confirmPassword"
+          >
+          </form-field>
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-primary" @click="changePassword">
+                Change Password
+              </button>
+            </div>
           </div>
         </div>
       </div>

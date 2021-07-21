@@ -2,63 +2,65 @@
   <page>
     <div class="columns">
       <div class="column">
-        <div class="field">
-          <figure class="image is-128x128">
-            <img
-              :src="
-                profilePicture == undefined
-                  ? defaultProfilePicture
-                  : profilePicturePreview
-              "
-            />
-          </figure>
-          <div class="file has-name">
-            <label class="file-label">
-              <input
-                class="file-input"
-                type="file"
-                name="resume"
-                @change="uploadProfilePicture"
+        <div class="box">
+          <div class="field">
+            <figure class="image is-128x128">
+              <img
+                :src="
+                  profilePicture == undefined
+                    ? defaultProfilePicture
+                    : profilePicturePreview
+                "
               />
-              <span class="file-cta">
-                <span class="file-icon">
-                  <i class="fas fa-upload"></i>
+            </figure>
+            <div class="file has-name">
+              <label class="file-label">
+                <input
+                  class="file-input"
+                  type="file"
+                  name="resume"
+                  @change="uploadProfilePicture"
+                />
+                <span class="file-cta">
+                  <span class="file-icon">
+                    <i class="fas fa-upload"></i>
+                  </span>
+                  <span class="file-label">
+                    Choose a file…
+                  </span>
                 </span>
-                <span class="file-label">
-                  Choose a file…
+                <span class="file-name">
+                  {{ profilePictureName }}
                 </span>
-              </span>
-              <span class="file-name">
-                {{ profilePictureName }}
-              </span>
-            </label>
+              </label>
+            </div>
           </div>
-        </div>
-        <form-field
-          name="username"
-          title="Username"
-          v-model="username"
-          type="text"
-          icon="fa-user"
-          :readonly="true"
-        ></form-field>
-        <form-field
-          name="email"
-          title="Email"
-          v-model="email"
-          type="email"
-          icon="fa-envelope"
-          :readonly="true"
-          :errorMessage="
-            email_verified ? '' : 'Email has not been verified yet'
-          "
-        >
-        </form-field>
-        <div class="field is-grouped">
-          <div class="control">
-            <button class="button is-primary" @click="updateUserInfo">
-              Update
-            </button>
+          <form-field
+            name="username"
+            title="Username"
+            v-model="username"
+            type="text"
+            icon="fa-user"
+            :readonly="true"
+          ></form-field>
+          <form-field
+            name="email"
+            title="Email"
+            v-model="email"
+            type="email"
+            icon="fa-envelope"
+            :readonly="true"
+            :errorMessage="
+              email_verified ? '' : 'Email has not been verified yet'
+            "
+          >
+          </form-field>
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-primary" @click="updateUserInfo">
+                Update
+              </button>
+            </div>
           </div>
         </div>
       </div>

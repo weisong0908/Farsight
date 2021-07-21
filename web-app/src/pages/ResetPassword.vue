@@ -2,21 +2,23 @@
   <page>
     <div class="columns">
       <div class="column">
-        <form-field
-          name="email"
-          title="Email Address"
-          :value="email"
-          type="email"
-          icon="fa-envelope"
-          v-model="email"
-          :errorMessage="validationErrors.email"
-        >
-        </form-field>
-        <div class="field is-grouped">
-          <div class="control">
-            <button class="button is-primary" @click="resetPassword">
-              Reset Password
-            </button>
+        <div class="box">
+          <form-field
+            name="email"
+            title="Email Address"
+            :value="email"
+            type="email"
+            icon="fa-envelope"
+            v-model="email"
+            :errorMessage="validationErrors.email"
+          >
+          </form-field>
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-primary" @click="resetPassword">
+                Reset Password
+              </button>
+            </div>
           </div>
         </div>
       </div>

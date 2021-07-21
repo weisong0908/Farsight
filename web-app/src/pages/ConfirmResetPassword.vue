@@ -2,28 +2,30 @@
   <page>
     <div class="columns">
       <div class="column">
-        <form-field
-          name="newPassword"
-          title="New Password"
-          icon="fa-lock"
-          type="password"
-          v-model="newPassword"
-          :errorMessage="validationErrors.newPassword"
-        ></form-field>
-        <form-field
-          name="repeatedPassword"
-          title="Confirm Password"
-          :value="repeatedPassword"
-          icon="fa-lock"
-          type="password"
-          v-model="repeatedPassword"
-          :errorMessage="validationErrors.repeatedPassword"
-        ></form-field>
-        <div class="field is-grouped">
-          <div class="control">
-            <button class="button is-primary" @click="changePassword">
-              Change Password
-            </button>
+        <div class="box">
+          <form-field
+            name="newPassword"
+            title="New Password"
+            icon="fa-lock"
+            type="password"
+            v-model="newPassword"
+            :errorMessage="validationErrors.newPassword"
+          ></form-field>
+          <form-field
+            name="repeatedPassword"
+            title="Confirm Password"
+            :value="repeatedPassword"
+            icon="fa-lock"
+            type="password"
+            v-model="repeatedPassword"
+            :errorMessage="validationErrors.repeatedPassword"
+          ></form-field>
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-primary" @click="changePassword">
+                Change Password
+              </button>
+            </div>
           </div>
         </div>
       </div>

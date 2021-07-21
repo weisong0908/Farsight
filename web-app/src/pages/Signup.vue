@@ -2,45 +2,47 @@
   <page>
     <div class="columns">
       <div class="column">
-        <form-field
-          name="username"
-          title="Username"
-          v-model="username"
-          type="text"
-          icon="fa-user"
-          :errorMessage="validationErrors.username"
-        >
-        </form-field>
-        <form-field
-          name="email"
-          title="Email Address"
-          v-model="email"
-          type="email"
-          icon="fa-envelope"
-          :errorMessage="validationErrors.email"
-        >
-        </form-field>
-        <form-field
-          name="password"
-          title="Password"
-          :value="password"
-          icon="fa-lock"
-          type="password"
-          v-model="password"
-          :errorMessage="validationErrors.password"
-        ></form-field>
-        <form-field
-          name="repeatedPassword"
-          title="Confirm Password"
-          :value="repeatedPassword"
-          icon="fa-lock"
-          type="password"
-          v-model="repeatedPassword"
-          :errorMessage="validationErrors.repeatedPassword"
-        ></form-field>
-        <div class="field is-grouped">
-          <div class="control">
-            <button class="button is-primary" @click="signup">Sign Up</button>
+        <div class="box">
+          <form-field
+            name="username"
+            title="Username"
+            v-model="username"
+            type="text"
+            icon="fa-user"
+            :errorMessage="validationErrors.username"
+          >
+          </form-field>
+          <form-field
+            name="email"
+            title="Email Address"
+            v-model="email"
+            type="email"
+            icon="fa-envelope"
+            :errorMessage="validationErrors.email"
+          >
+          </form-field>
+          <form-field
+            name="password"
+            title="Password"
+            :value="password"
+            icon="fa-lock"
+            type="password"
+            v-model="password"
+            :errorMessage="validationErrors.password"
+          ></form-field>
+          <form-field
+            name="repeatedPassword"
+            title="Confirm Password"
+            :value="repeatedPassword"
+            icon="fa-lock"
+            type="password"
+            v-model="repeatedPassword"
+            :errorMessage="validationErrors.repeatedPassword"
+          ></form-field>
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-primary" @click="signup">Sign Up</button>
+            </div>
           </div>
         </div>
       </div>

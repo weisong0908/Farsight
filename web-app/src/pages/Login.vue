@@ -2,27 +2,29 @@
   <page>
     <div class="columns">
       <div class="column">
-        <form-field
-          name="username"
-          title="Username"
-          type="text"
-          icon="fa-user"
-          v-model="username"
-          :errorMessage="validationErrors.username"
-        ></form-field>
-        <form-field
-          name="password"
-          title="Password"
-          :value="password"
-          type="password"
-          icon="fa-key"
-          v-model="password"
-          :errorMessage="validationErrors.password"
-        >
-        </form-field>
-        <div class="field is-grouped">
-          <div class="control">
-            <button class="button is-primary" @click="login">Log In</button>
+        <div class="box">
+          <form-field
+            name="username"
+            title="Username"
+            type="text"
+            icon="fa-user"
+            v-model="username"
+            :errorMessage="validationErrors.username"
+          ></form-field>
+          <form-field
+            name="password"
+            title="Password"
+            :value="password"
+            type="password"
+            icon="fa-key"
+            v-model="password"
+            :errorMessage="validationErrors.password"
+          >
+          </form-field>
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-primary" @click="login">Log In</button>
+            </div>
           </div>
         </div>
       </div>
