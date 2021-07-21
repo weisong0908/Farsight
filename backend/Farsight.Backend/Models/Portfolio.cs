@@ -9,5 +9,10 @@ namespace Farsight.Backend.Models
         public string Name { get; set; }
         public Guid OwnerId { get; set; }
         public IList<Holding> Holdings { get; set; }
+
+        public Portfolio()
+        {
+            Holdings = new List<Holding>();
+        }
     }
 }

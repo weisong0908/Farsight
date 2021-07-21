@@ -10,5 +10,10 @@ namespace Farsight.Backend.Models
         public Portfolio Portfolio { get; set; }
         public Guid PortfolioId { get; set; }
         public IList<Trade> Trades { get; set; }
+
+        public Holding()
+        {
+            Trades = new List<Trade>();
+        }
     }
 }
