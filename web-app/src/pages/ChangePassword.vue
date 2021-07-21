@@ -30,12 +30,12 @@
           >
           </form-field>
           <form-field
-            name="confirmPassword"
-            title="Please type your password again"
+            name="repeatedPassword"
+            title="Confirm Password"
             icon="fa-lock"
             type="password"
-            v-model="confirmPassword"
-            :errorMessage="validationErrors.confirmPassword"
+            v-model="repeatedPassword"
+            :errorMessage="validationErrors.repeatedPassword"
           >
           </form-field>
           <div class="field is-grouped">
@@ -89,7 +89,7 @@ export default {
       username: this.$store.state.auth.user.username,
       currentPassword: "",
       newPassword: "",
-      confirmPassword: "",
+      repeatedPassword: "",
       validationErrors: {}
     };
   },
