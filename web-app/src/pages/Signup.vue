@@ -23,18 +23,16 @@
             >
             </form-field>
             <form-field
-              name="password"
+              name="newPassword"
               title="Password"
-              :value="password"
               icon="fa-lock"
               type="password"
-              v-model="password"
-              :errorMessage="validationErrors.password"
+              v-model="newPassword"
+              :errorMessage="validationErrors.newPassword"
             ></form-field>
             <form-field
               name="repeatedPassword"
               title="Confirm Password"
-              :value="repeatedPassword"
               icon="fa-lock"
               type="password"
               v-model="repeatedPassword"
@@ -57,35 +55,17 @@
 import Page from "../components/Page.vue";
 import AppForm from "../components/Form.vue";
 import FormField from "../components/FormField.vue";
+import pageMixin from "../mixins/page";
 import formMixin from "../mixins/form";
 import Joi from "joi";
 import authService from "../services/authService";
+import validationSchemas from "../utils/validationSchemas";
 
 const schema = Joi.object({
-  username: Joi.string()
-    .required()
-    .label("Username"),
-  email: Joi.string()
-    .email({ tlds: { allow: false } })
-    .required()
-    .label("Email address"),
-  password: Joi.string()
-    .min(6)
-    .required()
-    .pattern(/[A-Z]/, "containsUppercase")
-    .pattern(/[a-z]/, "containsLowercase")
-    .pattern(/[0-9]/, "containsNumber")
-    .pattern(/[#?!@$%^&*-]/, "containsSpecial")
-    .messages({
-      "string.pattern.name":
-        '"Password" must contains at least 1 upper case, at least 1 lower case, at least 1 digit, and at least 1 non-alphanumeric character e.g. special characters like "#" or "$"'
-    })
-    .label("Password"),
-  repeatedPassword: Joi.equal(Joi.ref("password"))
-    .messages({
-      "any.only": '"Repeated Password" must be same as "Password"'
-    })
-    .label("Repeated Password")
+  username: validationSchemas.username,
+  email: validationSchemas.email,
+  newPassword: validationSchemas.newPassword,
+  repeatedPassword: validationSchemas.repeatedPassword
 });
 
 export default {
@@ -94,36 +74,31 @@ export default {
     return {
       username: "s",
       email: "",
-      password: "",
+      newPassword: "",
       repeatedPassword: ""
     };
   },
-  mixins: [formMixin],
+  mixins: [pageMixin, formMixin],
   methods: {
     signup() {
       if (
         !this.validate(schema, {
           username: this.username,
           email: this.email,
-          password: this.password,
+          newPassword: this.newPassword,
           repeatedPassword: this.repeatedPassword
         })
       )
         return;
       authService
-        .signup(this.username, this.password, this.email)
+        .signup(this.username, this.newPassword, this.email)
         .then(resp => {
-          console.log("signed up", resp);
-          this.$router.push(this.$route.query.redirectTo || "/");
+          this.notifySuccess("Signed up successfully", resp).then(() => {
+            this.$router.push(this.$route.query.redirectTo || "/");
+          });
         })
         .catch(err => {
-          const errorDescriptions = err.response
-            ? err.response.data.map(d => d.description).join(" ")
-            : "No connection";
-          this.$store.dispatch("alert/danger", {
-            heading: "Unable to sign up",
-            message: errorDescriptions
-          });
+          this.notifyError("Unable to sign up", err);
         });
     }
   }

@@ -8,7 +8,7 @@
               name="portfolioId"
               title="Portfolio ID"
               type="text"
-              icon="fa-align-left"
+              icon="fa-dot-circle"
               :value="portfolioId"
               :readonly="true"
             ></form-field>
@@ -75,14 +75,14 @@ import Page from "../components/Page.vue";
 import AppForm from "../components/Form.vue";
 import FormField from "../components/FormField.vue";
 import Pagination from "../components/Pagination.vue";
+import pageMixin from "../mixins/page";
 import formMixin from "../mixins/form";
 import portfolioService from "../services/portfolioService";
+import validationSchemas from "../utils/validationSchemas";
 import Joi from "joi";
 
 const schema = Joi.object({
-  portfolioName: Joi.string()
-    .required()
-    .label("Portfolio name")
+  portfolioName: validationSchemas.portfolioName
 });
 
 export default {
@@ -91,13 +91,12 @@ export default {
     return {
       portfolioId: this.$route.params.id,
       portfolioName: "",
-      isDataReady: false,
       currentPageNumber: 1,
       pageSize: 2,
       holdings: []
     };
   },
-  mixins: [formMixin],
+  mixins: [pageMixin, formMixin],
   computed: {
     filteredHoldings() {
       return this.holdings.slice(
@@ -123,6 +122,7 @@ export default {
         })
       )
         return;
+
       const accessToken = this.$store.state.auth.accessToken;
       const userId = this.$store.state.auth.user.userId;
       portfolioService
@@ -131,19 +131,13 @@ export default {
           accessToken
         )
         .then(() => {
-          this.$store.dispatch("alert/success", {
-            heading: "Portfolio updated",
-            message: `Portfolio "${this.portfolioName}" has been updated successfully.`
-          });
+          this.notifySuccess(
+            "Portfolio updated",
+            `Portfolio "${this.portfolioName}" has been updated successfully.`
+          );
         })
         .catch(err => {
-          const errorDescriptions = err.response
-            ? err.response.data.map(d => d.description).join(" ")
-            : "No connection";
-          this.$store.dispatch("alert/danger", {
-            heading: "Unable to update portfolio",
-            message: errorDescriptions
-          });
+          this.notifyError("Unable to update portfolio", err);
         });
     },
     goToPage(pageNumber) {

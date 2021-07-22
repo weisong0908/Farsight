@@ -58,31 +58,16 @@
 import Page from "../components/Page.vue";
 import AppForm from "../components/Form.vue";
 import FormField from "../components/FormField.vue";
+import pageMixin from "../mixins/page";
 import formMixin from "../mixins/form";
 import Joi from "joi";
 import authService from "../services/authService";
+import validationSchemas from "../utils/validationSchemas";
 
 const schema = Joi.object({
-  currentPassword: Joi.string()
-    .required()
-    .label("Current Password"),
-  newPassword: Joi.string()
-    .min(6)
-    .required()
-    .pattern(/[A-Z]/, "containsUppercase")
-    .pattern(/[a-z]/, "containsLowercase")
-    .pattern(/[0-9]/, "containsNumber")
-    .pattern(/[#?!@$%^&*-]/, "containsSpecial")
-    .messages({
-      "string.pattern.name":
-        '"New Password" must contains at least 1 upper case, at least 1 lower case, at least 1 digit, and at least 1 non-alphanumeric character e.g. special characters like "#" or "$"'
-    })
-    .label("New Password"),
-  repeatedPassword: Joi.equal(Joi.ref("password"))
-    .messages({
-      "any.only": '"Repeated Password" must be same as "New Password"'
-    })
-    .label("Repeated Password")
+  currentPassword: validationSchemas.password,
+  newPassword: validationSchemas.newPassword,
+  repeatedPassword: validationSchemas.repeatedPassword
 });
 
 export default {
@@ -96,7 +81,7 @@ export default {
       repeatedPassword: ""
     };
   },
-  mixins: [formMixin],
+  mixins: [pageMixin, formMixin],
   methods: {
     changePassword() {
       if (
@@ -120,19 +105,12 @@ export default {
           accessToken
         )
         .then(resp => {
-          this.$store.dispatch("alert/success", {
-            heading: "Password changed",
-            message: resp.data
+          this.notifySuccess("Password changed", resp.data).then(() => {
+            this.$router.replace({ name: "dashboard" });
           });
         })
         .catch(err => {
-          const errorDescriptions = err.response
-            ? err.response.data.map(d => d.description).join(" ")
-            : "No connection";
-          this.$store.dispatch("alert/danger", {
-            heading: "Error changing password",
-            message: errorDescriptions
-          });
+          this.notifyError("Unable to change password", err);
         });
     }
   }

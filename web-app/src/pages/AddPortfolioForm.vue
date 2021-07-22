@@ -31,14 +31,14 @@
 import Page from "../components/Page.vue";
 import AppForm from "../components/Form.vue";
 import FormField from "../components/FormField.vue";
+import pageMixin from "../mixins/page";
 import formMixin from "../mixins/form";
 import Joi from "joi";
 import portfolioService from "../services/portfolioService";
+import validationSchemas from "../utils/validationSchemas";
 
 const schema = Joi.object({
-  name: Joi.string()
-    .required()
-    .label("Portfolio Name")
+  name: validationSchemas.portfolioName
 });
 
 export default {
@@ -48,7 +48,7 @@ export default {
       name: ""
     };
   },
-  mixins: [formMixin],
+  mixins: [pageMixin, formMixin],
   methods: {
     create() {
       if (
@@ -64,23 +64,15 @@ export default {
       portfolioService
         .createPortfolio({ name: this.name, ownerId: userId }, accessToken)
         .then(resp => {
-          this.$store
-            .dispatch("alert/success", {
-              heading: "Portfolio created",
-              message: `New portfolio "${resp.data.name}" has been created successfully.`
-            })
-            .then(() => {
-              this.$router.push({ name: "portfolios" });
-            });
+          this.notifySuccess(
+            "Portfolio created",
+            `New portfolio "${resp.data.name}" has been created successfully.`
+          ).then(() => {
+            this.$router.push({ name: "portfolios" });
+          });
         })
         .catch(err => {
-          const errorDescriptions = err.response
-            ? err.response.data.map(d => d.description).join(" ")
-            : "No connection";
-          this.$store.dispatch("alert/danger", {
-            heading: "Unable to create portfolio",
-            message: errorDescriptions
-          });
+          this.notifyError("Unable to create portfolio", err);
         });
     }
   }

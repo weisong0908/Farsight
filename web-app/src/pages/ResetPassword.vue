@@ -7,7 +7,6 @@
             <form-field
               name="email"
               title="Email Address"
-              :value="email"
               type="email"
               icon="fa-envelope"
               v-model="email"
@@ -33,15 +32,14 @@
 import Page from "../components/Page.vue";
 import AppForm from "../components/Form.vue";
 import FormField from "../components/FormField.vue";
+import pageMixin from "../mixins/page";
 import formMixin from "../mixins/form";
 import Joi from "joi";
 import authService from "../services/authService";
+import validationSchemas from "../utils/validationSchemas";
 
 const schema = Joi.object({
-  email: Joi.string()
-    .email({ tlds: { allow: false } })
-    .required()
-    .label("Email address")
+  email: validationSchemas.email
 });
 
 export default {
@@ -51,12 +49,12 @@ export default {
       email: ""
     };
   },
-  mixins: [formMixin],
+  mixins: [pageMixin, formMixin],
   methods: {
     resetPassword() {
       if (
         !this.validate(schema, {
-          username: this.email
+          email: this.email
         })
       )
         return;
@@ -64,17 +62,10 @@ export default {
       authService
         .resetPassword(this.email)
         .then(resp => {
-          this.$store.dispatch("alert/success", {
-            heading: "Please check your email to continue",
-            message: resp.data
-          });
+          this.notifySuccess("Please check your email to continue", resp.data);
         })
         .catch(err => {
-          const errorDescriptions = err.response.data.map(d => d.description);
-          this.$store.dispatch("alert/danger", {
-            heading: "Error resetting password",
-            message: errorDescriptions.join(" ")
-          });
+          this.notifyError("Unable to reset password", err);
         });
     }
   }

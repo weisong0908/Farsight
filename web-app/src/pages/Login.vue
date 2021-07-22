@@ -15,7 +15,6 @@
             <form-field
               name="password"
               title="Password"
-              :value="password"
               type="password"
               icon="fa-key"
               v-model="password"
@@ -39,17 +38,15 @@
 import Page from "../components/Page.vue";
 import AppForm from "../components/Form.vue";
 import FormField from "../components/FormField.vue";
+import pageMixin from "../mixins/page";
 import formMixin from "../mixins/form";
 import Joi from "joi";
 import authService from "../services/authService";
+import validationSchemas from "../utils/validationSchemas";
 
 const schema = Joi.object({
-  username: Joi.string()
-    .required()
-    .label("Username"),
-  password: Joi.string()
-    .required()
-    .label("Password")
+  username: validationSchemas.username,
+  password: validationSchemas.password
 });
 
 export default {
@@ -60,7 +57,7 @@ export default {
       password: ""
     };
   },
-  mixins: [formMixin],
+  mixins: [pageMixin, formMixin],
   methods: {
     login() {
       if (
@@ -79,21 +76,19 @@ export default {
               data: resp.data
             })
             .then(() => {
-              this.$store.dispatch("alert/success", {
-                heading: "Logged in",
-                message: `Welcome back, ${this.username}.`
-              });
+              this.notifySuccess(
+                "Logged in",
+                `Welcome back, ${this.username}.`
+              );
             })
             .then(() => {
               this.$router.push(this.$route.query.redirectTo || "/");
             });
         })
-        .catch(() => {
+        .catch(err => {
           this.$store.dispatch("auth/logout").then(() => {
-            this.$store.dispatch("alert/danger", {
-              heading: "Unable to log in",
-              message: "Incorrect username or password."
-            });
+            console.log("ERR", err.response);
+            this.notifyError("Unable to log in", err);
           });
         });
     }
