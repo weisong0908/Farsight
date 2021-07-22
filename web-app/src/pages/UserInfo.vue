@@ -2,67 +2,69 @@
   <page>
     <div class="columns">
       <div class="column">
-        <div class="box">
-          <div class="field">
-            <figure class="image is-128x128">
-              <img
-                :src="
-                  profilePicture == undefined
-                    ? defaultProfilePicture
-                    : profilePicturePreview
-                "
-              />
-            </figure>
-            <div class="file has-name">
-              <label class="file-label">
-                <input
-                  class="file-input"
-                  type="file"
-                  name="resume"
-                  @change="uploadProfilePicture"
+        <app-form title="Update User Information">
+          <template v-slot:form-fields>
+            <div class="field">
+              <figure class="image is-128x128">
+                <img
+                  :src="
+                    profilePicture == undefined
+                      ? defaultProfilePicture
+                      : profilePicturePreview
+                  "
                 />
-                <span class="file-cta">
-                  <span class="file-icon">
-                    <i class="fas fa-upload"></i>
+              </figure>
+              <div class="file has-name">
+                <label class="file-label">
+                  <input
+                    class="file-input"
+                    type="file"
+                    name="resume"
+                    @change="uploadProfilePicture"
+                  />
+                  <span class="file-cta">
+                    <span class="file-icon">
+                      <i class="fas fa-upload"></i>
+                    </span>
+                    <span class="file-label">
+                      Choose a file…
+                    </span>
                   </span>
-                  <span class="file-label">
-                    Choose a file…
+                  <span class="file-name">
+                    {{ profilePictureName }}
                   </span>
-                </span>
-                <span class="file-name">
-                  {{ profilePictureName }}
-                </span>
-              </label>
+                </label>
+              </div>
             </div>
-          </div>
-          <form-field
-            name="username"
-            title="Username"
-            v-model="username"
-            type="text"
-            icon="fa-user"
-            :readonly="true"
-          ></form-field>
-          <form-field
-            name="email"
-            title="Email"
-            v-model="email"
-            type="email"
-            icon="fa-envelope"
-            :readonly="true"
-            :errorMessage="
-              email_verified ? '' : 'Email has not been verified yet'
-            "
-          >
-          </form-field>
-          <div class="field is-grouped">
+            <form-field
+              name="username"
+              title="Username"
+              v-model="username"
+              type="text"
+              icon="fa-user"
+              :readonly="true"
+            ></form-field>
+            <form-field
+              name="email"
+              title="Email"
+              v-model="email"
+              type="email"
+              icon="fa-envelope"
+              :readonly="true"
+              :errorMessage="
+                email_verified ? '' : 'Email has not been verified yet'
+              "
+            >
+            </form-field>
+          </template>
+          <template v-slot:form-buttons>
             <div class="control">
               <button class="button is-primary" @click="updateUserInfo">
                 Update
               </button>
             </div>
-          </div>
-        </div>
+          </template>
+        </app-form>
       </div>
       <div class="column"></div>
     </div>
@@ -71,12 +73,14 @@
 
 <script>
 import Page from "../components/Page.vue";
+import AppForm from "../components/Form.vue";
 import FormField from "../components/FormField.vue";
+import formMixin from "../mixins/form";
 import imageConverter from "../utils/imageConverter";
 import authService from "../services/authService";
 
 export default {
-  components: { Page, FormField },
+  components: { Page, AppForm, FormField },
   data() {
     return {
       userId: this.$store.state.auth.user.userId,
@@ -90,6 +94,7 @@ export default {
       defaultProfilePicture: "https://bulma.io/images/placeholders/128x128.png"
     };
   },
+  mixins: [formMixin],
   created() {
     const accessToken = this.$store.state.auth.accessToken;
 

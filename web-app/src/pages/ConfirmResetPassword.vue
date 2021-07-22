@@ -2,32 +2,34 @@
   <page>
     <div class="columns">
       <div class="column">
-        <div class="box">
-          <form-field
-            name="newPassword"
-            title="New Password"
-            icon="fa-lock"
-            type="password"
-            v-model="newPassword"
-            :errorMessage="validationErrors.newPassword"
-          ></form-field>
-          <form-field
-            name="repeatedPassword"
-            title="Confirm Password"
-            :value="repeatedPassword"
-            icon="fa-lock"
-            type="password"
-            v-model="repeatedPassword"
-            :errorMessage="validationErrors.repeatedPassword"
-          ></form-field>
-          <div class="field is-grouped">
+        <app-form title="Confirm Reset Password">
+          <template v-slot:form-fields>
+            <form-field
+              name="newPassword"
+              title="New Password"
+              icon="fa-lock"
+              type="password"
+              v-model="newPassword"
+              :errorMessage="validationErrors.newPassword"
+            ></form-field>
+            <form-field
+              name="repeatedPassword"
+              title="Confirm Password"
+              :value="repeatedPassword"
+              icon="fa-lock"
+              type="password"
+              v-model="repeatedPassword"
+              :errorMessage="validationErrors.repeatedPassword"
+            ></form-field>
+          </template>
+          <template v-slot:form-buttons>
             <div class="control">
               <button class="button is-primary" @click="changePassword">
                 Change Password
               </button>
             </div>
-          </div>
-        </div>
+          </template>
+        </app-form>
       </div>
       <div class="column"></div>
     </div>
@@ -36,7 +38,9 @@
 
 <script>
 import Page from "../components/Page.vue";
+import AppForm from "../components/Form.vue";
 import FormField from "../components/FormField.vue";
+import formMixin from "../mixins/form";
 import Joi from "joi";
 import authService from "../services/authService";
 
@@ -61,20 +65,25 @@ const schema = Joi.object({
 });
 
 export default {
-  components: { Page, FormField },
+  components: { Page, AppForm, FormField },
   data() {
     return {
       userId: this.$route.query.userId,
       token: this.$route.query.token,
       newPassword: "",
-      repeatedPassword: "",
-      validationErrors: {}
+      repeatedPassword: ""
     };
   },
-
+  mixins: [formMixin],
   methods: {
     changePassword() {
-      if (!this.validate()) return;
+      if (
+        !this.validate(schema, {
+          newPassword: this.newPassword,
+          repeatedPassword: this.repeatedPassword
+        })
+      )
+        return;
 
       authService
         .confirmResetPassword({
@@ -96,25 +105,6 @@ export default {
             message: errorDescriptions.join(" ")
           });
         });
-    },
-    validate() {
-      const validationResults = schema.validate({
-        newPassword: this.newPassword,
-        repeatedPassword: this.repeatedPassword
-      });
-      this.validationErrors = {};
-      if (validationResults.error) {
-        for (let item of validationResults.error.details) {
-          const validationError = {};
-          validationError[item.path[0]] = item.message;
-
-          this.validationErrors = {
-            ...this.validationErrors,
-            ...validationError
-          };
-        }
-        return false;
-      } else return true;
     }
   }
 };

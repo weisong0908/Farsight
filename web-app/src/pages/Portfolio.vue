@@ -2,31 +2,33 @@
   <page>
     <div class="columns">
       <div class="column">
-        <div class="box">
-          <form-field
-            name="portfolioId"
-            title="Portfolio ID"
-            type="text"
-            icon="fa-align-left"
-            :value="portfolioId"
-            :readonly="true"
-          ></form-field>
-          <form-field
-            name="portfolioName"
-            title="Portfolio Name"
-            type="text"
-            icon="fa-align-left"
-            v-model="portfolioName"
-            :errorMessage="validationErrors.portfolioName"
-          ></form-field>
-          <div class="field is-grouped">
+        <app-form title="Add New Portfolio">
+          <template v-slot:form-fields>
+            <form-field
+              name="portfolioId"
+              title="Portfolio ID"
+              type="text"
+              icon="fa-align-left"
+              :value="portfolioId"
+              :readonly="true"
+            ></form-field>
+            <form-field
+              name="portfolioName"
+              title="Portfolio Name"
+              type="text"
+              icon="fa-align-left"
+              v-model="portfolioName"
+              :errorMessage="validationErrors.portfolioName"
+            ></form-field>
+          </template>
+          <template v-slot:form-buttons>
             <div class="control">
               <button class="button is-primary" @click="updatePortfolio">
                 Update Portfolio
               </button>
             </div>
-          </div>
-        </div>
+          </template>
+        </app-form>
         <progress
           v-if="!isDataReady"
           class="progress is-small is-primary"
@@ -70,8 +72,10 @@
 
 <script>
 import Page from "../components/Page.vue";
+import AppForm from "../components/Form.vue";
 import FormField from "../components/FormField.vue";
 import Pagination from "../components/Pagination.vue";
+import formMixin from "../mixins/form";
 import portfolioService from "../services/portfolioService";
 import Joi from "joi";
 
@@ -82,7 +86,7 @@ const schema = Joi.object({
 });
 
 export default {
-  components: { Page, FormField, Pagination },
+  components: { Page, AppForm, FormField, Pagination },
   data() {
     return {
       portfolioId: this.$route.params.id,
@@ -90,10 +94,10 @@ export default {
       isDataReady: false,
       currentPageNumber: 1,
       pageSize: 2,
-      holdings: [],
-      validationErrors: {}
+      holdings: []
     };
   },
+  mixins: [formMixin],
   computed: {
     filteredHoldings() {
       return this.holdings.slice(
@@ -113,7 +117,12 @@ export default {
   },
   methods: {
     updatePortfolio() {
-      if (!this.validate()) return;
+      if (
+        !this.validate(schema, {
+          portfolioName: this.portfolioName
+        })
+      )
+        return;
       const accessToken = this.$store.state.auth.accessToken;
       const userId = this.$store.state.auth.user.userId;
       portfolioService
@@ -139,24 +148,6 @@ export default {
     },
     goToPage(pageNumber) {
       this.currentPageNumber = pageNumber;
-    },
-    validate() {
-      const validationResults = schema.validate({
-        portfolioName: this.portfolioName
-      });
-      this.validationErrors = {};
-      if (validationResults.error) {
-        for (let item of validationResults.error.details) {
-          const validationError = {};
-          validationError[item.path[0]] = item.message;
-
-          this.validationErrors = {
-            ...this.validationErrors,
-            ...validationError
-          };
-        }
-        return false;
-      } else return true;
     }
   }
 };

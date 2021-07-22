@@ -2,31 +2,33 @@
   <page>
     <div class="columns">
       <div class="column">
-        <div class="box">
-          <form-field
-            name="username"
-            title="Username"
-            type="text"
-            icon="fa-user"
-            v-model="username"
-            :errorMessage="validationErrors.username"
-          ></form-field>
-          <form-field
-            name="password"
-            title="Password"
-            :value="password"
-            type="password"
-            icon="fa-key"
-            v-model="password"
-            :errorMessage="validationErrors.password"
-          >
-          </form-field>
-          <div class="field is-grouped">
+        <app-form title="Login">
+          <template v-slot:form-fields>
+            <form-field
+              name="username"
+              title="Username"
+              type="text"
+              icon="fa-user"
+              v-model="username"
+              :errorMessage="validationErrors.username"
+            ></form-field>
+            <form-field
+              name="password"
+              title="Password"
+              :value="password"
+              type="password"
+              icon="fa-key"
+              v-model="password"
+              :errorMessage="validationErrors.password"
+            >
+            </form-field>
+          </template>
+          <template v-slot:form-buttons>
             <div class="control">
               <button class="button is-primary" @click="login">Log In</button>
             </div>
-          </div>
-        </div>
+          </template>
+        </app-form>
       </div>
       <div class="column"></div>
     </div>
@@ -35,7 +37,9 @@
 
 <script>
 import Page from "../components/Page.vue";
+import AppForm from "../components/Form.vue";
 import FormField from "../components/FormField.vue";
+import formMixin from "../mixins/form";
 import Joi from "joi";
 import authService from "../services/authService";
 
@@ -49,18 +53,23 @@ const schema = Joi.object({
 });
 
 export default {
-  components: { Page, FormField },
+  components: { Page, AppForm, FormField },
   data() {
     return {
       username: "",
-      password: "",
-      validationErrors: {}
+      password: ""
     };
   },
-
+  mixins: [formMixin],
   methods: {
     login() {
-      if (!this.validate()) return;
+      if (
+        !this.validate(schema, {
+          username: this.username,
+          password: this.password
+        })
+      )
+        return;
       authService
         .login(this.username, this.password)
         .then(resp => {
@@ -71,7 +80,8 @@ export default {
             })
             .then(() => {
               this.$store.dispatch("alert/success", {
-                heading: "Logged in"
+                heading: "Logged in",
+                message: `Welcome back, ${this.username}.`
               });
             })
             .then(() => {
@@ -86,25 +96,6 @@ export default {
             });
           });
         });
-    },
-    validate() {
-      const validationResults = schema.validate({
-        username: this.username,
-        password: this.password
-      });
-      this.validationErrors = {};
-      if (validationResults.error) {
-        for (let item of validationResults.error.details) {
-          const validationError = {};
-          validationError[item.path[0]] = item.message;
-
-          this.validationErrors = {
-            ...this.validationErrors,
-            ...validationError
-          };
-        }
-        return false;
-      } else return true;
     }
   }
 };

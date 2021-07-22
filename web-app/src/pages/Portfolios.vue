@@ -49,9 +49,20 @@ export default {
   created() {
     const accessToken = this.$store.state.auth.accessToken;
 
-    portfolioService.getPortfolios(accessToken).then(resp => {
-      this.portfolios = resp.data;
-    });
+    portfolioService
+      .getPortfolios(accessToken)
+      .then(resp => {
+        this.portfolios = resp.data;
+      })
+      .catch(err => {
+        const errorDescriptions = err.response
+          ? err.response.data.map(d => d.description).join(" ")
+          : "No connection";
+        this.$store.dispatch("alert/danger", {
+          heading: "Unable to retrieve portfolios",
+          message: errorDescriptions
+        });
+      });
   },
   methods: {
     deletePortfolio(portfolio) {

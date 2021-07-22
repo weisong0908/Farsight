@@ -2,25 +2,27 @@
   <page>
     <div class="columns">
       <div class="column">
-        <div class="box">
-          <form-field
-            name="email"
-            title="Email Address"
-            :value="email"
-            type="email"
-            icon="fa-envelope"
-            v-model="email"
-            :errorMessage="validationErrors.email"
-          >
-          </form-field>
-          <div class="field is-grouped">
+        <app-form title="Reset Password">
+          <template v-slot:form-fields>
+            <form-field
+              name="email"
+              title="Email Address"
+              :value="email"
+              type="email"
+              icon="fa-envelope"
+              v-model="email"
+              :errorMessage="validationErrors.email"
+            >
+            </form-field>
+          </template>
+          <template v-slot:form-buttons>
             <div class="control">
               <button class="button is-primary" @click="resetPassword">
                 Reset Password
               </button>
             </div>
-          </div>
-        </div>
+          </template>
+        </app-form>
       </div>
       <div class="column"></div>
     </div>
@@ -29,7 +31,9 @@
 
 <script>
 import Page from "../components/Page.vue";
+import AppForm from "../components/Form.vue";
 import FormField from "../components/FormField.vue";
+import formMixin from "../mixins/form";
 import Joi from "joi";
 import authService from "../services/authService";
 
@@ -41,16 +45,21 @@ const schema = Joi.object({
 });
 
 export default {
-  components: { Page, FormField },
+  components: { Page, AppForm, FormField },
   data() {
     return {
-      email: "",
-      validationErrors: {}
+      email: ""
     };
   },
+  mixins: [formMixin],
   methods: {
     resetPassword() {
-      if (!this.validate()) return;
+      if (
+        !this.validate(schema, {
+          username: this.email
+        })
+      )
+        return;
 
       authService
         .resetPassword(this.email)
@@ -67,24 +76,6 @@ export default {
             message: errorDescriptions.join(" ")
           });
         });
-    },
-    validate() {
-      const validationResults = schema.validate({
-        username: this.email
-      });
-      this.validationErrors = {};
-      if (validationResults.error) {
-        for (let item of validationResults.error.details) {
-          const validationError = {};
-          validationError[item.path[0]] = item.message;
-
-          this.validationErrors = {
-            ...this.validationErrors,
-            ...validationError
-          };
-        }
-        return false;
-      } else return true;
     }
   }
 };

@@ -2,23 +2,25 @@
   <page>
     <div class="columns">
       <div class="column">
-        <div class="box">
-          <form-field
-            name="name"
-            title="Portfolio Name"
-            type="text"
-            icon="fa-align-left"
-            v-model="name"
-            :errorMessage="validationErrors.name"
-          ></form-field>
-          <div class="field is-grouped">
+        <app-form title="New Portfolio">
+          <template v-slot:form-fields>
+            <form-field
+              name="name"
+              title="Portfolio Name"
+              type="text"
+              icon="fa-align-left"
+              v-model="name"
+              :errorMessage="validationErrors.name"
+            ></form-field>
+          </template>
+          <template v-slot:form-buttons>
             <div class="control">
               <button class="button is-primary" @click="create">
                 Create Portfolio
               </button>
             </div>
-          </div>
-        </div>
+          </template>
+        </app-form>
       </div>
       <div class="column"></div>
     </div>
@@ -27,7 +29,9 @@
 
 <script>
 import Page from "../components/Page.vue";
+import AppForm from "../components/Form.vue";
 import FormField from "../components/FormField.vue";
+import formMixin from "../mixins/form";
 import Joi from "joi";
 import portfolioService from "../services/portfolioService";
 
@@ -38,17 +42,21 @@ const schema = Joi.object({
 });
 
 export default {
-  components: { Page, FormField },
+  components: { Page, AppForm, FormField },
   data() {
     return {
-      name: "",
-      validationErrors: {}
+      name: ""
     };
   },
-
+  mixins: [formMixin],
   methods: {
     create() {
-      if (!this.validate()) return;
+      if (
+        !this.validate(schema, {
+          name: this.name
+        })
+      )
+        return;
 
       const accessToken = this.$store.state.auth.accessToken;
       const userId = this.$store.state.auth.user.userId;
@@ -74,24 +82,6 @@ export default {
             message: errorDescriptions
           });
         });
-    },
-    validate() {
-      const validationResults = schema.validate({
-        name: this.name
-      });
-      this.validationErrors = {};
-      if (validationResults.error) {
-        for (let item of validationResults.error.details) {
-          const validationError = {};
-          validationError[item.path[0]] = item.message;
-
-          this.validationErrors = {
-            ...this.validationErrors,
-            ...validationError
-          };
-        }
-        return false;
-      } else return true;
     }
   }
 };
