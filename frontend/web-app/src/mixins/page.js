@@ -1,3 +1,5 @@
+import authService from "../services/authService";
+
 export default {
   data() {
     return {
@@ -26,12 +28,31 @@ export default {
      */
     notifyError(heading, err) {
       const message = err.response
-        ? err.response.data.error_description || err.response.data.title
+        ? err.response.data.error_description ||
+          err.response.data.title ||
+          err.response.statusText
         : "No connection";
       return this.$store.dispatch("alert/danger", {
         heading,
         message
       });
+    },
+    getAccessToken() {
+      const expiresAt = this.$store.state.auth.expiresAt;
+
+      if (expiresAt && expiresAt < Date())
+        return this.$store.state.auth.accessToken;
+
+      authService
+        .refreshAuth(this.$store.state.auth.refreshToken)
+        .then(resp => {
+          this.$store.dispatch("auth/login", {
+            username: this.username,
+            data: resp.data
+          });
+        });
+
+      return this.$store.state.auth.accessToken;
     }
   }
 };

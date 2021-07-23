@@ -22,8 +22,26 @@ export default {
       }
     );
   },
-  isAuth() {
-    return true;
+  /**
+   * Get new access tokens using refresh token
+   * @param {String} refreshToken
+   * @returns {Object} new access and refresh tokens
+   */
+  async refreshAuth(refreshToken) {
+    const params = new URLSearchParams();
+    params.append("grant_type", "refresh_token");
+    params.append("client_id", "webapp");
+    params.append("client_secret", process.env.VUE_APP_CLIENT_SECRET);
+    params.append("refresh_token", refreshToken);
+    return await axios.post(
+      `${process.env.VUE_APP_IDENTITY_SERVICE}/connect/token`,
+      params,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      }
+    );
   },
   async signup(username, password, email) {
     return await axios.post(

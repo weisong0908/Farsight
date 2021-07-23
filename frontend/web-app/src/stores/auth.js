@@ -1,4 +1,5 @@
 import jwt from "../utils/jwt";
+import moment from "moment";
 
 export default {
   state: {
@@ -10,7 +11,7 @@ export default {
     },
     accessToken: "",
     refreshToken: "",
-    expiresIn: ""
+    expiresAt: ""
   },
   mutations: {
     setStatus(state, status) {
@@ -25,8 +26,8 @@ export default {
     setRefreshToken(state, refreshToken) {
       state.refreshToken = refreshToken;
     },
-    setExpiresIn(state, expiresIn) {
-      state.expiresIn = expiresIn;
+    setExpiresAt(state, expiresAt) {
+      state.expiresAt = expiresAt;
     }
   },
   actions: {
@@ -43,14 +44,19 @@ export default {
       });
       commit("setAccessToken", access_token);
       commit("setRefreshToken", refresh_token);
-      commit("setExpiresIn", expires_in);
+      commit(
+        "setExpiresAt",
+        moment(moment.now())
+          .add(expires_in, "s")
+          .toDate()
+      );
     },
     logout({ commit }) {
       commit("setStatus", false);
       commit("setUser", null);
       commit("setAccessToken", "");
       commit("setRefreshToken", "");
-      commit("setExpiresIn", "");
+      commit("setExpiresAt", null);
     }
   }
 };

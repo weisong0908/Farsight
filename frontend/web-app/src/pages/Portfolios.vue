@@ -37,6 +37,7 @@
 
 <script>
 import Page from "../components/Page.vue";
+import pageMixin from "../mixins/page";
 import portfolioService from "../services/portfolioService";
 
 export default {
@@ -46,22 +47,15 @@ export default {
       portfolios: []
     };
   },
+  mixins: [pageMixin],
   created() {
-    const accessToken = this.$store.state.auth.accessToken;
-
     portfolioService
-      .getPortfolios(accessToken)
+      .getPortfolios(this.getAccessToken())
       .then(resp => {
         this.portfolios = resp.data;
       })
       .catch(err => {
-        const errorDescriptions = err.response
-          ? err.response.data.map(d => d.description).join(" ")
-          : "No connection";
-        this.$store.dispatch("alert/danger", {
-          heading: "Unable to retrieve portfolios",
-          message: errorDescriptions
-        });
+        this.notifyError("Unable to retrieve portfolios", err);
       });
   },
   methods: {
