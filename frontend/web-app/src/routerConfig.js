@@ -11,7 +11,7 @@ import AddHoldingForm from "./pages/AddHoldingForm";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ConfirmEmail from "./pages/ConfirmEmail";
-import UserInfo from "./pages/UserInfo";
+import MyAccount from "./pages/MyAccount";
 import ChangePassword from "./pages/ChangePassword";
 import ResetPassword from "./pages/ResetPassword";
 import ConfirmResetPassword from "./pages/ConfirmResetPassword";
@@ -77,10 +77,10 @@ const routerConfig = new VueRouter({
       title: "Confirm Email"
     },
     {
-      name: "userInfo",
-      path: "/userinfo",
-      component: UserInfo,
-      title: "User Information"
+      name: "myAccount",
+      path: "/MyAccount",
+      component: MyAccount,
+      title: "My Account"
     },
     {
       name: "changePassword",

@@ -1,6 +1,25 @@
 <template>
   <page>
     <div class="columns">
+      <div class="column is-one-quarter">
+        <aside class="menu">
+          <p class="menu-label">
+            Account Settings
+          </p>
+          <ul class="menu-list">
+            <li>
+              <router-link class="is-active" to="/myAccount">
+                My Account
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/changePassword">
+                Change Password
+              </router-link>
+            </li>
+          </ul>
+        </aside>
+      </div>
       <div class="column">
         <app-form title="Update User Information">
           <template v-slot:form-fields>
@@ -8,7 +27,7 @@
               <figure class="image is-128x128">
                 <img
                   :src="
-                    profilePicture == undefined
+                    profilePicture == ''
                       ? defaultProfilePicture
                       : profilePicturePreview
                   "
@@ -66,7 +85,6 @@
           </template>
         </app-form>
       </div>
-      <div class="column"></div>
     </div>
   </page>
 </template>

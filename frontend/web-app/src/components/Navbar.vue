@@ -45,44 +45,47 @@
         >
           Holdings
         </router-link>
-
-        <router-link
-          to="/userinfo"
-          class="navbar-item"
-          @click.native="isBurgerMenuActive = false"
-        >
-          User Info
-        </router-link>
-        <router-link
-          to="/changePassword"
-          class="navbar-item"
-          @click.native="isBurgerMenuActive = false"
-        >
-          Change Password
-        </router-link>
       </div>
 
       <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="buttons">
-            <router-link
-              class="button is-primary"
-              :to="{ name: 'signup', query: { redirectTo: this.$route.path } }"
-              @click.native="isBurgerMenuActive = false"
-              ><strong>Sign Up</strong></router-link
-            >
-            <a v-if="isAuth == true" class="button is-warning" @click="logout"
-              >Log Out</a
-            >
-            <router-link
-              v-else
-              class="button is-light"
-              :to="{ name: 'login', query: { redirectTo: this.$route.path } }"
-              @click.native="isBurgerMenuActive = false"
-              >Log In</router-link
-            >
+        <template v-if="isAuth">
+          <div class="navbar-item">
+            <div class="buttons">
+              <router-link
+                class="button is-light"
+                :to="{
+                  name: 'myAccount',
+                  query: { redirectTo: this.$route.path }
+                }"
+                @click.native="isBurgerMenuActive = false"
+                >{{ $store.state.auth.user.username }}</router-link
+              >
+              <a class="button is-primary" @click="logout">Log Out</a>
+            </div>
           </div>
-        </div>
+        </template>
+        <template v-else>
+          <div class="navbar-item">
+            <div class="buttons">
+              <router-link
+                class="button is-primary"
+                :to="{
+                  name: 'signup',
+                  query: { redirectTo: this.$route.path }
+                }"
+                @click.native="isBurgerMenuActive = false"
+                ><strong>Sign Up</strong></router-link
+              >
+
+              <router-link
+                class="button is-light"
+                :to="{ name: 'login', query: { redirectTo: this.$route.path } }"
+                @click.native="isBurgerMenuActive = false"
+                >Log In</router-link
+              >
+            </div>
+          </div>
+        </template>
       </div>
     </div>
   </nav>
