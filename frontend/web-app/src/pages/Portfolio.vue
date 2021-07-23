@@ -32,6 +32,21 @@
       </div>
       <div class="column">
         <p class="subtitle">Holdings</p>
+        <add-holding-modal-form
+          title="Add New Holding"
+          :isActive="isAddHoldingModalFormActive"
+          @close="isAddHoldingModalFormActive = false"
+          @submit="createHolding"
+        >
+        </add-holding-modal-form>
+        <div class="buttons">
+          <button
+            class="button is-primary"
+            @click="isAddHoldingModalFormActive = true"
+          >
+            Add New Holding
+          </button>
+        </div>
         <progress
           v-if="!isDataReady"
           class="progress is-small is-primary"
@@ -76,6 +91,7 @@
 import Page from "../components/Page.vue";
 import AppForm from "../components/Form.vue";
 import FormField from "../components/FormField.vue";
+import AddHoldingModalForm from "../modalForms/AddHolding.vue";
 import Pagination from "../components/Pagination.vue";
 import pageMixin from "../mixins/page";
 import formMixin from "../mixins/form";
@@ -88,14 +104,15 @@ const schema = Joi.object({
 });
 
 export default {
-  components: { Page, AppForm, FormField, Pagination },
+  components: { Page, AppForm, FormField, AddHoldingModalForm, Pagination },
   data() {
     return {
       portfolioId: this.$route.params.id,
       portfolioName: "",
       currentPageNumber: 1,
       pageSize: 2,
-      holdings: []
+      holdings: [],
+      isAddHoldingModalFormActive: false
     };
   },
   mixins: [pageMixin, formMixin],
@@ -144,6 +161,11 @@ export default {
     },
     goToPage(pageNumber) {
       this.currentPageNumber = pageNumber;
+    },
+    createHolding(holding) {
+      this.isAddHoldingModalFormActive = false;
+
+      alert(holding);
     }
   }
 };

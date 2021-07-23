@@ -12,6 +12,8 @@
         :class="errorMessage ? 'input is-danger' : 'input'"
         @input="$emit('input', $event.target.value)"
         :readonly="readonly"
+        :min="min"
+        :step="step"
       />
     </div>
     <p class="help is-danger" v-if="errorMessage">{{ errorMessage }}</p>
@@ -20,6 +22,16 @@
 
 <script>
 export default {
-  props: ["name", "title", "value", "icon", "type", "errorMessage", "readonly"]
+  props: [
+    "name",
+    "title",
+    "value",
+    "icon",
+    "type",
+    "errorMessage",
+    "readonly",
+    "min",
+    "step"
+  ]
 };
 </script>

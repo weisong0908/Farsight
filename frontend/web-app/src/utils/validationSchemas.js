@@ -30,5 +30,17 @@ export default {
     .label("Repeated Password"),
   portfolioName: Joi.string()
     .required()
-    .label("Portfolio name")
+    .label("Portfolio name"),
+  ticker: Joi.string()
+    .required()
+    .label("Ticker"),
+  quantity: Joi.number()
+    .required()
+    .label("Quantity"),
+  fees: Joi.number()
+    .required()
+    .label("Fees"),
+  unitPrice: Joi.number()
+    .required()
+    .label("Unit Price")
 };
