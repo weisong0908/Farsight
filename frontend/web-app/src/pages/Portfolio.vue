@@ -2,33 +2,13 @@
   <page>
     <div class="columns">
       <div class="column">
-        <app-form title="Portfolio Information">
-          <template v-slot:form-fields>
-            <form-field
-              name="portfolioId"
-              title="Portfolio ID"
-              type="text"
-              icon="fa-dot-circle"
-              :value="portfolioId"
-              :readonly="true"
-            ></form-field>
-            <form-field
-              name="portfolioName"
-              title="Portfolio Name"
-              type="text"
-              icon="fa-align-left"
-              v-model="portfolioName"
-              :errorMessage="validationErrors.portfolioName"
-            ></form-field>
-          </template>
-          <template v-slot:form-buttons>
-            <div class="control">
-              <button class="button is-primary" @click="updatePortfolio">
-                Update Portfolio
-              </button>
-            </div>
-          </template>
-        </app-form>
+        <edit-portfolio-form
+          v-if="isDataReady"
+          title="Edit Portfolio"
+          :portfolioId="portfolioId"
+          :portfolioName="portfolioName"
+          @submit="updatePortfolio"
+        ></edit-portfolio-form>
       </div>
       <div class="column">
         <p class="subtitle">Holdings</p>
@@ -89,22 +69,20 @@
 
 <script>
 import Page from "../components/Page.vue";
-import AppForm from "../components/Form.vue";
-import FormField from "../components/FormField.vue";
+import EditPortfolioForm from "../forms/EditPortfolio.vue";
 import AddHoldingModalForm from "../modalForms/AddHolding.vue";
 import Pagination from "../components/Pagination.vue";
 import pageMixin from "../mixins/page";
 import formMixin from "../mixins/form";
 import portfolioService from "../services/portfolioService";
-import validationSchemas from "../utils/validationSchemas";
-import Joi from "joi";
-
-const schema = Joi.object({
-  portfolioName: validationSchemas.portfolioName
-});
 
 export default {
-  components: { Page, AppForm, FormField, AddHoldingModalForm, Pagination },
+  components: {
+    Page,
+    EditPortfolioForm,
+    AddHoldingModalForm,
+    Pagination
+  },
   data() {
     return {
       portfolioId: this.$route.params.id,
@@ -134,25 +112,15 @@ export default {
     });
   },
   methods: {
-    updatePortfolio() {
-      if (
-        !this.validate(schema, {
-          portfolioName: this.portfolioName
-        })
-      )
-        return;
-
-      const accessToken = this.$store.state.auth.accessToken;
+    updatePortfolio(portfolio) {
+      const accessToken = this.getAccessToken();
       const userId = this.$store.state.auth.user.userId;
       portfolioService
-        .updatePortfolio(
-          { id: this.portfolioId, name: this.portfolioName, ownerId: userId },
-          accessToken
-        )
+        .updatePortfolio({ ...portfolio, ownerId: userId }, accessToken)
         .then(() => {
           this.notifySuccess(
             "Portfolio updated",
-            `Portfolio "${this.portfolioName}" has been updated successfully.`
+            `Portfolio "${portfolio.name}" has been updated successfully.`
           );
         })
         .catch(err => {
