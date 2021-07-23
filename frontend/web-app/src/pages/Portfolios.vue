@@ -21,7 +21,7 @@
           <td>
             <button
               class="button is-danger"
-              @click="deletePortfolio(portfolio)"
+              @click="deletePortfolio(portfolio.id)"
             >
               Delete
             </button>
@@ -59,9 +59,20 @@ export default {
       });
   },
   methods: {
-    deletePortfolio(portfolio) {
-      alert(portfolio.name);
-      this.$router.go();
+    deletePortfolio(portfolioId) {
+      portfolioService
+        .deletePortfolio(portfolioId, this.getAccessToken())
+        .then(() => {
+          this.notifySuccess(
+            "Portfolio deleted",
+            `Portfolio ${portfolioId} has been deleted.`
+          ).then(() => {
+            this.$router.go();
+          });
+        })
+        .catch(err => {
+          this.notifyError("Unable to delete portfolio", err);
+        });
     }
   }
 };

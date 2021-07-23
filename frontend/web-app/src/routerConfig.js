@@ -118,7 +118,7 @@ routerConfig.beforeEach((to, from, next) => {
 
   if (
     publicPages.find(p => p == to.name) == undefined &&
-    !store.state.auth.isAuth
+    store.state.auth.isAuth == false
   )
     next({ name: "login" });
   else next();

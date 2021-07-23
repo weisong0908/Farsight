@@ -39,5 +39,15 @@ export default {
         }
       }
     );
+  },
+  async deletePortfolio(portfolioId, accessToken) {
+    return await axios.delete(
+      `${process.env.VUE_APP_BACKEND}/portfolios/${portfolioId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
   }
 };
