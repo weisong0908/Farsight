@@ -29,22 +29,33 @@
         </tr>
       </tbody>
     </table>
-    <router-link class="button is-primary" :to="{ name: 'addPortfolioForm' }"
-      >Create New Portfolio</router-link
+    <add-portfolio-modal-form
+      title="Add New Portfolio"
+      :isActive="isAddPortfolioModalFormActive"
+      @close="isAddPortfolioModalFormActive = false"
+      @submit="createPortfolio"
+    ></add-portfolio-modal-form>
+    <button
+      class="button is-primary"
+      @click="isAddPortfolioModalFormActive = true"
     >
+      Create New Portfolio
+    </button>
   </page>
 </template>
 
 <script>
 import Page from "../components/Page.vue";
+import AddPortfolioModalForm from "../modalForms/AddPortfolio.vue";
 import pageMixin from "../mixins/page";
 import portfolioService from "../services/portfolioService";
 
 export default {
-  components: { Page },
+  components: { Page, AddPortfolioModalForm },
   data() {
     return {
-      portfolios: []
+      portfolios: [],
+      isAddPortfolioModalFormActive: false
     };
   },
   mixins: [pageMixin],
@@ -59,6 +70,25 @@ export default {
       });
   },
   methods: {
+    createPortfolio(portfolio) {
+      this.isAddPortfolioModalFormActive = false;
+      const accessToken = this.getAccessToken();
+      const userId = this.$store.state.auth.user.userId;
+
+      portfolioService
+        .createPortfolio({ ...portfolio, ownerId: userId }, accessToken)
+        .then(resp => {
+          this.notifySuccess(
+            "Portfolio created",
+            `New portfolio "${resp.data.name}" has been created successfully.`
+          ).then(() => {
+            this.$router.go();
+          });
+        })
+        .catch(err => {
+          this.notifyError("Unable to create portfolio", err);
+        });
+    },
     deletePortfolio(portfolioId) {
       portfolioService
         .deletePortfolio(portfolioId, this.getAccessToken())

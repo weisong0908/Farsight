@@ -4,7 +4,6 @@ import store from "./stores/store";
 import Dashboard from "./pages/Dashboard";
 import Portfolios from "./pages/Portfolios";
 import Portfolio from "./pages/Portfolio";
-import AddPortfolioForm from "./pages/AddPortfolioForm";
 import Holdings from "./pages/Holdings";
 import Holding from "./pages/Holding";
 import AddHoldingForm from "./pages/AddHoldingForm";
@@ -32,12 +31,6 @@ const routerConfig = new VueRouter({
       component: Portfolio,
       title: "Portfolio",
       parent: "portfolios"
-    },
-    {
-      name: "addPortfolioForm",
-      path: "/portfolios/new",
-      component: AddPortfolioForm,
-      title: "Create New Portfolio"
     },
     {
       name: "holdings",
