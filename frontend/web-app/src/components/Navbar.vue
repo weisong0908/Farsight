@@ -58,8 +58,12 @@
                   query: { redirectTo: this.$route.path }
                 }"
                 @click.native="isBurgerMenuActive = false"
-                >{{ $store.state.auth.user.username }}</router-link
               >
+                <span class="icon"> <i class="fas fa-user"></i> </span>
+                <span>
+                  {{ $store.state.auth.user.username }}
+                </span>
+              </router-link>
               <a class="button is-primary" @click="logout">Log Out</a>
             </div>
           </div>
