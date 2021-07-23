@@ -1,7 +1,6 @@
 <template>
   <page>
     <p>this is dashboard</p>
-    <p>is auth: {{ isAuth }}</p>
     <div class="columns">
       <div class="column">
         <canvas id="weighting"></canvas>
@@ -19,17 +18,11 @@
 <script>
 import Page from "../components/Page.vue";
 import charting from "../utils/charting";
-import authService from "../services/authService";
 
 export default {
   components: { Page },
   data() {
-    return {
-      isAuth: false
-    };
-  },
-  created() {
-    this.isAuth = authService.isAuth(this.$store.state.auth);
+    return {};
   },
   mounted() {
     charting.plotPie("weighting");

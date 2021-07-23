@@ -23,13 +23,15 @@ const routerConfig = new VueRouter({
       name: "portfolios",
       path: "/portfolios",
       component: Portfolios,
-      title: "Portfolios"
+      title: "Portfolios",
+      parent: "dashboard"
     },
     {
       name: "portfolio",
       path: "/portfolios/:id",
       component: Portfolio,
-      title: "Portfolio"
+      title: "Portfolio",
+      parent: "portfolios"
     },
     {
       name: "addPortfolioForm",
@@ -41,7 +43,8 @@ const routerConfig = new VueRouter({
       name: "holdings",
       path: "/holdings",
       component: Holdings,
-      title: "Holdings"
+      title: "Holdings",
+      parent: "dashboard"
     },
     {
       name: "addNewHolding",

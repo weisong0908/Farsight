@@ -1,6 +1,6 @@
 <template>
   <page>
-    <table class="table is-bordered">
+    <table class="table is-hoverable">
       <thead>
         <tr>
           <th>Portfolio</th>

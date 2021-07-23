@@ -38,8 +38,7 @@ export default {
       });
     },
     getAccessToken() {
-      const expiresAt = this.$store.state.auth.expiresAt;
-
+      const expiresAt = new Date(this.$store.state.auth.expiresAt);
       if (expiresAt && expiresAt < Date())
         return this.$store.state.auth.accessToken;
 

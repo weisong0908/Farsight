@@ -1,5 +1,6 @@
 <template>
   <div class="section">
+    <breadcrumb></breadcrumb>
     <h1 class="title">{{ title }}</h1>
     <alert></alert>
     <slot></slot>
@@ -7,11 +8,13 @@
 </template>
 
 <script>
-import Alert from "../components/Alert";
+import Breadcrumb from "../components/Breadcrumb.vue";
+import Alert from "../components/Alert.vue";
 
 export default {
   components: {
-    Alert
+    Alert,
+    Breadcrumb
   },
   data() {
     return {

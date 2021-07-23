@@ -2,7 +2,7 @@
   <page>
     <div class="columns">
       <div class="column">
-        <app-form title="Add New Portfolio">
+        <app-form title="Portfolio Information">
           <template v-slot:form-fields>
             <form-field
               name="portfolioId"
@@ -29,6 +29,9 @@
             </div>
           </template>
         </app-form>
+      </div>
+      <div class="column">
+        <p class="subtitle">Holdings</p>
         <progress
           v-if="!isDataReady"
           class="progress is-small is-primary"
@@ -65,7 +68,6 @@
           @goToPage="goToPage"
         ></pagination>
       </div>
-      <div class="column"></div>
     </div>
   </page>
 </template>

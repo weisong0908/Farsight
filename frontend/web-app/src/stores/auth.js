@@ -44,12 +44,11 @@ export default {
       });
       commit("setAccessToken", access_token);
       commit("setRefreshToken", refresh_token);
-      commit(
-        "setExpiresAt",
-        moment(moment.now())
-          .add(expires_in, "s")
-          .toDate()
-      );
+      const expiresAt = moment(new Date())
+        .add(expires_in, "s")
+        .toDate()
+        .toString();
+      commit("setExpiresAt", expiresAt);
     },
     logout({ commit }) {
       commit("setStatus", false);
