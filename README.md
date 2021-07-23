@@ -26,7 +26,7 @@ Navigate to each of the directories to start the app:
 
 | Name | Directory | Command to use | URL |
 | --- | --- | --- | --- | --- |
-| web-app | web-app | npm run serve | http://localhost:8080 |  
+| web-app | frontend/web-app | npm run serve | http://localhost:8080 |  
 | Farsight.Backend | backend/Farsight.Backend | dotnet run  | https://localhost:5001 |
 | Farsight.IdentityService | backend/Farsight.IdentityService | dotnet run  | https://localhost:5101 |
 | Farsight.CommonService | backend/Farsight.CommonService | dotnet run  | https://localhost:5201 |
