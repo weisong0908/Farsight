@@ -39,7 +39,8 @@ export default {
     },
     getAccessToken() {
       const expiresAt = new Date(this.$store.state.auth.expiresAt);
-      if (expiresAt && expiresAt < Date())
+      const now = new Date();
+      if (expiresAt && expiresAt > now)
         return this.$store.state.auth.accessToken;
 
       authService

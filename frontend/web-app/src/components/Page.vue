@@ -10,6 +10,7 @@
 <script>
 import Breadcrumb from "../components/Breadcrumb.vue";
 import Alert from "../components/Alert.vue";
+import pageMixin from "../mixins/page";
 
 export default {
   components: {
@@ -21,11 +22,14 @@ export default {
       title: ""
     };
   },
+  mixins: [pageMixin],
   created() {
     this.title = this.$router.options.routes.find(
       r => r.name == this.$route.name
     ).title;
     document.title = process.env.VUE_APP_TITLE + " | " + this.title;
+
+    this.getAccessToken();
   }
 };
 </script>
