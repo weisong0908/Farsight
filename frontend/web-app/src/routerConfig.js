@@ -8,7 +8,7 @@ import Holdings from "./pages/Holdings";
 import Holding from "./pages/Holding";
 import AddHoldingForm from "./pages/AddHoldingForm";
 import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import SignUp from "./pages/SignUp";
 import ConfirmEmail from "./pages/ConfirmEmail";
 import MyAccount from "./pages/MyAccount";
 import ChangePassword from "./pages/ChangePassword";
@@ -55,12 +55,12 @@ const routerConfig = new VueRouter({
       name: "login",
       path: "/login",
       component: Login,
-      title: "Log In"
+      title: "Login"
     },
     {
-      name: "signup",
+      name: "signUp",
       path: "/signup",
-      component: Signup,
+      component: SignUp,
       title: "Sign Up"
     },
     {
@@ -83,9 +83,10 @@ const routerConfig = new VueRouter({
     },
     {
       name: "resetPassword",
-      path: "/resetPassword",
+      path: "/login/resetPassword",
       component: ResetPassword,
-      title: "Reset Password"
+      title: "Reset Password",
+      parent: "login"
     },
     {
       name: "confirmResetPassword",
@@ -106,7 +107,7 @@ routerConfig.beforeEach((to, from, next) => {
   const publicPages = [
     "dashboard",
     "login",
-    "signup",
+    "signUp",
     "confirmEmail",
     "resetPassword",
     "confirmResetPassword"

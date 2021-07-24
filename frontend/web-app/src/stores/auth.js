@@ -32,7 +32,6 @@ export default {
   },
   actions: {
     login({ commit }, payload) {
-      console.log("payload", payload);
       const { access_token, refresh_token, expires_in } = payload.data;
       const { sub, profilePicture } = jwt.decode(access_token);
 

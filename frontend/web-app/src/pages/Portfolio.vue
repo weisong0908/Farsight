@@ -4,7 +4,6 @@
       <div class="column">
         <edit-portfolio-form
           v-if="isDataReady"
-          title="Edit Portfolio"
           :portfolioId="portfolioId"
           :portfolioName="portfolioName"
           @submit="updatePortfolio"
@@ -69,11 +68,10 @@
 
 <script>
 import Page from "../components/Page.vue";
-import EditPortfolioForm from "../forms/EditPortfolio.vue";
+import EditPortfolioForm from "../normalForms/EditPortfolio.vue";
 import AddHoldingModalForm from "../modalForms/AddHolding.vue";
 import Pagination from "../components/Pagination.vue";
 import pageMixin from "../mixins/page";
-import formMixin from "../mixins/form";
 import portfolioService from "../services/portfolioService";
 
 export default {
@@ -93,7 +91,7 @@ export default {
       isAddHoldingModalFormActive: false
     };
   },
-  mixins: [pageMixin, formMixin],
+  mixins: [pageMixin],
   computed: {
     filteredHoldings() {
       return this.holdings.slice(

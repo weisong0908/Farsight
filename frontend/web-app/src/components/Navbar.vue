@@ -74,7 +74,7 @@
               <router-link
                 class="button is-primary"
                 :to="{
-                  name: 'signup',
+                  name: 'signUp',
                   query: { redirectTo: this.$route.path }
                 }"
                 @click.native="isBurgerMenuActive = false"
@@ -83,7 +83,7 @@
 
               <router-link
                 class="button is-light"
-                :to="{ name: 'login', query: { redirectTo: this.$route.path } }"
+                :to="{ name: 'Login', query: { redirectTo: this.$route.path } }"
                 @click.native="isBurgerMenuActive = false"
                 >Log In</router-link
               >

@@ -21,69 +21,14 @@
         </aside>
       </div>
       <div class="column">
-        <app-form title="Update User Information">
-          <template v-slot:form-fields>
-            <div class="field">
-              <figure class="image is-128x128">
-                <img
-                  :src="
-                    profilePicture == ''
-                      ? defaultProfilePicture
-                      : profilePicturePreview
-                  "
-                />
-              </figure>
-              <div class="file has-name">
-                <label class="file-label">
-                  <input
-                    class="file-input"
-                    type="file"
-                    name="resume"
-                    @change="uploadProfilePicture"
-                  />
-                  <span class="file-cta">
-                    <span class="file-icon">
-                      <i class="fas fa-upload"></i>
-                    </span>
-                    <span class="file-label">
-                      Choose a file…
-                    </span>
-                  </span>
-                  <span class="file-name">
-                    {{ profilePictureName }}
-                  </span>
-                </label>
-              </div>
-            </div>
-            <form-field
-              name="username"
-              title="Username"
-              v-model="username"
-              type="text"
-              icon="fa-user"
-              :readonly="true"
-            ></form-field>
-            <form-field
-              name="email"
-              title="Email"
-              v-model="email"
-              type="email"
-              icon="fa-envelope"
-              :readonly="true"
-              :errorMessage="
-                email_verified ? '' : 'Email has not been verified yet'
-              "
-            >
-            </form-field>
-          </template>
-          <template v-slot:form-buttons>
-            <div class="control">
-              <button class="button is-primary" @click="updateUserInfo">
-                Update
-              </button>
-            </div>
-          </template>
-        </app-form>
+        <edit-user-info-form
+          v-if="isDataReady"
+          :username="username"
+          :email="email"
+          :email_verified="email_verified"
+          :profilePicture="profilePicture"
+          @submit="updateUserInfo"
+        ></edit-user-info-form>
       </div>
     </div>
   </page>
@@ -91,69 +36,50 @@
 
 <script>
 import Page from "../components/Page.vue";
-import AppForm from "../components/Form.vue";
-import FormField from "../components/FormField.vue";
-import formMixin from "../mixins/form";
-import imageConverter from "../utils/imageConverter";
+import EditUserInfoForm from "../normalForms/EditUserInfo.vue";
+import pageMixin from "../mixins/page";
 import authService from "../services/authService";
 
 export default {
-  components: { Page, AppForm, FormField },
+  components: { Page, EditUserInfoForm },
   data() {
     return {
+      isDataReady: false,
       userId: this.$store.state.auth.user.userId,
       username: this.$store.state.auth.user.username,
       email: "",
       email_verified: false,
-      name: "",
-      profilePicture: "",
-      profilePictureName: "",
-      profilePicturePreview: "",
-      defaultProfilePicture: "https://bulma.io/images/placeholders/128x128.png"
+      profilePicture: ""
     };
   },
-  mixins: [formMixin],
+  mixins: [pageMixin],
   created() {
     const accessToken = this.$store.state.auth.accessToken;
 
     authService.getUserInfo(accessToken).then(resp => {
+      this.isDataReady = true;
       this.email = resp.data.email;
       this.email_verified = resp.data.email_verified;
-      this.name = resp.data.name;
       this.profilePicture = resp.data.picture;
-      this.profilePicturePreview = "data:image/png;base64," + resp.data.picture;
     });
   },
   methods: {
-    uploadProfilePicture(e) {
-      const file = e.currentTarget.files[0];
-      this.profilePictureName = file.name;
-      this.profilePicturePreview = window.URL.createObjectURL(file);
-
-      imageConverter.imageToBase64(file).then(result => {
-        this.profilePicture = result.split(",")[1];
-      });
-    },
-    updateUserInfo() {
-      const accessToken = this.$store.state.auth.accessToken;
+    updateUserInfo(userInfo) {
+      const accessToken = this.getAccessToken();
 
       authService
         .updateUserInfo(
-          { userId: this.userId, profilePicture: this.profilePicture },
+          { userId: this.userId, profilePicture: userInfo.profilePicture },
           accessToken
         )
-        .then(resp => {
-          this.$store.dispatch("alert/success", {
-            heading: "User info updated",
-            message: resp.data
-          });
+        .then(() => {
+          this.notifySuccess(
+            "User information updated",
+            `User information has been updated successfully.`
+          );
         })
         .catch(err => {
-          const errorDescriptions = err.response.data.map(d => d.description);
-          this.$store.dispatch("alert/danger", {
-            heading: "Error updating user info",
-            message: errorDescriptions.join(" ")
-          });
+          this.notifyError("Unable to update user info", err);
         });
     }
   }

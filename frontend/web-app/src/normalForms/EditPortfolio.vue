@@ -1,6 +1,6 @@
 <template>
   <div class="box">
-    <p class="subtitle">{{ title }}</p>
+    <p class="subtitle">Edit Portfolio</p>
     <form-field
       name="portfolioId"
       title="Portfolio ID"
@@ -39,7 +39,7 @@ const schema = Joi.object({
 });
 
 export default {
-  props: ["title", "portfolioId", "portfolioName"],
+  props: ["portfolioId", "portfolioName"],
   data() {
     return {
       portfolio: {

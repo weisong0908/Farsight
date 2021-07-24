@@ -21,52 +21,10 @@
         </aside>
       </div>
       <div class="column">
-        <app-form title="Change Password">
-          <template v-slot:form-fields>
-            <form-field
-              name="username"
-              title="Username"
-              v-model="username"
-              type="text"
-              icon="fa-user"
-              :readonly="true"
-            ></form-field>
-            <form-field
-              name="currentPassword"
-              title="Current Password"
-              icon="fa-lock"
-              type="password"
-              v-model="currentPassword"
-              :errorMessage="validationErrors.currentPassword"
-            >
-            </form-field>
-            <form-field
-              name="newPassword"
-              title="New Password"
-              icon="fa-lock"
-              type="password"
-              v-model="newPassword"
-              :errorMessage="validationErrors.newPassword"
-            >
-            </form-field>
-            <form-field
-              name="repeatedPassword"
-              title="Confirm Password"
-              icon="fa-lock"
-              type="password"
-              v-model="repeatedPassword"
-              :errorMessage="validationErrors.repeatedPassword"
-            >
-            </form-field>
-          </template>
-          <template v-slot:form-buttons>
-            <div class="control">
-              <button class="button is-primary" @click="changePassword">
-                Change Password
-              </button>
-            </div>
-          </template>
-        </app-form>
+        <change-password-form
+          :username="username"
+          @submit="changePassword"
+        ></change-password-form>
       </div>
     </div>
   </page>
@@ -74,51 +32,29 @@
 
 <script>
 import Page from "../components/Page.vue";
-import AppForm from "../components/Form.vue";
-import FormField from "../components/FormField.vue";
+import ChangePasswordForm from "../normalForms/ChangePassword.vue";
 import pageMixin from "../mixins/page";
-import formMixin from "../mixins/form";
-import Joi from "joi";
 import authService from "../services/authService";
-import validationSchemas from "../utils/validationSchemas";
-
-const schema = Joi.object({
-  currentPassword: validationSchemas.password,
-  newPassword: validationSchemas.newPassword,
-  repeatedPassword: validationSchemas.repeatedPassword
-});
 
 export default {
-  components: { Page, AppForm, FormField },
+  components: { Page, ChangePasswordForm },
   data() {
     return {
       userId: this.$store.state.auth.user.userId,
-      username: this.$store.state.auth.user.username,
-      currentPassword: "",
-      newPassword: "",
-      repeatedPassword: ""
+      username: this.$store.state.auth.user.username
     };
   },
-  mixins: [pageMixin, formMixin],
+  mixins: [pageMixin],
   methods: {
-    changePassword() {
-      if (
-        !this.validate(schema, {
-          currentPassword: this.currentPassword,
-          newPassword: this.newPassword,
-          repeatedPassword: this.repeatedPassword
-        })
-      )
-        return;
-
-      const accessToken = this.$store.state.auth.accessToken;
+    changePassword(credentials) {
+      const accessToken = this.getAccessToken();
 
       authService
         .changePassword(
           {
             userId: this.userId,
-            oldPassword: this.currentPassword,
-            newPassword: this.newPassword
+            oldPassword: credentials.currentPassword,
+            newPassword: credentials.newPassword
           },
           accessToken
         )
