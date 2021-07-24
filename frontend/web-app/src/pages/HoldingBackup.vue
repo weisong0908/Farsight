@@ -1,44 +1,7 @@
 <template>
   <page>
-    <p>Holding ID: {{ holdingId }}</p>
-    <p class="title">{{ ticker }}</p>
-    <p>{{ totalCost }}</p>
-    <p class="subtitle">Trade History</p>
-    <progress
-      v-if="!isDataReady"
-      class="progress is-small is-primary"
-      max="100"
-    ></progress>
-    <table class="table is-hoverable is-fullwidth">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Quantity</th>
-          <th>Unit Price</th>
-          <th>Fees</th>
-          <th>Type</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="trade in trades" :key="trade.id">
-          <td>{{ new Date() }}</td>
-          <td>{{ trade.quantity }}</td>
-          <td>{{ trade.unitPrice }}</td>
-          <td>{{ trade.fees }}</td>
-          <td>{{ trade.tradeType }}</td>
-          <td>
-            <button
-              class="button is-danger is-small"
-              @click="deleteTrade(trade)"
-            >
-              Delete
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+    <p>this is Holding {{ holdingId }}</p>
+    <h1 class="title">{{ ticker }}</h1>
     <h2 class="subtitle">{{ details.name }}</h2>
     <figure class="image is-48x48">
       <img :src="details.logo" />
@@ -76,10 +39,7 @@
 
 <script>
 import Page from "../components/Page.vue";
-import pageMixin from "../mixins/page";
-import holdingService from "../services/holdingService";
 import stockService from "../services/stockService";
-import tradeService from "../services/tradeService";
 import charting from "../utils/charting";
 
 export default {
@@ -88,7 +48,6 @@ export default {
     return {
       holdingId: "",
       ticker: "AAPL",
-      trades: [],
       details: {
         logo: "https://bulma.io/images/placeholders/128x128.png",
         name: "",
@@ -107,22 +66,8 @@ export default {
       chartItem: {}
     };
   },
-  mixins: [pageMixin],
-  computed: {
-    totalCost() {
-      return this.trades
-        .map(t => t.unitPrice * t.quantity + t.fees)
-        .reduce((a, b) => a + b, 0);
-    }
-  },
   created() {
     this.holdingId = this.$route.params.id;
-    const accessToken = this.getAccessToken();
-    holdingService.getHolding(this.holdingId, accessToken).then(resp => {
-      this.ticker = resp.data.ticker;
-      this.trades = resp.data.trades;
-      this.isDataReady = true;
-    });
 
     stockService.getDetails("AAPL").then(resp => {
       this.details.logo = resp.logo;
@@ -153,24 +98,6 @@ export default {
 
       charting.plotPriceTrend("historicalPrice", trend);
     });
-  },
-  methods: {
-    deleteTrade(trade) {
-      const accessToken = this.getAccessToken();
-      tradeService
-        .deleteTrade(trade.id, accessToken)
-        .then(() => {
-          this.notifySuccess(
-            "Trade deleted",
-            `Trade ${trade.id} has been deleted.`
-          ).then(() => {
-            this.$router.go();
-          });
-        })
-        .catch(err => {
-          this.notifyError("Unable to delete trade", err);
-        });
-    }
   }
 };
 </script>

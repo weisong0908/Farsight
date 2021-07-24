@@ -11,6 +11,16 @@ export default {
       }
     );
   },
+  async getHolding(holdingId, accessToken) {
+    return await axios.get(
+      `${process.env.VUE_APP_BACKEND}/holdings/${holdingId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+  },
   async createHolding(payload, accessToken) {
     return await axios.post(
       `${process.env.VUE_APP_BACKEND}/holdings`,

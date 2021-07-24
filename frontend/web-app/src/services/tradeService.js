@@ -7,5 +7,15 @@ export default {
         Authorization: `Bearer ${accessToken}`
       }
     });
+  },
+  async deleteTrade(tradeId, accessToken) {
+    return await axios.delete(
+      `${process.env.VUE_APP_BACKEND}/trades/${tradeId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
   }
 };

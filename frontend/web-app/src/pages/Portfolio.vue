@@ -57,7 +57,7 @@
               <td>
                 <button
                   class="button is-danger is-small"
-                  @click="deleteholding(holding)"
+                  @click="deleteHolding(holding)"
                 >
                   Delete
                 </button>
@@ -174,7 +174,7 @@ export default {
           this.$router.go();
         });
     },
-    deleteholding(holding) {
+    deleteHolding(holding) {
       holdingService
         .deleteHolding(holding.id, this.getAccessToken())
         .then(() => {
