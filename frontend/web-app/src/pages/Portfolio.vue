@@ -15,7 +15,7 @@
           title="Add New Holding"
           :isActive="isAddHoldingModalFormActive"
           @close="isAddHoldingModalFormActive = false"
-          @submit="createHolding"
+          @submit="addHolding"
         >
         </add-holding-modal-form>
         <div class="buttons">
@@ -37,6 +37,7 @@
               <th>Name</th>
               <th>Quantity</th>
               <th>Cost</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -53,6 +54,14 @@
               </td>
               <td>{{ holding.quantity }}</td>
               <td>{{ holding.cost }}</td>
+              <td>
+                <button
+                  class="button is-danger is-small"
+                  @click="deleteholding(holding)"
+                >
+                  Delete
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -73,6 +82,8 @@ import AddHoldingModalForm from "../modalForms/AddHolding.vue";
 import Pagination from "../components/Pagination.vue";
 import pageMixin from "../mixins/page";
 import portfolioService from "../services/portfolioService";
+import holdingService from "../services/holdingService";
+import tradeService from "../services/tradeService";
 
 export default {
   components: {
@@ -101,7 +112,7 @@ export default {
     }
   },
   created() {
-    const accessToken = this.$store.state.auth.accessToken;
+    const accessToken = this.getAccessToken();
 
     portfolioService.getPortfolio(this.portfolioId, accessToken).then(resp => {
       this.isDataReady = true;
@@ -128,10 +139,55 @@ export default {
     goToPage(pageNumber) {
       this.currentPageNumber = pageNumber;
     },
-    createHolding(holding) {
-      this.isAddHoldingModalFormActive = false;
+    addHolding(holding, trade) {
+      const accessToken = this.getAccessToken();
 
-      alert(holding);
+      holdingService
+        .createHolding(
+          {
+            ticker: holding.ticker,
+            portfolioId: this.portfolioId
+          },
+          accessToken
+        )
+        .then(resp =>
+          tradeService.createTrade(
+            {
+              tradeType: "Buy",
+              quantity: trade.quantity,
+              unitPrice: trade.unitPrice,
+              fees: trade.fees,
+              remarks: trade.remarks,
+              holdingId: resp.data.id
+            },
+            accessToken
+          )
+        )
+        .then(resp => {
+          this.notifySuccess("Holding added", resp.data);
+        })
+        .catch(err => {
+          this.notifyError("Unable to add holding", err);
+        })
+        .finally(() => {
+          this.isAddHoldingModalFormActive = false;
+          this.$router.go();
+        });
+    },
+    deleteholding(holding) {
+      holdingService
+        .deleteHolding(holding.id, this.getAccessToken())
+        .then(() => {
+          this.notifySuccess(
+            "Holding deleted",
+            `Holding ${holding.ticker} has been deleted.`
+          ).then(() => {
+            this.$router.go();
+          });
+        })
+        .catch(err => {
+          this.notifyError("Unable to delete holding", err);
+        });
     }
   }
 };

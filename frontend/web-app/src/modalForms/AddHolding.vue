@@ -100,20 +100,28 @@ export default {
   components: { FormField },
   methods: {
     submit() {
-      const holding = {
+      const formData = {
         ticker: this.ticker,
         quantity: this.quantity,
         unitPrice: this.unitPrice,
         fees: this.fees
       };
 
-      if (!this.validate(schema, holding)) return;
+      if (!this.validate(schema, formData)) return;
 
-      this.$emit("submit", {
-        ...holding,
-        date: this.date,
-        remarks: this.remarks
-      });
+      this.$emit(
+        "submit",
+        {
+          ticker: this.ticker
+        },
+        {
+          quantity: this.quantity,
+          unitPrice: this.unitPrice,
+          fees: this.fees,
+          remarks: this.remarks,
+          date: this.date
+        }
+      );
     },
     close() {
       this.ticker = "";

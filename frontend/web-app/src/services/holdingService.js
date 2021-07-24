@@ -11,10 +11,20 @@ export default {
       }
     );
   },
-  async createPortfolio(payload, accessToken) {
+  async createHolding(payload, accessToken) {
     return await axios.post(
-      `${process.env.VUE_APP_BACKEND}/portfolios`,
+      `${process.env.VUE_APP_BACKEND}/holdings`,
       payload,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+  },
+  async deleteHolding(holdingId, accessToken) {
+    return await axios.delete(
+      `${process.env.VUE_APP_BACKEND}/holdings/${holdingId}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`
