@@ -33,6 +33,7 @@ namespace Farsight.Backend.Persistence
         {
             return await _dbContext.Portfolios
                 .Include(p => p.Holdings)
+                .ThenInclude(h => h.Trades)
                 .SingleOrDefaultAsync(p => p.Id == id);
         }
 
