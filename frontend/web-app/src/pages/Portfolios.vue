@@ -20,7 +20,7 @@
           <td>{{ portfolio.holdingCount }}</td>
           <td>
             <button
-              class="button is-danger"
+              class="button is-danger is-small"
               @click="deletePortfolio(portfolio.id)"
             >
               Delete
