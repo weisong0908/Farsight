@@ -30,7 +30,17 @@
             <td>{{ trade.quantity }}</td>
             <td>{{ trade.unitPrice }}</td>
             <td>{{ trade.fees }}</td>
-            <td>{{ trade.tradeType }}</td>
+            <td>
+              <span class="icon-text">
+                <span v-if="trade.tradeType == 'Buy'" class="icon">
+                  <i class="fas fa-caret-left"></i>
+                </span>
+                <span v-else-if="trade.tradeType == 'Sell'" class="icon">
+                  <i class="fas fa-caret-right"></i>
+                </span>
+                <span>{{ trade.tradeType }}</span>
+              </span>
+            </td>
             <td>
               <button
                 class="button is-danger is-small"
@@ -43,8 +53,6 @@
         </tbody>
       </table>
     </template>
-
-    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
     <div>
       <canvas id="historicalPrice"></canvas>
     </div>
@@ -58,7 +66,8 @@ import pageMixin from "../mixins/page";
 import holdingService from "../services/holdingService";
 import stockService from "../services/stockService";
 import tradeService from "../services/tradeService";
-// import charting from "../utils/charting";
+import dateConverter from "../utils/dateConverter";
+import charting from "../utils/charting";
 
 export default {
   components: { Page, StockInfo },
@@ -68,6 +77,7 @@ export default {
       ticker: "",
       trades: [],
       stockInfo: {},
+      historicalPrices: [],
       chartItem: {}
     };
   },
@@ -79,67 +89,79 @@ export default {
         .reduce((a, b) => a + b, 0);
     }
   },
-  created() {
+  async created() {
     this.holdingId = this.$route.params.id;
+
     const accessToken = this.getAccessToken();
-    holdingService
-      .getHolding(this.holdingId, accessToken)
-      .then(resp => {
-        this.ticker = resp.data.ticker;
-        this.trades = resp.data.trades;
-      })
-      .then(() => stockService.getInfo(this.ticker, accessToken))
-      .then(resp => {
-        console.log("resp", resp);
-        this.stockInfo = resp.data;
-        this.isDataReady = true;
+
+    const holdingResp = await holdingService.getHolding(
+      this.holdingId,
+      accessToken
+    );
+
+    this.ticker = holdingResp.data.ticker;
+
+    for (const trade of holdingResp.data.trades) {
+      this.trades.push({
+        date: dateConverter.toString(new Date(trade.date)),
+        quantity: trade.quantity,
+        unitPrice: trade.unitPrice,
+        fees: trade.fees,
+        tradeType: trade.tradeType
       });
+    }
 
-    // stockService.getDetails("AAPL").then(resp => {
-    //   this.details.logo = resp.logo;
-    //   this.details.name = resp.name;
-    //   this.details.sector = resp.sector;
-    //   this.details.industry = resp.industry;
-    //   this.details.description = resp.description;
-    // });
+    const costHistory = [];
+    for (const ch of holdingResp.data.costHistory) {
+      costHistory.push({
+        date: dateConverter.toString(new Date(ch.date)),
+        cost: ch.cost
+      });
+    }
 
-    // stockService.getPreviousPrice("AAPL").then(resp => {
-    //   const result = resp.results[0];
-    //   this.stock.open = result.o;
-    //   this.stock.close = result.c;
-    //   this.stock.high = result.h;
-    //   this.stock.low = result.l;
-    //   this.stock.volume = result.v;
-    // });
-  },
-  mounted() {
-    // stockService.getTrend("AAPL").then(resp => {
-    //   const trend = resp.results.map(r => {
-    //     return {
-    //       value: r.c,
-    //       cost: 100,
-    //       date: new Date(r.t).toDateString()
-    //     };
-    //   });
-    //   charting.plotPriceTrend("historicalPrice", trend);
-    // });
+    const stockInfoResp = await stockService.getInfo(this.ticker, accessToken);
+    this.stockInfo = stockInfoResp.data;
+
+    const stockPerformanceResp = await stockService.getPerformance(
+      this.ticker,
+      dateConverter.toString(new Date(this.trades[0].date)),
+      dateConverter.toString(new Date()),
+      accessToken
+    );
+
+    let cost = 0;
+    for (const stockClosePrice of stockPerformanceResp.data) {
+      const date = dateConverter.toString(new Date(stockClosePrice.date));
+      const index = costHistory.findIndex(ch => ch.date === date);
+      if (index != -1) {
+        cost = costHistory[index].cost;
+      }
+      this.historicalPrices.push({
+        date,
+        closePrice: stockClosePrice.closePrice,
+        cost
+      });
+    }
+
+    this.isDataReady = true;
+
+    charting.plotPriceTrend("historicalPrice", this.historicalPrices);
   },
   methods: {
-    deleteTrade(trade) {
+    async deleteTrade(trade) {
       const accessToken = this.getAccessToken();
-      tradeService
-        .deleteTrade(trade.id, accessToken)
-        .then(() => {
-          this.notifySuccess(
-            "Trade deleted",
-            `Trade ${trade.id} has been deleted.`
-          ).then(() => {
-            this.$router.go();
-          });
-        })
-        .catch(err => {
-          this.notifyError("Unable to delete trade", err);
-        });
+      try {
+        await tradeService.deleteTrade(trade.id, accessToken);
+
+        await this.notifySuccess(
+          "Trade deleted",
+          `Trade ${trade.id} has been deleted.`
+        );
+
+        this.$router.go();
+      } catch (error) {
+        this.notifyError("Unable to delete trade", error);
+      }
     }
   }
 };

@@ -32,7 +32,7 @@ namespace Farsight.Backend.Persistence
         public async Task<Holding> GetHolding(Guid id)
         {
             return await _dbContext.Holdings
-                .Include(h => h.Trades)
+                .Include(h => h.Trades.OrderBy(t => t.Date))
                 .SingleOrDefaultAsync(h => h.Id == id);
         }
 

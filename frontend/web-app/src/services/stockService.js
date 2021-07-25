@@ -11,9 +11,9 @@ export default {
       }
     );
   },
-  async getPerformance(payload, accessToken) {
+  async getPerformance(ticker, from, to, accessToken) {
     return await axios.get(
-      `${process.env.VUE_APP_BACKEND}/stocks/performance/${payload.ticker}?from=${payload.from}&to=${payload.to}`,
+      `${process.env.VUE_APP_BACKEND}/stocks/performance/${ticker}?from=${from}&to=${to}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`

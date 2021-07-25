@@ -36,7 +36,7 @@ namespace Farsight.Backend.Services
             var client = _httpClientFactory.CreateClient("polygon");
             var apiKey = _configuration["polygon:ApiKey"];
 
-            var response = await client.GetAsync($"/v2/aggs/ticker/AAPL/range/1/day/{from}/{to}?adjusted=true&sort=asc&apiKey={apiKey}");
+            var response = await client.GetAsync($"/v2/aggs/ticker/{ticker}/range/1/day/{from}/{to}?adjusted=true&sort=asc&apiKey={apiKey}");
 
             response.EnsureSuccessStatusCode();
 

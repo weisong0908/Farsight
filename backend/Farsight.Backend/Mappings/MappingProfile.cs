@@ -28,12 +28,13 @@ namespace Farsight.Backend.Mappings
                     memberOptions.PreCondition(h => h.Trades.Count > 0);
                     memberOptions.MapFrom(h => h.Trades.GetHoldingCost());
                 });
-            CreateMap<Holding, HoldingDetailed>();
+            CreateMap<Holding, HoldingDetailed>()
+                .ForMember(hd => hd.CostHistory, memberOptions => memberOptions.MapFrom(h => h.Trades.GetHoldingCostHistory()));
             CreateMap<HoldingCreate, Holding>();
             CreateMap<HoldingUpdate, Holding>();
 
             CreateMap<Trade, TradeSimple>()
-                .ForMember(ts => ts.Date, memberOptions => memberOptions.MapFrom(t => t.Date.ToLocalTime()));
+                .ForMember(ts => ts.Date, memberOptions => memberOptions.MapFrom(t => t.Date.ToUniversalTime()));
             CreateMap<TradeCreate, Trade>()
                 .ForMember(t => t.Date, memberOptions => memberOptions.MapFrom(tc => DateTime.Parse(tc.Date).ToUniversalTime()));
             CreateMap<TradeUpdate, Trade>()

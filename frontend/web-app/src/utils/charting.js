@@ -8,15 +8,15 @@ export default {
         labels: trend.map(t => t.date),
         datasets: [
           {
-            label: "Value",
-            data: trend.map(t => t.value * 10),
+            label: "Market Price",
+            data: trend.map(t => t.closePrice),
             fill: "start",
             borderColor: "hsla(171, 100%, 41%, 0.5)",
             backgroundColor: "hsla(171, 100%, 41%, 0.5)"
           },
           {
             label: "Cost",
-            data: trend.map(t => t.cost * 10),
+            data: trend.map(t => t.cost),
             fill: "start",
             borderColor: "hsla(171, 100%, 41%, 1)",
             backgroundColor: "hsla(171, 100%, 41%, 1)"
