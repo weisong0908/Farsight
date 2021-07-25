@@ -1,6 +1,27 @@
-// import axios from "axios";
+import axios from "axios";
 
 export default {
+  async getInfo(ticker, accessToken) {
+    return await axios.get(
+      `${process.env.VUE_APP_BACKEND}/stocks/info/${ticker}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+  },
+  async getPerformance(payload, accessToken) {
+    return await axios.get(
+      `${process.env.VUE_APP_BACKEND}/stocks/performance/${payload.ticker}?from=${payload.from}&to=${payload.to}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+  },
+
   async getDetails(ticker) {
     // const resp = await axios.get(
     //   `https://api.polygon.io/v1/meta/symbols/${ticker}/company?apiKey=${process.env.VUE_APP_POLYGON_APIKEY}`
