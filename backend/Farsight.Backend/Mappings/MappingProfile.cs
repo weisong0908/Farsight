@@ -3,7 +3,7 @@ using System.Linq;
 using AutoMapper;
 using Farsight.Backend.Models;
 using Farsight.Backend.Models.DTOs;
-using Farsight.Backend.Helpers;
+using Farsight.Backend.Extensions;
 
 namespace Farsight.Backend.Mappings
 {
@@ -39,9 +39,11 @@ namespace Farsight.Backend.Mappings
             CreateMap<TradeUpdate, Trade>()
                 .ForMember(t => t.Date, memberOptions => memberOptions.MapFrom(tu => DateTime.Parse(tu.Date).ToUniversalTime()));
 
-            CreateMap<AlphavantageWeeklyAdjustedResponseTimeSeriesElement, StockClosePrice>()
-                .ForMember(scp => scp.ClosePrice, memberOptions => memberOptions.MapFrom(awartse => decimal.Parse(awartse.ClosePrice)))
-                .ForMember(scp => scp.WeekStartDate, memberOptions => memberOptions.MapFrom(awartse => DateTime.Parse(awartse.Date).AddDays(-7)));
+            CreateMap<PolygonAggregateBar, StockClosePrice>()
+                .ForMember(scp => scp.ClosePrice, memberOptions => memberOptions.MapFrom(pab => pab.Close))
+                .ForMember(scp => scp.Date, memberOptions => memberOptions.MapFrom(pab => pab.Timestamp.GetDateTimeFromUnixMsec()));
+
+            CreateMap<PolygonTickerDetails, StockInfo>();
         }
     }
 }

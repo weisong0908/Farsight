@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Farsight.Backend.Mappings;
 using Farsight.Backend.Persistence;
 using Farsight.Backend.Requirements;
@@ -10,13 +7,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace Farsight.Backend
@@ -79,9 +73,9 @@ namespace Farsight.Backend
 
             services.AddSingleton<IAuthorizationHandler, HasPermissionHandler>();
 
-            services.AddHttpClient("stock service", configureClient =>
+            services.AddHttpClient("polygon", configureClient =>
             {
-                configureClient.BaseAddress = new Uri(Configuration["StockService:Url"]);
+                configureClient.BaseAddress = new Uri(Configuration["Polygon:Url"]);
             });
 
             // services.AddHostedService<CustomService>();

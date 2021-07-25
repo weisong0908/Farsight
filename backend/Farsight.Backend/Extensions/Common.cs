@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Farsight.Backend.Models;
 
-namespace Farsight.Backend.Helpers
+namespace Farsight.Backend.Extensions
 {
-    public static class Calculator
+    public static class Common
     {
         public static decimal GetHoldingCost(this IEnumerable<Trade> trades)
         {
@@ -25,6 +25,11 @@ namespace Farsight.Backend.Helpers
             var sellTrades = trades.Where(t => t.TradeType == TradeType.Sell);
 
             return buyTrades.Sum(t => t.Quantity) - sellTrades.Sum(t => t.Quantity);
+        }
+
+        public static DateTime GetDateTimeFromUnixMsec(this long unixMsec)
+        {
+            return DateTimeOffset.FromUnixTimeMilliseconds(unixMsec).LocalDateTime;
         }
     }
 }

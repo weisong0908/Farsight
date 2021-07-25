@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Farsight.Backend.Models.DTOs;
@@ -24,15 +23,24 @@ namespace Farsight.Backend.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{ticker}")]
-        public async Task<IActionResult> GetHistoricalClosePrice(string ticker, [FromQuery] string from)
+        [HttpGet("info/{ticker}")]
+        public async Task<IActionResult> GetInfo(string ticker)
         {
-            var fromDate = string.IsNullOrWhiteSpace(from) ? DateTime.Parse("2000-01-01") : DateTime.Parse(from);
-            var result = await _stockService.GetHistoricalClosePrice(ticker);
+            var polygonTickerDetails = await _stockService.GetTickerDetails(ticker);
 
-            var stockClosePrices = _mapper.Map<IList<StockClosePrice>>(result.TimeSeries)
-                .Where(scp => scp.WeekStartDate > fromDate)
-                .OrderBy(scp => scp.WeekStartDate);
+            var stockInfo = _mapper.Map<StockInfo>(polygonTickerDetails);
+
+            return Ok(stockInfo);
+        }
+
+        [HttpGet("performance/{ticker}")]
+        public async Task<IActionResult> GetHistoricalClosePrice(string ticker, [FromQuery] string from, [FromQuery] string to)
+        {
+            var fromDate = string.IsNullOrWhiteSpace(from) ? "2000-01-01" : from;
+            var toDate = string.IsNullOrWhiteSpace(to) ? DateTime.Today.ToString("yyyy-MMM-dd") : to;
+            var polygonResponse = await _stockService.GetDailyClosePrice(ticker, fromDate, toDate);
+
+            var stockClosePrices = _mapper.Map<IList<StockClosePrice>>(polygonResponse.Results);
 
             return Ok(stockClosePrices);
         }

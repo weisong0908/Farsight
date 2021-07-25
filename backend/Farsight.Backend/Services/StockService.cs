@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -19,31 +17,32 @@ namespace Farsight.Backend.Services
             _configuration = configuration;
         }
 
-        public async Task<AlphavantageWeeklyAdjustedResponse> GetHistoricalClosePrice(string ticker)
+        public async Task<PolygonTickerDetails> GetTickerDetails(string ticker)
         {
-            var client = _httpClientFactory.CreateClient("stock service");
-            var apiKey = _configuration["StockService:ApiKey"];
+            var client = _httpClientFactory.CreateClient("polygon");
+            var apiKey = _configuration["polygon:ApiKey"];
 
-            var response = await client.GetAsync($"/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol={ticker}&apikey={apiKey}");
+            var response = await client.GetAsync($"/v1/meta/symbols/{ticker}/company?apiKey={apiKey}");
 
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
 
-            var responseData = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(content);
+            return JsonSerializer.Deserialize<PolygonTickerDetails>(content);
+        }
 
-            var result = new AlphavantageWeeklyAdjustedResponse();
-            result.MetaData = JsonSerializer.Deserialize<AlphavantageWeeklyAdjustedResponseMetaData>(responseData["Meta Data"].GetRawText());
+        public async Task<PolygonAggregatesResponse> GetDailyClosePrice(string ticker, string from, string to)
+        {
+            var client = _httpClientFactory.CreateClient("polygon");
+            var apiKey = _configuration["polygon:ApiKey"];
 
-            var timeSeries = responseData["Weekly Adjusted Time Series"].EnumerateObject();
-            foreach (var timeSeriesElement in timeSeries)
-            {
-                var e = JsonSerializer.Deserialize<AlphavantageWeeklyAdjustedResponseTimeSeriesElement>(timeSeriesElement.Value.GetRawText());
-                e.Date = timeSeriesElement.Name;
-                result.TimeSeries.Add(e);
-            }
+            var response = await client.GetAsync($"/v2/aggs/ticker/AAPL/range/1/day/{from}/{to}?adjusted=true&sort=asc&apiKey={apiKey}");
 
-            return result;
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            return JsonSerializer.Deserialize<PolygonAggregatesResponse>(content);
         }
     }
 }
