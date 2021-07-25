@@ -64,7 +64,8 @@ namespace Farsight.Backend.Persistence
                     Quantity = 10,
                     UnitPrice = 100,
                     Fees = 0,
-                    HoldingId = new Guid("6865a7fa-6866-4516-9002-53cc8386991e")
+                    HoldingId = new Guid("6865a7fa-6866-4516-9002-53cc8386991e"),
+                    Date = DateTime.Now
                 },
                  new Trade()
                 {
@@ -73,7 +74,8 @@ namespace Farsight.Backend.Persistence
                     Quantity = 6,
                     UnitPrice = 250,
                     Fees = 1,
-                    HoldingId = new Guid("f5f1e765-a3bb-44bb-89b9-52ab8eab9db4")
+                    HoldingId = new Guid("f5f1e765-a3bb-44bb-89b9-52ab8eab9db4"),
+                    Date = DateTime.UtcNow
                 }
             };
 

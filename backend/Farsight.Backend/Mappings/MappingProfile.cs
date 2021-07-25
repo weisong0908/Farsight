@@ -32,9 +32,12 @@ namespace Farsight.Backend.Mappings
             CreateMap<HoldingCreate, Holding>();
             CreateMap<HoldingUpdate, Holding>();
 
-            CreateMap<Trade, TradeSimple>();
-            CreateMap<TradeCreate, Trade>();
-            CreateMap<TradeUpdate, Trade>();
+            CreateMap<Trade, TradeSimple>()
+                .ForMember(ts => ts.Date, memberOptions => memberOptions.MapFrom(t => t.Date.ToLocalTime()));
+            CreateMap<TradeCreate, Trade>()
+                .ForMember(t => t.Date, memberOptions => memberOptions.MapFrom(tc => DateTime.Parse(tc.Date).ToUniversalTime()));
+            CreateMap<TradeUpdate, Trade>()
+                .ForMember(t => t.Date, memberOptions => memberOptions.MapFrom(tu => DateTime.Parse(tu.Date).ToUniversalTime()));
 
             CreateMap<AlphavantageWeeklyAdjustedResponseTimeSeriesElement, StockClosePrice>()
                 .ForMember(scp => scp.ClosePrice, memberOptions => memberOptions.MapFrom(awartse => decimal.Parse(awartse.ClosePrice)))

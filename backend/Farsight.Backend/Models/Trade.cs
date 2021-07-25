@@ -10,6 +10,7 @@ namespace Farsight.Backend.Models
         public decimal UnitPrice { get; set; }
         public decimal Fees { get; set; }
         public string Remarks { get; set; }
+        public DateTime Date { get; set; }
         public Holding Holding { get; set; }
         public Guid HoldingId { get; set; }
     }

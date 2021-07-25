@@ -158,6 +158,7 @@ export default {
               unitPrice: trade.unitPrice,
               fees: trade.fees,
               remarks: trade.remarks,
+              date: trade.date,
               holdingId: resp.data.id
             },
             accessToken

@@ -27,6 +27,7 @@
           title="Quantity"
           type="number"
           icon="fa-calculator"
+          min="1"
           v-model="quantity"
           :errorMessage="validationErrors.quantity"
         ></form-field>
@@ -90,7 +91,7 @@ export default {
     return {
       ticker: "",
       date: dateConverter.toString(new Date()),
-      quantity: 0,
+      quantity: 1,
       unitPrice: 0,
       fees: 0,
       remarks: ""
@@ -126,7 +127,7 @@ export default {
     close() {
       this.ticker = "";
       this.date = dateConverter.toString(new Date());
-      this.quantity = 0;
+      this.quantity = 1;
       this.unitPrice = 0;
       this.fees = 0;
       this.remarks = "";

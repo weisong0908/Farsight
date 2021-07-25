@@ -22,7 +22,7 @@
       </thead>
       <tbody>
         <tr v-for="trade in trades" :key="trade.id">
-          <td>{{ new Date() }}</td>
+          <td>{{ trade.date }}</td>
           <td>{{ trade.quantity }}</td>
           <td>{{ trade.unitPrice }}</td>
           <td>{{ trade.fees }}</td>

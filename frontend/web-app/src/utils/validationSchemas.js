@@ -36,6 +36,7 @@ export default {
     .label("Ticker"),
   quantity: Joi.number()
     .required()
+    .min(1)
     .label("Quantity"),
   fees: Joi.number()
     .required()
