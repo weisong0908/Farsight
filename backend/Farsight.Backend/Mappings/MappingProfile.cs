@@ -34,15 +34,15 @@ namespace Farsight.Backend.Mappings
             CreateMap<HoldingUpdate, Holding>();
 
             CreateMap<Trade, TradeSimple>()
-                .ForMember(ts => ts.Date, memberOptions => memberOptions.MapFrom(t => t.Date.ToUniversalTime()));
+                .ForMember(ts => ts.Date, memberOptions => memberOptions.MapFrom(t => t.Date.GetDateString()));
             CreateMap<TradeCreate, Trade>()
-                .ForMember(t => t.Date, memberOptions => memberOptions.MapFrom(tc => DateTime.Parse(tc.Date).ToUniversalTime()));
+                .ForMember(t => t.Date, memberOptions => memberOptions.MapFrom(tc => tc.Date.FromNewYorkThenToUtcDateTime()));
             CreateMap<TradeUpdate, Trade>()
-                .ForMember(t => t.Date, memberOptions => memberOptions.MapFrom(tu => DateTime.Parse(tu.Date).ToUniversalTime()));
+                .ForMember(t => t.Date, memberOptions => memberOptions.MapFrom(tu => tu.Date.FromNewYorkThenToUtcDateTime()));
 
             CreateMap<PolygonAggregateBar, StockClosePrice>()
                 .ForMember(scp => scp.ClosePrice, memberOptions => memberOptions.MapFrom(pab => pab.Close))
-                .ForMember(scp => scp.Date, memberOptions => memberOptions.MapFrom(pab => pab.Timestamp.GetDateTimeFromUnixMsec()));
+                .ForMember(scp => scp.Date, memberOptions => memberOptions.MapFrom(pab => pab.Timestamp.GetDateString()));
 
             CreateMap<PolygonTickerDetails, StockInfo>();
         }

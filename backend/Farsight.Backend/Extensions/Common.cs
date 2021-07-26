@@ -50,15 +50,35 @@ namespace Farsight.Backend.Extensions
 
                 var cost = investedAmount / quantityRemaining;
 
-                costHistory.Add(new HoldingCost(trade.Date, cost));
+                costHistory.Add(new HoldingCost(trade.Date.GetDateString(), cost));
             }
 
             return costHistory;
         }
 
-        public static DateTime GetDateTimeFromUnixMsec(this long unixMsec)
+        public static string GetDateString(this long unixMsec)
         {
-            return DateTimeOffset.FromUnixTimeMilliseconds(unixMsec).UtcDateTime;
+            var utcDateTime = DateTimeOffset
+                .FromUnixTimeMilliseconds(unixMsec)
+                .UtcDateTime;
+
+            return TimeZoneInfo
+                .ConvertTimeFromUtc(utcDateTime, TimeZoneInfo.FindSystemTimeZoneById("America/New_York"))
+                .ToString("yyyy-MM-dd");
+        }
+
+        public static string GetDateString(this DateTime utcDateTime)
+        {
+            return TimeZoneInfo
+                .ConvertTimeFromUtc(utcDateTime, TimeZoneInfo.FindSystemTimeZoneById("America/New_York"))
+                .ToString("yyyy-MM-dd");
+        }
+
+        public static DateTime FromNewYorkThenToUtcDateTime(this string dateString)
+        {
+            var dateTime = DateTime.Parse(dateString);
+            return TimeZoneInfo
+                .ConvertTime(dateTime, TimeZoneInfo.FindSystemTimeZoneById("America/New_York"), TimeZoneInfo.Utc);
         }
     }
 }

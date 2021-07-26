@@ -14,10 +14,10 @@ namespace Farsight.Backend.Models.DTOs
 
     public class HoldingCost
     {
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         public decimal Cost { get; set; }
 
-        public HoldingCost(DateTime date, decimal cost)
+        public HoldingCost(string date, decimal cost)
         {
             Date = date;
             Cost = cost;
