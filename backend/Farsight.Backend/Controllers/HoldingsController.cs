@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -61,6 +62,12 @@ namespace Farsight.Backend.Controllers
             var ownerId = new Guid(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             if (!await _portfolioRepository.IsOwner(holdingCreate.PortfolioId, ownerId))
                 return BadRequest();
+
+            var existingHolding = (await _holdingRepository.GetHoldings(holdingCreate.PortfolioId))
+                .SingleOrDefault(h => h.Ticker == holdingCreate.Ticker);
+
+            if (existingHolding != null)
+                return RedirectToAction(nameof(GetHolding), new { Id = existingHolding.Id });
 
             var holding = _mapper.Map<Holding>(holdingCreate);
 
