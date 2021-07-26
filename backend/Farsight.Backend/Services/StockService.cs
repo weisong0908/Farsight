@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Farsight.Backend.Extensions;
 using Farsight.Backend.Models.DTOs;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 
 namespace Farsight.Backend.Services
@@ -13,25 +14,30 @@ namespace Farsight.Backend.Services
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
+        private readonly IMemoryCache _memoryCache;
 
-        public StockService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public StockService(IHttpClientFactory httpClientFactory, IConfiguration configuration, IMemoryCache memoryCache)
         {
             _httpClientFactory = httpClientFactory;
             _configuration = configuration;
+            _memoryCache = memoryCache;
         }
 
         public async Task<IList<PolygonTicker>> GetTickers()
         {
+            List<PolygonTicker> polygonTickers;
+
+            if (_memoryCache.TryGetValue<List<PolygonTicker>>("tickers.all", out polygonTickers))
+                return polygonTickers;
+
             var client = _httpClientFactory.CreateClient("polygon");
             var apiKey = _configuration["polygon:ApiKey"];
 
             var response = await client.GetAsync($"/v3/reference/tickers?limit=1000&market=stocks&apiKey={apiKey}");
             response.EnsureSuccessStatusCode();
 
-            var polygonTickers = new List<PolygonTicker>();
-
             var polygonTickersResponse = JsonSerializer.Deserialize<PolygonTickersResponse>(await response.Content.ReadAsStringAsync());
-            polygonTickers.AddRange(polygonTickersResponse.Results);
+            polygonTickers = polygonTickersResponse.Results.ToList();
 
             while (!string.IsNullOrWhiteSpace(polygonTickersResponse.NextUrl))
             {
@@ -40,6 +46,10 @@ namespace Farsight.Backend.Services
                 polygonTickersResponse = JsonSerializer.Deserialize<PolygonTickersResponse>(await response.Content.ReadAsStringAsync());
                 polygonTickers.AddRange(polygonTickersResponse.Results);
             }
+
+            polygonTickers = polygonTickers.DistinctBy(pt => pt.Ticker).ToList();
+
+            _memoryCache.Set<List<PolygonTicker>>("tickers.all", polygonTickers);
 
             return polygonTickers.DistinctBy(pt => pt.Ticker).ToList();
         }

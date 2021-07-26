@@ -78,6 +78,8 @@ namespace Farsight.Backend
                 configureClient.BaseAddress = new Uri(Configuration["Polygon:Url"]);
             });
 
+            services.AddMemoryCache();
+
             // services.AddHostedService<CustomService>();
         }
 
