@@ -13,6 +13,19 @@
       ></stock-info>
       <br />
       <p class="subtitle">Trade History</p>
+      <add-trade-modal-form
+        :isActive="isAddTradeModalFormActive"
+        @close="isAddTradeModalFormActive = false"
+        @submit="addTrade"
+      ></add-trade-modal-form>
+      <div class="buttons">
+        <button
+          class="button is-primary"
+          @click="isAddTradeModalFormActive = true"
+        >
+          Add New Trade
+        </button>
+      </div>
       <table class="table is-hoverable is-fullwidth">
         <thead>
           <tr>
@@ -43,7 +56,10 @@
             </td>
             <td>
               <div class="buttons">
-                <button class="button is-small" @click="editTrade(trade)">
+                <button
+                  class="button is-small"
+                  @click="updateEditTradeModalForm(trade)"
+                >
                   Edit
                 </button>
                 <button
@@ -73,6 +89,7 @@
 <script>
 import Page from "../components/Page.vue";
 import StockInfo from "../components/StockInfo.vue";
+import AddTradeModalForm from "../modalForms/AddTrade.vue";
 import EditTradeModalForm from "../modalForms/EditTrade.vue";
 import pageMixin from "../mixins/page";
 import holdingService from "../services/holdingService";
@@ -82,7 +99,7 @@ import dateConverter from "../utils/dateConverter";
 import charting from "../utils/charting";
 
 export default {
-  components: { Page, StockInfo, EditTradeModalForm },
+  components: { Page, StockInfo, AddTradeModalForm, EditTradeModalForm },
   data() {
     return {
       holdingId: "",
@@ -92,7 +109,8 @@ export default {
       historicalPrices: [],
       chartItem: {},
       isEditTradeModalFormActive: false,
-      selectedTrade: {}
+      selectedTrade: {},
+      isAddTradeModalFormActive: false
     };
   },
   mixins: [pageMixin],
@@ -163,21 +181,41 @@ export default {
     charting.plotPriceTrend("historicalPrice", this.historicalPrices);
   },
   methods: {
-    editTrade(trade) {
+    updateEditTradeModalForm(trade) {
       this.selectedTrade = trade;
       this.isEditTradeModalFormActive = true;
+    },
+    async addTrade(trade) {
+      const accessToken = this.getAccessToken();
+
+      try {
+        await tradeService.createTrade(
+          {
+            ...trade,
+            holdingId: this.holdingId
+          },
+          accessToken
+        );
+        await this.notifySuccess("Trade added", `Trade has been added.`);
+      } catch (error) {
+        this.notifyError("Unable to add trade", error);
+      }
+
+      this.$router.go();
+      this.isAddTradeModalFormActive = false;
     },
     async updateTrade(trade) {
       const accessToken = this.getAccessToken();
 
-      const payload = {
-        id: this.selectedTrade.id,
-        ...trade,
-        holdingId: this.holdingId
-      };
-
       try {
-        await tradeService.updateTrade(payload, accessToken);
+        await tradeService.updateTrade(
+          {
+            id: this.selectedTrade.id,
+            ...trade,
+            holdingId: this.holdingId
+          },
+          accessToken
+        );
 
         await this.notifySuccess(
           "Trade updated",
