@@ -7,14 +7,12 @@
         <button class="delete" aria-label="close" @click="close"></button>
       </header>
       <section class="modal-card-body">
-        <form-field
-          name="ticker"
+        <search-bar
           title="Ticker"
-          type="text"
-          icon="fa-align-left"
-          v-model="ticker"
+          :suggestions="suggestions"
           :errorMessage="validationErrors.ticker"
-        ></form-field>
+          v-model="ticker"
+        ></search-bar>
         <form-field
           name="date"
           title="Date"
@@ -73,6 +71,8 @@
 
 <script>
 import FormField from "../components/FormField.vue";
+import SearchBar from "../components/SearchBar.vue";
+import stockService from "../services/stockService";
 import dateConverter from "../utils/dateConverter";
 import formMixin from "../mixins/form";
 import Joi from "joi";
@@ -94,11 +94,21 @@ export default {
       quantity: 1,
       unitPrice: 0,
       fees: 0,
-      remarks: ""
+      remarks: "",
+      suggestions: []
     };
   },
   mixins: [formMixin],
-  components: { FormField },
+  components: { FormField, SearchBar },
+  async created() {
+    const tickers = (await stockService.getStocks()).data;
+    for (const ticker of tickers) {
+      this.suggestions.push({
+        value: ticker.ticker,
+        description: ticker.name
+      });
+    }
+  },
   methods: {
     submit() {
       const formData = {

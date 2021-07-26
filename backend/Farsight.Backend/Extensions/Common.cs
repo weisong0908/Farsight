@@ -80,5 +80,17 @@ namespace Farsight.Backend.Extensions
             return TimeZoneInfo
                 .ConvertTime(dateTime, TimeZoneInfo.FindSystemTimeZoneById("America/New_York"), TimeZoneInfo.Utc);
         }
+
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            HashSet<TKey> seenKeys = new HashSet<TKey>();
+            foreach (TSource element in source)
+            {
+                if (seenKeys.Add(keySelector(element)))
+                {
+                    yield return element;
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,27 @@
 import axios from "axios";
 
 export default {
+  async getStocks() {
+    return await axios.get(`${process.env.VUE_APP_BACKEND}/stocks`);
+    // return new Promise(resolve => {
+    //   resolve({
+    //     data: [
+    //       {
+    //         ticker: "A",
+    //         name: "Agilent Technologies Inc."
+    //       },
+    //       {
+    //         ticker: "AA",
+    //         name: "Alcoa Corporation"
+    //       },
+    //       {
+    //         ticker: "AAA",
+    //         name: "AAF First Priority CLO Bond ETF"
+    //       }
+    //     ]
+    //   });
+    // });
+  },
   async getInfo(ticker, accessToken) {
     return await axios.get(
       `${process.env.VUE_APP_BACKEND}/stocks/info/${ticker}`,

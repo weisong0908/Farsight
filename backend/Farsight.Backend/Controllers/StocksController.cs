@@ -23,6 +23,15 @@ namespace Farsight.Backend.Controllers
             _mapper = mapper;
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetStocks()
+        {
+            var polygonTickers = await _stockService.GetTickers();
+
+            return Ok(_mapper.Map<IList<Stock>>(polygonTickers));
+        }
+
         [HttpGet("info/{ticker}")]
         public async Task<IActionResult> GetInfo(string ticker)
         {

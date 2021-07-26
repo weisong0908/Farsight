@@ -45,6 +45,7 @@ namespace Farsight.Backend.Mappings
                 .ForMember(scp => scp.Date, memberOptions => memberOptions.MapFrom(pab => pab.Timestamp.GetDateString()));
 
             CreateMap<PolygonTickerDetails, StockInfo>();
+            CreateMap<PolygonTicker, Stock>();
         }
     }
 }
