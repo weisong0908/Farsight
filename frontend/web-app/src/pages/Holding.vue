@@ -42,16 +42,27 @@
               </span>
             </td>
             <td>
-              <button
-                class="button is-danger is-small"
-                @click="deleteTrade(trade)"
-              >
-                Delete
-              </button>
+              <div class="buttons">
+                <button class="button is-small" @click="editTrade(trade)">
+                  Edit
+                </button>
+                <button
+                  class="button is-danger is-small"
+                  @click="deleteTrade(trade)"
+                >
+                  Delete
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
       </table>
+      <edit-trade-modal-form
+        :selectedTrade="selectedTrade"
+        :isActive="isEditTradeModalFormActive"
+        @close="isEditTradeModalFormActive = false"
+        @submit="updateTrade"
+      ></edit-trade-modal-form>
     </template>
     <div>
       <canvas id="historicalPrice"></canvas>
@@ -62,6 +73,7 @@
 <script>
 import Page from "../components/Page.vue";
 import StockInfo from "../components/StockInfo.vue";
+import EditTradeModalForm from "../modalForms/EditTrade.vue";
 import pageMixin from "../mixins/page";
 import holdingService from "../services/holdingService";
 import stockService from "../services/stockService";
@@ -70,7 +82,7 @@ import dateConverter from "../utils/dateConverter";
 import charting from "../utils/charting";
 
 export default {
-  components: { Page, StockInfo },
+  components: { Page, StockInfo, EditTradeModalForm },
   data() {
     return {
       holdingId: "",
@@ -78,7 +90,9 @@ export default {
       trades: [],
       stockInfo: {},
       historicalPrices: [],
-      chartItem: {}
+      chartItem: {},
+      isEditTradeModalFormActive: false,
+      selectedTrade: {}
     };
   },
   mixins: [pageMixin],
@@ -103,7 +117,8 @@ export default {
 
     for (const trade of holdingResp.data.trades) {
       this.trades.push({
-        date: dateConverter.toString(new Date(trade.date)),
+        id: trade.id,
+        date: trade.date,
         quantity: trade.quantity,
         unitPrice: trade.unitPrice,
         fees: trade.fees,
@@ -114,7 +129,7 @@ export default {
     const costHistory = [];
     for (const ch of holdingResp.data.costHistory) {
       costHistory.push({
-        date: dateConverter.toString(new Date(ch.date)),
+        date: ch.date,
         cost: ch.cost
       });
     }
@@ -124,14 +139,14 @@ export default {
 
     const stockPerformanceResp = await stockService.getPerformance(
       this.ticker,
-      dateConverter.toString(new Date(this.trades[0].date)),
+      this.trades[0].date,
       dateConverter.toString(new Date()),
       accessToken
     );
 
     let cost = 0;
     for (const stockClosePrice of stockPerformanceResp.data) {
-      const date = dateConverter.toString(new Date(stockClosePrice.date));
+      const date = stockClosePrice.date;
       const index = costHistory.findIndex(ch => ch.date === date);
       if (index != -1) {
         cost = costHistory[index].cost;
@@ -148,6 +163,33 @@ export default {
     charting.plotPriceTrend("historicalPrice", this.historicalPrices);
   },
   methods: {
+    editTrade(trade) {
+      this.selectedTrade = trade;
+      this.isEditTradeModalFormActive = true;
+    },
+    async updateTrade(trade) {
+      const accessToken = this.getAccessToken();
+
+      const payload = {
+        id: this.selectedTrade.id,
+        ...trade,
+        holdingId: this.holdingId
+      };
+
+      try {
+        await tradeService.updateTrade(payload, accessToken);
+
+        await this.notifySuccess(
+          "Trade updated",
+          `Trade ${trade.id} has been updated.`
+        );
+      } catch (error) {
+        this.notifyError("Unable to update trade", error);
+      }
+
+      this.$router.go();
+      this.isEditTradeModalFormActive = false;
+    },
     async deleteTrade(trade) {
       const accessToken = this.getAccessToken();
       try {

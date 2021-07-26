@@ -12,7 +12,6 @@
       <div class="column">
         <p class="subtitle">Holdings</p>
         <add-holding-modal-form
-          title="Add New Holding"
           :isActive="isAddHoldingModalFormActive"
           @close="isAddHoldingModalFormActive = false"
           @submit="addHolding"
