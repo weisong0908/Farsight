@@ -1,5 +1,5 @@
 <template>
-  <div :class="isActive ? 'modal is-active' : 'modal'">
+  <div :class="isActive ? 'modal is-active fu' : 'modal'">
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
@@ -8,10 +8,13 @@
       </header>
       <section class="modal-card-body">
         <search-bar
+          v-if="suggestions.length > 0"
           title="Ticker"
           :suggestions="suggestions"
           :errorMessage="validationErrors.ticker"
           v-model="ticker"
+          indexKey="ticker"
+          indexDescription="name"
         ></search-bar>
         <form-field
           name="date"
@@ -101,13 +104,12 @@ export default {
   mixins: [formMixin],
   components: { FormField, SearchBar },
   async created() {
-    const tickers = (await stockService.getStocks()).data;
-    for (const ticker of tickers) {
-      this.suggestions.push({
-        value: ticker.ticker,
-        description: ticker.name
-      });
-    }
+    await this.$store.dispatch(
+      "stock/setStocks",
+      (await stockService.getStocks()).data
+    );
+
+    this.suggestions = this.$store.getters["stock/filterStocks"]("");
   },
   methods: {
     submit() {

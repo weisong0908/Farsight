@@ -21,15 +21,15 @@
           <a
             class="dropdown-item"
             v-for="item in filteredSuggestions"
-            :key="item.value"
+            :key="item[indexKey]"
             @click="selectItem(item)"
           >
-            <p>{{ item.value }}</p>
+            <p>{{ item[indexKey] }}</p>
             <p
-              v-if="item.description"
+              v-if="item[indexDescription]"
               class="has-text-grey has-text-weight-light is-size-7"
             >
-              {{ item.description }}
+              {{ item[indexDescription] }}
             </p>
           </a>
         </div>
@@ -41,7 +41,13 @@
 
 <script>
 export default {
-  props: ["title", "suggestions", "errorMessage"],
+  props: [
+    "title",
+    "suggestions",
+    "indexKey",
+    "indexDescription",
+    "errorMessage"
+  ],
   data() {
     return {
       isActive: false,
@@ -54,15 +60,16 @@ export default {
   },
   methods: {
     filterSuggestions() {
-      console.log("filterSuggestions");
-      this.filteredSuggestions = this.suggestions.filter(o =>
-        o.value.toLowerCase().includes(this.searchText.toLowerCase())
+      this.isActive = true;
+
+      this.filteredSuggestions = this.$store.getters["stock/filterStocks"](
+        this.searchText.toLowerCase()
       );
     },
     selectItem(item) {
-      this.searchText = item.value;
+      this.searchText = item.ticker;
       this.isActive = false;
-      this.$emit("input", item.value);
+      this.$emit("input", item.ticker);
     }
   }
 };

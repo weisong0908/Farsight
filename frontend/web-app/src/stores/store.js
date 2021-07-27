@@ -4,6 +4,7 @@ import createPersistedState from "vuex-persistedstate";
 import holding from "./holding.js";
 import auth from "./auth.js";
 import alert from "./alert";
+import stock from "./stock";
 
 Vue.use(Vuex);
 
@@ -20,6 +21,10 @@ export default new Vuex.Store({
     alert: {
       namespaced: true,
       ...alert
+    },
+    stock: {
+      namespaced: true,
+      ...stock
     }
   },
   plugins: [createPersistedState()]
