@@ -32,6 +32,43 @@ export default {
       }
     });
   },
+  plotPositionPie(contextId, positions, title) {
+    new Chart(document.getElementById(contextId), {
+      type: "doughnut",
+      data: {
+        labels: positions.map(p => p.name),
+        datasets: [
+          {
+            label: "Weighting",
+            data: positions.map(p => p.value),
+            backgroundColor: [
+              "rgb(255, 99, 132)",
+              "rgb(54, 162, 235)",
+              "rgb(255, 205, 86)"
+            ],
+            hoverOffset: 4
+          }
+        ]
+      },
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: title
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const sum = context.dataset.data.reduce((pv, cv) => pv + cv, 0);
+                const percentage = ((context.parsed * 100.0) / sum).toFixed(2);
+                return `${context.label}: ${context.parsed}, ${percentage}%`;
+              }
+            }
+          }
+        }
+      }
+    });
+  },
   plotPie(contextId) {
     new Chart(document.getElementById(contextId), {
       type: "doughnut",

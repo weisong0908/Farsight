@@ -71,6 +71,17 @@
         ></pagination>
       </div>
     </div>
+    <div class="columns">
+      <div class="column">
+        <canvas id="positionByHolding"></canvas>
+      </div>
+      <div class="column">
+        <canvas id="positionByGroup"></canvas>
+      </div>
+      <div class="column">
+        <canvas id="positionBySector"></canvas>
+      </div>
+    </div>
   </page>
 </template>
 
@@ -83,6 +94,7 @@ import pageMixin from "../mixins/page";
 import portfolioService from "../services/portfolioService";
 import holdingService from "../services/holdingService";
 import tradeService from "../services/tradeService";
+import charting from "../utils/charting";
 
 export default {
   components: {
@@ -114,9 +126,41 @@ export default {
     const accessToken = this.getAccessToken();
 
     portfolioService.getPortfolio(this.portfolioId, accessToken).then(resp => {
-      this.isDataReady = true;
       this.portfolioName = resp.data.name;
       this.holdings = resp.data.holdings;
+
+      charting.plotPositionPie(
+        "positionByHolding",
+        this.holdings.map(h => {
+          return {
+            name: h.ticker,
+            value: h.quantity * h.cost
+          };
+        }),
+        "Holdings"
+      );
+      charting.plotPositionPie(
+        "positionByGroup",
+        this.holdings.map(h => {
+          return {
+            name: h.ticker,
+            value: h.quantity * h.cost
+          };
+        }),
+        "Groups"
+      );
+      charting.plotPositionPie(
+        "positionBySector",
+        this.holdings.map(h => {
+          return {
+            name: h.ticker,
+            value: h.quantity * h.cost
+          };
+        }),
+        "Sectors"
+      );
+
+      this.isDataReady = true;
     });
   },
   methods: {
