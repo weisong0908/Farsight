@@ -33,6 +33,7 @@ export default {
     });
   },
   plotPositionPie(contextId, positions, title) {
+    console.log(positions);
     new Chart(document.getElementById(contextId), {
       type: "doughnut",
       data: {

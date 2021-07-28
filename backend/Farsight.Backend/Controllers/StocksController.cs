@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Farsight.Backend.Models.DTOs;
@@ -40,6 +41,16 @@ namespace Farsight.Backend.Controllers
             var stockInfo = _mapper.Map<StockInfo>(polygonTickerDetails);
 
             return Ok(stockInfo);
+        }
+
+        [HttpGet("previous/{ticker}")]
+        public async Task<IActionResult> GetPreviousClosePrice(string ticker)
+        {
+            var polygonResponse = await _stockService.GetPreviousClosePrice(ticker);
+
+            var stockClosePrice = _mapper.Map<StockClosePrice>(polygonResponse.Results.FirstOrDefault());
+
+            return Ok(stockClosePrice);
         }
 
         [HttpGet("performance/{ticker}")]

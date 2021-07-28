@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using AutoMapper;
 using Farsight.Backend.Models;
 using Farsight.Backend.Models.DTOs;
 using Farsight.Backend.Persistence;
+using Farsight.Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,12 +22,14 @@ namespace Farsight.Backend.Controllers
         private readonly IPortfolioRepository _portfolioRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IStockService _stockService;
 
-        public PortfoliosController(IPortfolioRepository portfolioRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        public PortfoliosController(IPortfolioRepository portfolioRepository, IUnitOfWork unitOfWork, IMapper mapper, IStockService stockService)
         {
             _portfolioRepository = portfolioRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _stockService = stockService;
         }
 
         [HttpGet]
@@ -47,7 +51,16 @@ namespace Farsight.Backend.Controllers
 
             var portfolio = await _portfolioRepository.GetPortfolio(id);
 
-            return Ok(_mapper.Map<PortfolioDetailed>(portfolio));
+            var detailedPortfolio = _mapper.Map<PortfolioDetailed>(portfolio);
+
+            foreach (var holding in detailedPortfolio.Holdings)
+            {
+                var marketPrice = (await _stockService.GetPreviousClosePrice(holding.Ticker)).Results?.FirstOrDefault();
+                if (marketPrice != null)
+                    holding.MarketPrice = marketPrice.Close;
+            }
+
+            return Ok(detailedPortfolio);
         }
 
         [Authorize(Policy = "write")]

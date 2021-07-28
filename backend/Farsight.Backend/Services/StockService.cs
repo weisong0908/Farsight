@@ -81,5 +81,27 @@ namespace Farsight.Backend.Services
 
             return JsonSerializer.Deserialize<PolygonAggregatesResponse>(content);
         }
+
+        public async Task<PolygonAggregatesResponse> GetPreviousClosePrice(string ticker)
+        {
+            PolygonAggregatesResponse previousClosePriceResponse;
+
+            if (_memoryCache.TryGetValue<PolygonAggregatesResponse>($"tickers.previousClose.{ticker}", out previousClosePriceResponse))
+                return previousClosePriceResponse;
+
+            var client = _httpClientFactory.CreateClient("polygon");
+            var apiKey = _configuration["polygon:ApiKey"];
+
+            var response = await client.GetAsync($"/v2/aggs/ticker/{ticker}/prev?adjusted=true&apiKey={apiKey}");
+
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            previousClosePriceResponse = JsonSerializer.Deserialize<PolygonAggregatesResponse>(content);
+
+            _memoryCache.Set<PolygonAggregatesResponse>($"tickers.previousClose.{ticker}", previousClosePriceResponse);
+
+            return previousClosePriceResponse;
+        }
     }
 }

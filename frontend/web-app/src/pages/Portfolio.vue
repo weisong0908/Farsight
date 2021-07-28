@@ -35,6 +35,7 @@
             <tr>
               <th>Name</th>
               <th>Quantity</th>
+              <th>Market Price</th>
               <th>Cost</th>
               <th>Action</th>
             </tr>
@@ -52,6 +53,7 @@
                 </router-link>
               </td>
               <td>{{ holding.quantity }}</td>
+              <td>{{ holding.marketPrice }}</td>
               <td>{{ holding.cost }}</td>
               <td>
                 <button
@@ -122,46 +124,49 @@ export default {
       );
     }
   },
-  created() {
+  async created() {
     const accessToken = this.getAccessToken();
 
-    portfolioService.getPortfolio(this.portfolioId, accessToken).then(resp => {
-      this.portfolioName = resp.data.name;
-      this.holdings = resp.data.holdings;
+    const { data } = await portfolioService.getPortfolio(
+      this.portfolioId,
+      accessToken
+    );
 
-      charting.plotPositionPie(
-        "positionByHolding",
-        this.holdings.map(h => {
-          return {
-            name: h.ticker,
-            value: h.quantity * h.cost
-          };
-        }),
-        "Holdings"
-      );
-      charting.plotPositionPie(
-        "positionByGroup",
-        this.holdings.map(h => {
-          return {
-            name: h.ticker,
-            value: h.quantity * h.cost
-          };
-        }),
-        "Groups"
-      );
-      charting.plotPositionPie(
-        "positionBySector",
-        this.holdings.map(h => {
-          return {
-            name: h.ticker,
-            value: h.quantity * h.cost
-          };
-        }),
-        "Sectors"
-      );
+    this.portfolioName = data.name;
+    this.holdings = data.holdings;
 
-      this.isDataReady = true;
-    });
+    charting.plotPositionPie(
+      "positionByHolding",
+      this.holdings.map(h => {
+        return {
+          name: h.ticker,
+          value: h.quantity * h.marketPrice
+        };
+      }),
+      "Holdings"
+    );
+    charting.plotPositionPie(
+      "positionByGroup",
+      this.holdings.map(h => {
+        return {
+          name: h.ticker,
+          value: h.quantity * h.marketPrice
+        };
+      }),
+      "Groups"
+    );
+    charting.plotPositionPie(
+      "positionBySector",
+      this.holdings.map(h => {
+        return {
+          name: h.ticker,
+          value: h.quantity * h.marketPrice
+        };
+      }),
+      "Sectors"
+    );
+
+    this.isDataReady = true;
   },
   methods: {
     updatePortfolio(portfolio) {

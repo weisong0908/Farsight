@@ -8,6 +8,7 @@ namespace Farsight.Backend.Services
     {
         Task<IList<PolygonTicker>> GetTickers();
         Task<PolygonTickerDetails> GetTickerDetails(string ticker);
+        Task<PolygonAggregatesResponse> GetPreviousClosePrice(string ticker);
         Task<PolygonAggregatesResponse> GetDailyClosePrice(string ticker, string from, string to);
     }
 }

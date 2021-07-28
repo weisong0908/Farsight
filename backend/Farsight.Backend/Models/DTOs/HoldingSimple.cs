@@ -8,5 +8,6 @@ namespace Farsight.Backend.Models.DTOs
         public string Ticker { get; set; }
         public int Quantity { get; set; }
         public decimal Cost { get; set; }
+        public decimal MarketPrice { get; set; }
     }
 }
