@@ -1,4 +1,5 @@
 using System;
+using Farsight.Backend.BackgroundServices;
 using Farsight.Backend.Mappings;
 using Farsight.Backend.Persistence;
 using Farsight.Backend.Requirements;
@@ -80,7 +81,7 @@ namespace Farsight.Backend
 
             services.AddMemoryCache();
 
-            // services.AddHostedService<CustomService>();
+            services.AddHostedService<StockDataSetupBackgroundService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

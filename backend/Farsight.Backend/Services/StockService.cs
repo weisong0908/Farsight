@@ -51,21 +51,27 @@ namespace Farsight.Backend.Services
 
             _memoryCache.Set<List<PolygonTicker>>("tickers.all", polygonTickers);
 
-            return polygonTickers.DistinctBy(pt => pt.Ticker).ToList();
+            return polygonTickers;
         }
 
         public async Task<PolygonTickerDetails> GetTickerDetails(string ticker)
         {
+            PolygonTickerDetails polygonTickerDetails;
+
+            if (_memoryCache.TryGetValue<PolygonTickerDetails>($"tickers.details.{ticker}", out polygonTickerDetails))
+                return polygonTickerDetails;
+
             var client = _httpClientFactory.CreateClient("polygon");
             var apiKey = _configuration["polygon:ApiKey"];
 
             var response = await client.GetAsync($"/v1/meta/symbols/{ticker}/company?apiKey={apiKey}");
-
             response.EnsureSuccessStatusCode();
-
             var content = await response.Content.ReadAsStringAsync();
+            polygonTickerDetails = JsonSerializer.Deserialize<PolygonTickerDetails>(content);
 
-            return JsonSerializer.Deserialize<PolygonTickerDetails>(content);
+            _memoryCache.Set<PolygonTickerDetails>($"tickers.details.{ticker}", polygonTickerDetails);
+
+            return polygonTickerDetails;
         }
 
         public async Task<PolygonAggregatesResponse> GetDailyClosePrice(string ticker, string from, string to)
@@ -74,9 +80,7 @@ namespace Farsight.Backend.Services
             var apiKey = _configuration["polygon:ApiKey"];
 
             var response = await client.GetAsync($"/v2/aggs/ticker/{ticker}/range/1/day/{from}/{to}?adjusted=true&sort=asc&apiKey={apiKey}");
-
             response.EnsureSuccessStatusCode();
-
             var content = await response.Content.ReadAsStringAsync();
 
             return JsonSerializer.Deserialize<PolygonAggregatesResponse>(content);
@@ -93,13 +97,13 @@ namespace Farsight.Backend.Services
             var apiKey = _configuration["polygon:ApiKey"];
 
             var response = await client.GetAsync($"/v2/aggs/ticker/{ticker}/prev?adjusted=true&apiKey={apiKey}");
-
             response.EnsureSuccessStatusCode();
-
             var content = await response.Content.ReadAsStringAsync();
             previousClosePriceResponse = JsonSerializer.Deserialize<PolygonAggregatesResponse>(content);
 
-            _memoryCache.Set<PolygonAggregatesResponse>($"tickers.previousClose.{ticker}", previousClosePriceResponse);
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(System.TimeSpan.FromHours(1));
+            _memoryCache.Set<PolygonAggregatesResponse>($"tickers.previousClose.{ticker}", previousClosePriceResponse, cacheEntryOptions);
 
             return previousClosePriceResponse;
         }
