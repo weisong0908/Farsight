@@ -81,6 +81,19 @@ namespace Farsight.Backend.Extensions
                 .ConvertTime(dateTime, TimeZoneInfo.FindSystemTimeZoneById("America/New_York"), TimeZoneInfo.Utc);
         }
 
+        public static string PolygonTickerTypeToStockType(this string polygonTickerType)
+        {
+            switch (polygonTickerType)
+            {
+                case "ET":
+                    return "Exchange-Traded Fund";
+                case "CS":
+                    return "Common Stock";
+                default:
+                    return "Common Stock";
+            }
+        }
+
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
         {
             HashSet<TKey> seenKeys = new HashSet<TKey>();

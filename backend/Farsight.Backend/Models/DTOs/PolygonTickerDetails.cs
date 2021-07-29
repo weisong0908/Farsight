@@ -16,5 +16,7 @@ namespace Farsight.Backend.Models.DTOs
         public string Sector { get; set; }
         [JsonPropertyName("description")]
         public string Description { get; set; }
+        [JsonPropertyName("type")]
+        public string Type { get; set; }
     }
 }

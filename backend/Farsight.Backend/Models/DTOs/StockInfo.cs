@@ -8,5 +8,6 @@ namespace Farsight.Backend.Models.DTOs
         public string Industry { get; set; }
         public string Sector { get; set; }
         public string Description { get; set; }
+        public string Type { get; set; }
     }
 }

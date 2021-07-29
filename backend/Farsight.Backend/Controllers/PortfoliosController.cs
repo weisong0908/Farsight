@@ -58,6 +58,10 @@ namespace Farsight.Backend.Controllers
                 var marketPrice = (await _stockService.GetPreviousClosePrice(holding.Ticker)).Results?.FirstOrDefault();
                 if (marketPrice != null)
                     holding.MarketPrice = marketPrice.Close;
+
+                var stockInfo = _mapper.Map<StockInfo>(await _stockService.GetTickerDetails(holding.Ticker));
+                holding.Sector = stockInfo.Sector;
+                holding.Type = stockInfo.Type;
             }
 
             return Ok(detailedPortfolio);

@@ -49,7 +49,9 @@ namespace Farsight.Backend.Mappings
                 .ForMember(scp => scp.ClosePrice, memberOptions => memberOptions.MapFrom(pab => pab.Close))
                 .ForMember(scp => scp.Date, memberOptions => memberOptions.MapFrom(pab => pab.Timestamp.GetDateString()));
 
-            CreateMap<PolygonTickerDetails, StockInfo>();
+            CreateMap<PolygonTickerDetails, StockInfo>()
+                .ForMember(si => si.Sector, memberOptions => memberOptions.MapFrom(ptd => string.IsNullOrWhiteSpace(ptd.Sector) ? "-" : ptd.Sector))
+                .ForMember(si => si.Type, memberOptions => memberOptions.MapFrom(ptd => ptd.Type.PolygonTickerTypeToStockType()));
             CreateMap<PolygonTicker, Stock>();
         }
     }
