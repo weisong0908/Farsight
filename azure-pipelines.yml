@@ -17,8 +17,7 @@ steps:
   submodules: true
 - task: AzureStaticWebApp@0
   inputs:
-    app_location: '$(Build.SourcesDirectory)/frontend/webapp'
-    api_location: ''
+    app_location: '/frontend/webapp'
     output_location: 'dist'
     azure_static_web_apps_api_token: $(deployment_token)
 
