@@ -11,13 +11,13 @@
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">Market Value</p>
-                <p class="title">{{ portfolioMarketValue }}</p>
+                <p class="title">{{ portfolioMarketValue.toFixed(2) }}</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">Cost</p>
-                <p class="title">{{ portfolioCost }}</p>
+                <p class="title">{{ portfolioCost.toFixed(2) }}</p>
               </div>
             </div>
             <div class="level-item has-text-centered">
@@ -25,15 +25,22 @@
                 <p class="heading">Profit/Loss</p>
                 <p
                   :class="
-                    portfolioMarketValue < portfolioCost
+                    portfolioReturn < 0
                       ? 'title has-text-danger'
                       : 'title has-text-success'
                   "
                 >
-                  {{ (portfolioMarketValue - portfolioCost).toFixed(2) }}
+                  <span> {{ portfolioReturn.toFixed(2) }}</span>
+                  <span>
+                    ({{
+                      ((portfolioReturn / portfolioCost) * 100).toFixed(2)
+                    }}%)
+                  </span>
                 </p>
               </div>
             </div>
+          </nav>
+          <nav class="level is-mobile">
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">Number of Holdings</p>
@@ -169,6 +176,9 @@ export default {
   },
   mixins: [pageMixin],
   computed: {
+    portfolioReturn() {
+      return this.portfolioMarketValue - this.portfolioCost;
+    },
     filteredHoldings() {
       return this.holdings.slice(
         (this.currentPageNumber - 1) * this.pageSize,
