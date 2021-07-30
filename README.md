@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/paperclay/Farsight/_apis/build/status/Farsight?branchName=main)](https://dev.azure.com/paperclay/Farsight/_build/latest?definitionId=2&branchName=main)
+
 # Introduction 
 **Farsight** is an investment portfolio tracker that:
 * manages holdings in each portfolio,
