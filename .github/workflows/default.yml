@@ -18,9 +18,15 @@ jobs:
       uses: actions/setup-node@v2.3.0
     - name: Restore dependencies
       run: npm install
-    - name: Build
+    - name: Build project
       run: npm run build
-
+    - name: Build docker image
+      run: docker build --tag weisong0908/farsight-webapp .
+    - name: Login to Docker Hub with access token
+      run: docker login -u weisong0908 -p ${{ secrets.DOCKERHUB_ACCESSTOKEN }}
+    - name: Push docker image to Docker Hub
+      run: docker push weisong0908/farsight-webapp
+  
   build-backend:
     runs-on: ubuntu-latest
     defaults:
@@ -39,7 +45,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
-  build-identiry-service:
+  build-identity-service:
       runs-on: ubuntu-latest
       defaults:
         run:
