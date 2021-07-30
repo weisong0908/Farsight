@@ -7,8 +7,19 @@ on:
     branches: [ main ]
 
 jobs:
+  build-webapp:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend/web-app
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2.3.0
+    - name: Build
+      run: npm run build
+    
   build-backend:
-
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -25,3 +36,39 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+
+  build-identiry-service:
+      runs-on: ubuntu-latest
+      defaults:
+        run:
+          working-directory: ./backend/Farsight.IdentityService
+      steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+
+  build-common-service:
+      runs-on: ubuntu-latest
+      defaults:
+        run:
+          working-directory: ./backend/Farsight.CommonService
+      steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
