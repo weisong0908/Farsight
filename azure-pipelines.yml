@@ -11,8 +11,8 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  path: './backend/Farsight.Backend'
 
 steps:
-- script: dotnet build $(path) --configuration $(buildConfiguration)
+- script: dotnet --configuration $(buildConfiguration)
+  workingDirectory: '$(Build.SourcesDirectory)/backend/Farsight.Backend'
   displayName: 'dotnet build $(buildConfiguration)'
