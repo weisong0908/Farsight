@@ -1,3 +1,5 @@
+[![Default](https://github.com/weisong0908/Farsight/actions/workflows/default.yml/badge.svg?branch=main)](https://github.com/weisong0908/Farsight/actions/workflows/default.yml)
+
 # Introduction 
 **Farsight** is an investment portfolio tracker that:
 * manages holdings in each portfolio,
