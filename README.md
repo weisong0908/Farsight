@@ -1,5 +1,3 @@
-[![Build Status](https://dev.azure.com/paperclay/Farsight/_apis/build/status/Farsight?branchName=main)](https://dev.azure.com/paperclay/Farsight/_build/latest?definitionId=2&branchName=main)
-
 # Introduction 
 **Farsight** is an investment portfolio tracker that:
 * manages holdings in each portfolio,
@@ -27,7 +25,7 @@ The API endpoints can be found in the [Postman collection](https://www.getpostma
 Navigate to each of the directories to start the app:
 
 | Name | Directory | Command to use | URL |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- | --- |
 | web-app | frontend/web-app | npm run serve | http://localhost:8080 |  
 | Farsight.Backend | backend/Farsight.Backend | dotnet run  | https://localhost:5001 |
 | Farsight.IdentityService | backend/Farsight.IdentityService | dotnet run  | https://localhost:5101 |
