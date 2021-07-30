@@ -13,6 +13,6 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet --configuration $(buildConfiguration)
+- script: dotnet build --configuration $(buildConfiguration)
   workingDirectory: '$(Build.SourcesDirectory)/backend/Farsight.Backend'
   displayName: 'dotnet build $(buildConfiguration)'
