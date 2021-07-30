@@ -15,10 +15,10 @@ variables:
 steps:
 - script: dotnet build --configuration $(buildConfiguration)
   workingDirectory: '$(Build.SourcesDirectory)/backend/Farsight.Backend'
-  displayName: 'Farsight.Backend dotnet build $(buildConfiguration)'
+  displayName: 'Farsight.Backend - build'
 - script: dotnet build --configuration $(buildConfiguration)
   workingDirectory: '$(Build.SourcesDirectory)/backend/Farsight.IdentityService'
-  displayName: 'Farsight.IdentityService dotnet build $(buildConfiguration)'
+  displayName: 'Farsight.IdentityService - build'
 - script: dotnet build --configuration $(buildConfiguration)
   workingDirectory: '$(Build.SourcesDirectory)/backend/Farsight.CommonService'
-  displayName: 'Farsight.CommonService dotnet build $(buildConfiguration)'
+  displayName: 'Farsight.CommonService - build'
