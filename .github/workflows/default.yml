@@ -85,7 +85,7 @@ jobs:
           script: |
             docker stop backend
             docker pull weisong0908/farsight-backend
-            docker run -d --rm -p 5000:80 --name backend -e ASPNETCORE_ENVIRONMENT=Staging weisong0908/farsight-backend
+            docker run -d --rm -p 5000:80 --name backend -e ASPNETCORE_ENVIRONMENT=Staging -v /home/weisong0908/farsight-logs/backend:/app/Logs weisong0908/farsight-backend
   
   build-identity-service:
       name: Build Farsight.IdentityService
@@ -127,7 +127,7 @@ jobs:
           script: |
             docker stop identity-service
             docker pull weisong0908/farsight-identity-service
-            docker run -d --rm -p 5100:80 --name identity-service -e ASPNETCORE_ENVIRONMENT=Staging weisong0908/farsight-identity-service
+            docker run -d --rm -p 5100:80 --name identity-service -e ASPNETCORE_ENVIRONMENT=Staging -v /home/weisong0908/farsight-logs/identity-service:/app/Logs weisong0908/farsight-identity-service
   
   build-common-service:
       name: Build Farsight.CommonService
@@ -169,5 +169,5 @@ jobs:
           script: |
             docker stop common-service
             docker pull weisong0908/farsight-common-service
-            docker run -d --rm -p 5200:80 --name common-service -e ASPNETCORE_ENVIRONMENT=Staging weisong0908/farsight-common-service
+            docker run -d --rm -p 5200:80 --name common-service -e ASPNETCORE_ENVIRONMENT=Staging -v /home/weisong0908/farsight-logs/common-service:/app/Logs weisong0908/farsight-common-service
             
