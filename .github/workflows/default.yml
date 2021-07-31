@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Executes remote ssh commands using ssh key ${{ secrets.DIGITALOCEAN_SSHKEY }}
-        uses: appleboy/ssh-action@v0.1.4
+        uses: appleboy/ssh-action@v0.1.3
         with:
           host: ${{ secrets.DIGITALOCEAN_SERVERADDRESS }}
           username: weisong0908
