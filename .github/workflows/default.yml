@@ -33,8 +33,8 @@ jobs:
 #     needs: build-webapp
     runs-on: ubuntu-latest
     steps:
-      - name: Executes remote ssh commands using ssh key ${{ secrets.DIGITALOCEAN_SSHKEY }}
-        uses: appleboy/ssh-action@v0.1.3
+      - name: Executes remote ssh commands using ssh key
+        uses: appleboy/ssh-action@v0.1.0
         with:
           host: ${{ secrets.DIGITALOCEAN_SERVERADDRESS }}
           username: weisong0908
