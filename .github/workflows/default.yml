@@ -106,7 +106,7 @@ jobs:
       - name: Publish
         run: dotnet publish --configuration Release --no-restore
       - name: Build docker image
-        run: docker build --tag weisong0908/farsight-backend .
+        run: docker build --tag weisong0908/farsight-identity-service .
       - name: Login to Docker Hub with access token
         run: docker login -u weisong0908 -p ${{ secrets.DOCKERHUB_ACCESSTOKEN }}
       - name: Push docker image to Docker Hub
