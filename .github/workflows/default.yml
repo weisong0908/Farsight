@@ -41,8 +41,9 @@ jobs:
           key: ${{ secrets.DIGITALOCEAN_SSHKEY }}
           port: 22
           script: |
+            docker stop webapp
             docker pull weisong0908/farsight-webapp
-            docker run -d --rm -p 8080:80 --name farsight-webapp weisong0908/farsight-webapp
+            docker run -d --rm -p 8080:80 --name webapp weisong0908/farsight-webapp
   
   build-backend:
     name: Build Farsight.Backend
