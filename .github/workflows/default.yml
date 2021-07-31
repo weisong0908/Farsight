@@ -7,26 +7,26 @@ on:
     branches: [ main ]
 
 jobs:
-  build-webapp:
-    name: Build web-app
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./frontend/web-app
-    steps:
-    - uses: actions/checkout@v2
-    - name: Setup Node.js environment
-      uses: actions/setup-node@v2.3.0
-    - name: Restore dependencies
-      run: npm install
-    - name: Build project
-      run: npm run build
-    - name: Build docker image
-      run: docker build --tag weisong0908/farsight-webapp .
-    - name: Login to Docker Hub with access token
-      run: docker login -u weisong0908 -p ${{ secrets.DOCKERHUB_ACCESSTOKEN }}
-    - name: Push docker image to Docker Hub
-      run: docker push weisong0908/farsight-webapp
+#   build-webapp:
+#     name: Build web-app
+#     runs-on: ubuntu-latest
+#     defaults:
+#       run:
+#         working-directory: ./frontend/web-app
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: Setup Node.js environment
+#       uses: actions/setup-node@v2.3.0
+#     - name: Restore dependencies
+#       run: npm install
+#     - name: Build project
+#       run: npm run build
+#     - name: Build docker image
+#       run: docker build --tag weisong0908/farsight-webapp .
+#     - name: Login to Docker Hub with access token
+#       run: docker login -u weisong0908 -p ${{ secrets.DOCKERHUB_ACCESSTOKEN }}
+#     - name: Push docker image to Docker Hub
+#       run: docker push weisong0908/farsight-webapp
   
   deploy-webapp:
     name: Deploy web-app
@@ -44,56 +44,56 @@ jobs:
             docker pull weisong0908/farsight-webapp
             docker run -d --rm -p 8080:80 --name farsight-webapp weisong0908/farsight-webapp
   
-  build-backend:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend/Farsight.Backend
-    steps:
-    - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+#   build-backend:
+#     runs-on: ubuntu-latest
+#     defaults:
+#       run:
+#         working-directory: ./backend/Farsight.Backend
+#     steps:
+#     - uses: actions/checkout@v2
+#     - name: Setup .NET
+#       uses: actions/setup-dotnet@v1
+#       with:
+#         dotnet-version: 5.0.x
+#     - name: Restore dependencies
+#       run: dotnet restore
+#     - name: Build
+#       run: dotnet build --no-restore
+#     - name: Test
+#       run: dotnet test --no-build --verbosity normal
 
-  build-identity-service:
-      runs-on: ubuntu-latest
-      defaults:
-        run:
-          working-directory: ./backend/Farsight.IdentityService
-      steps:
-      - uses: actions/checkout@v2
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 5.0.x
-      - name: Restore dependencies
-        run: dotnet restore
-      - name: Build
-        run: dotnet build --no-restore
-      - name: Test
-        run: dotnet test --no-build --verbosity normal
+#   build-identity-service:
+#       runs-on: ubuntu-latest
+#       defaults:
+#         run:
+#           working-directory: ./backend/Farsight.IdentityService
+#       steps:
+#       - uses: actions/checkout@v2
+#       - name: Setup .NET
+#         uses: actions/setup-dotnet@v1
+#         with:
+#           dotnet-version: 5.0.x
+#       - name: Restore dependencies
+#         run: dotnet restore
+#       - name: Build
+#         run: dotnet build --no-restore
+#       - name: Test
+#         run: dotnet test --no-build --verbosity normal
 
-  build-common-service:
-      runs-on: ubuntu-latest
-      defaults:
-        run:
-          working-directory: ./backend/Farsight.CommonService
-      steps:
-      - uses: actions/checkout@v2
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 5.0.x
-      - name: Restore dependencies
-        run: dotnet restore
-      - name: Build
-        run: dotnet build --no-restore
-      - name: Test
-        run: dotnet test --no-build --verbosity normal
+#   build-common-service:
+#       runs-on: ubuntu-latest
+#       defaults:
+#         run:
+#           working-directory: ./backend/Farsight.CommonService
+#       steps:
+#       - uses: actions/checkout@v2
+#       - name: Setup .NET
+#         uses: actions/setup-dotnet@v1
+#         with:
+#           dotnet-version: 5.0.x
+#       - name: Restore dependencies
+#         run: dotnet restore
+#       - name: Build
+#         run: dotnet build --no-restore
+#       - name: Test
+#         run: dotnet test --no-build --verbosity normal
