@@ -95,7 +95,7 @@ namespace Farsight.IdentityService
 
             app.UseSerilogRequestLogging();
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 
