@@ -8,6 +8,7 @@ on:
 
 jobs:
   build-webapp:
+    name: Build web-app
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -26,6 +27,22 @@ jobs:
       run: docker login -u weisong0908 -p ${{ secrets.DOCKERHUB_ACCESSTOKEN }}
     - name: Push docker image to Docker Hub
       run: docker push weisong0908/farsight-webapp
+  
+  deploy-webapp:
+    name: Deploy web-app
+    needs: build-webapp
+    runs-on: ubuntu-latest
+    steps:
+      - name: Executes remote ssh commands using ssh key
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DIGITALOCEAN_SERVERADDRESS }}
+          username: weisong0908
+          key: ${{ secrets.DIGITALOCEAN_SSHKEY }}
+          port: 22
+          script: |
+            docker pull weisong0908/farsight-webapp
+            docker run -d --rm -p 8080:80 --name farsight-webapp weisong0908/farsight-webapp
   
   build-backend:
     runs-on: ubuntu-latest
