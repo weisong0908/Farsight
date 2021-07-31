@@ -125,7 +125,7 @@ jobs:
           key: ${{ secrets.DIGITALOCEAN_SSHKEY }}
           port: 22
           script: |
-            docker stop backend
+            docker stop identity-service
             docker pull weisong0908/farsight-identity-service
             docker run -d --rm -p 5100:80 --name identity-service -e ASPNETCORE_ENVIRONMENT=Staging weisong0908/farsight-identity-service
   
