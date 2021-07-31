@@ -42,10 +42,7 @@ namespace Farsight.IdentityService
                 .AddEntityFrameworkStores<FarsightIdentityServiceDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddIdentityServer(setupAction =>
-            {
-                setupAction.IssuerUri = Configuration["Authentication:Authority"];
-            })
+            services.AddIdentityServer()
                 .AddInMemoryClients(Configuration.GetSection("IdentityServer:Clients"))
                 .AddInMemoryIdentityResources(Config.IdentityResources())
                 .AddInMemoryApiResources(Configuration.GetSection("IdentityServer:ApiResources"))
@@ -108,9 +105,9 @@ namespace Farsight.IdentityService
 
             app.UseRouting();
 
-            app.UseCors("farsight");
-
             app.UseIdentityServer().UseCors("farsight");
+
+            app.UseCors("farsight");
 
             app.UseAuthentication();
             app.UseAuthorization();
