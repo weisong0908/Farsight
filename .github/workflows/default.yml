@@ -8,6 +8,7 @@ on:
 
 jobs:
   build-webapp:
+    name: Build web-app
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -18,10 +19,34 @@ jobs:
       uses: actions/setup-node@v2.3.0
     - name: Restore dependencies
       run: npm install
-    - name: Build
+    - name: Build project
       run: npm run build
-
+    - name: Build docker image
+      run: docker build --tag weisong0908/farsight-webapp .
+    - name: Login to Docker Hub with access token
+      run: docker login -u weisong0908 -p ${{ secrets.DOCKERHUB_ACCESSTOKEN }}
+    - name: Push docker image to Docker Hub
+      run: docker push weisong0908/farsight-webapp
+  
+  deploy-webapp:
+    name: Deploy web-app
+    needs: build-webapp
+    runs-on: ubuntu-latest
+    steps:
+      - name: Executes remote ssh commands using ssh key
+        uses: appleboy/ssh-action@v0.1.0
+        with:
+          host: ${{ secrets.DIGITALOCEAN_SERVERADDRESS }}
+          username: weisong0908
+          key: ${{ secrets.DIGITALOCEAN_SSHKEY }}
+          port: 22
+          script: |
+            docker stop webapp
+            docker pull weisong0908/farsight-webapp
+            docker run -d --rm -p 8080:80 --name webapp weisong0908/farsight-webapp
+  
   build-backend:
+    name: Build Farsight.Backend
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -39,7 +64,8 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
-  build-identiry-service:
+  build-identity-service:
+      name: Build Farsight.IdentityService
       runs-on: ubuntu-latest
       defaults:
         run:
@@ -58,6 +84,7 @@ jobs:
         run: dotnet test --no-build --verbosity normal
 
   build-common-service:
+      name: Build Farsight.CommonService
       runs-on: ubuntu-latest
       defaults:
         run:
