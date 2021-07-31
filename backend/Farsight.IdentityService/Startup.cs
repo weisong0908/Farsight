@@ -64,7 +64,8 @@ namespace Farsight.IdentityService
                 setupAction.AddPolicy("farsight", configurePolicy =>
                 {
                     configurePolicy
-                        .WithOrigins(Configuration.GetSection("Security:AllowedOrigins").Get<string[]>())
+                        .AllowAnyOrigin()
+                        // .WithOrigins(Configuration.GetSection("Security:AllowedOrigins").Get<string[]>())
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
@@ -105,7 +106,7 @@ namespace Farsight.IdentityService
 
             app.UseRouting();
 
-            app.UseIdentityServer().UseCors("farsight");
+            app.UseIdentityServer();
 
             app.UseCors("farsight");
 
