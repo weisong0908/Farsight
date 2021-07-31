@@ -156,7 +156,7 @@ jobs:
   
   deploy-common-service:
     name: Deploy Farsight.CommonService
-    needs: build-identity-service
+    needs: build-common-service
     runs-on: ubuntu-latest
     steps:
       - name: Executes remote ssh commands using ssh key
