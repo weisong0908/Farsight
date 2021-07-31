@@ -30,7 +30,7 @@ jobs:
   
   deploy-webapp:
     name: Deploy web-app
-    needs: build-webapp
+#     needs: build-webapp
     runs-on: ubuntu-latest
     steps:
       - name: Executes remote ssh commands using ssh key ${{ secrets.DIGITALOCEAN_SSHKEY }}
