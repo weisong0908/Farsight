@@ -167,7 +167,7 @@ jobs:
           key: ${{ secrets.DIGITALOCEAN_SSHKEY }}
           port: 22
           script: |
-            docker stop backend
+            docker stop common-service
             docker pull weisong0908/farsight-common-service
             docker run -d --rm -p 5200:80 --name common-service -e ASPNETCORE_ENVIRONMENT=Staging weisong0908/farsight-common-service
             
