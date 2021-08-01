@@ -64,8 +64,8 @@ namespace Farsight.IdentityService
                 setupAction.AddPolicy("farsight", configurePolicy =>
                 {
                     configurePolicy
-                        .AllowAnyOrigin()
-                        // .WithOrigins(Configuration.GetSection("Security:AllowedOrigins").Get<string[]>())
+                        // .AllowAnyOrigin()
+                        .WithOrigins(Configuration.GetSection("Security:AllowedOrigins").Get<string[]>())
                         .AllowAnyHeader()
                         .AllowAnyMethod();
                 });
@@ -102,7 +102,7 @@ namespace Farsight.IdentityService
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 
-            // app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
