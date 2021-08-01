@@ -2,7 +2,7 @@
   <page>
     <progress
       v-if="!isDataReady"
-      class="progress is-small is-primary"
+      class="progress is-small"
       max="100"
     ></progress>
     <template v-else>

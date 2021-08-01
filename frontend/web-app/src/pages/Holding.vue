@@ -2,7 +2,7 @@
   <page>
     <progress
       v-if="!isDataReady"
-      class="progress is-small is-primary"
+      class="progress is-small"
       max="100"
     ></progress>
     <template v-else>
@@ -19,10 +19,7 @@
         @submit="addTrade"
       ></add-trade-modal-form>
       <div class="buttons">
-        <button
-          class="button is-primary"
-          @click="isAddTradeModalFormActive = true"
-        >
+        <button class="button" @click="isAddTradeModalFormActive = true">
           Add New Trade
         </button>
       </div>
@@ -63,7 +60,7 @@
                   Edit
                 </button>
                 <button
-                  class="button is-danger is-small"
+                  class="button is-danger is-light is-small"
                   @click="deleteTrade(trade)"
                 >
                   Delete

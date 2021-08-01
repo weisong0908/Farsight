@@ -21,7 +21,7 @@
     <br />
     <div class="field is-grouped">
       <div class="control">
-        <button class="button is-primary" @click="login">
+        <button class="button" @click="login">
           Login
         </button>
       </div>

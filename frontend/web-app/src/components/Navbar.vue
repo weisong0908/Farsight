@@ -52,7 +52,7 @@
           <div class="navbar-item">
             <div class="buttons">
               <router-link
-                class="button is-light"
+                class="button"
                 :to="{
                   name: 'myAccount',
                   query: { redirectTo: this.$route.path }
@@ -64,7 +64,7 @@
                   {{ $store.state.auth.user.username }}
                 </span>
               </router-link>
-              <a class="button is-primary" @click="logout">Log Out</a>
+              <a class="button" @click="logout">Log Out</a>
             </div>
           </div>
         </template>
@@ -72,7 +72,7 @@
           <div class="navbar-item">
             <div class="buttons">
               <router-link
-                class="button is-primary"
+                class="button"
                 :to="{
                   name: 'signUp',
                   query: { redirectTo: this.$route.path }
@@ -82,7 +82,7 @@
               >
 
               <router-link
-                class="button is-light"
+                class="button"
                 :to="{ name: 'Login', query: { redirectTo: this.$route.path } }"
                 @click.native="isBurgerMenuActive = false"
                 >Log In</router-link

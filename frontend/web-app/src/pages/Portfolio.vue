@@ -72,16 +72,13 @@
           >
           </add-holding-modal-form>
           <div class="buttons">
-            <button
-              class="button is-primary"
-              @click="isAddHoldingModalFormActive = true"
-            >
+            <button class="button" @click="isAddHoldingModalFormActive = true">
               Add New Holding
             </button>
           </div>
           <progress
             v-if="!isDataReady"
-            class="progress is-small is-primary"
+            class="progress is-small"
             max="100"
           ></progress>
           <table v-else class="table is-hoverable is-fullwidth">
@@ -111,7 +108,7 @@
                 <td>{{ holding.cost }}</td>
                 <td>
                   <button
-                    class="button is-danger is-small"
+                    class="button is-danger is-light is-small"
                     @click="deleteHolding(holding)"
                   >
                     Delete

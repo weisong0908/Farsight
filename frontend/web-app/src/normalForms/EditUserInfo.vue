@@ -54,7 +54,7 @@
     <br />
     <div class="field is-grouped">
       <div class="control">
-        <button class="button is-primary" @click="updateUserInfo">
+        <button class="button" @click="updateUserInfo">
           Update
         </button>
       </div>

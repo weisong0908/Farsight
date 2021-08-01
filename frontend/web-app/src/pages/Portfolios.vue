@@ -20,7 +20,7 @@
           <td>{{ portfolio.holdingCount }}</td>
           <td>
             <button
-              class="button is-danger is-small"
+              class="button is-danger is-light is-small"
               @click="deletePortfolio(portfolio.id)"
             >
               Delete
@@ -35,10 +35,7 @@
       @close="isAddPortfolioModalFormActive = false"
       @submit="createPortfolio"
     ></add-portfolio-modal-form>
-    <button
-      class="button is-primary"
-      @click="isAddPortfolioModalFormActive = true"
-    >
+    <button class="button" @click="isAddPortfolioModalFormActive = true">
       Create New Portfolio
     </button>
   </page>

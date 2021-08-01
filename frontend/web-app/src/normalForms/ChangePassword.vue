@@ -39,7 +39,7 @@
     <br />
     <div class="field is-grouped">
       <div class="control">
-        <button class="button is-primary" @click="changePassword">
+        <button class="button" @click="changePassword">
           Change Password
         </button>
       </div>

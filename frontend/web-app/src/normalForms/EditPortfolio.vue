@@ -20,7 +20,7 @@
     <br />
     <div class="field is-grouped">
       <div class="control">
-        <button class="button is-primary" @click="updatePortfolio">
+        <button class="button" @click="updatePortfolio">
           Update Portfolio
         </button>
       </div>

@@ -33,7 +33,7 @@
       @goToPage="goToPage"
     ></pagination>
     <router-link
-      class="button is-primary"
+      class="button"
       :to="{ name: 'addNewHolding', query: { portfolioId: portfolioId } }"
       >Add Holding</router-link
     >

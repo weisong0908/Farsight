@@ -40,7 +40,7 @@
         ></textarea-field>
         <div class="field is-grouped">
           <div class="control">
-            <button class="button is-primary" @click="save">Save</button>
+            <button class="button" @click="save">Save</button>
           </div>
           <div class="control">
             <button class="button is-warning" @click="cancel">Cancel</button>
