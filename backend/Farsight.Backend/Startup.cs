@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,7 +56,8 @@ namespace Farsight.Backend
                     });
                 });
 
-            services.AddAuthentication(configureOptions =>
+            services
+                .AddAuthentication(configureOptions =>
                 {
                     configureOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     configureOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -79,6 +81,14 @@ namespace Farsight.Backend
                 configureClient.BaseAddress = new Uri(Configuration["Polygon:Url"]);
             });
 
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                options.ForwardLimit = 2;
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+            });
+
             services.AddMemoryCache();
 
             services.AddHostedService<StockDataSetupBackgroundService>();
@@ -94,7 +104,9 @@ namespace Farsight.Backend
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Farsight.Backend v1"));
             }
 
-            // app.UseHttpsRedirection();
+            app.UseForwardedHeaders();
+
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 

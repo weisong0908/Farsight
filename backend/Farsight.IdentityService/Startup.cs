@@ -64,7 +64,6 @@ namespace Farsight.IdentityService
                 setupAction.AddPolicy("farsight", configurePolicy =>
                 {
                     configurePolicy
-                        // .AllowAnyOrigin()
                         .WithOrigins(Configuration.GetSection("Security:AllowedOrigins").Get<string[]>())
                         .AllowAnyHeader()
                         .AllowAnyMethod();
@@ -73,7 +72,8 @@ namespace Farsight.IdentityService
 
             services.Configure<IntegrationOptions>(Configuration.GetSection("Integration"));
 
-            services.AddAuthentication(configureOptions =>
+            services
+                .AddAuthentication(configureOptions =>
                 {
                     configureOptions.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     configureOptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -86,10 +86,7 @@ namespace Farsight.IdentityService
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {
-                options.ForwardedHeaders =
-                    ForwardedHeaders.XForwardedFor |
-                    ForwardedHeaders.XForwardedProto;
-
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
                 options.ForwardLimit = 2;
                 options.KnownNetworks.Clear();
                 options.KnownProxies.Clear();
@@ -99,7 +96,7 @@ namespace Farsight.IdentityService
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() || env.IsStaging())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
