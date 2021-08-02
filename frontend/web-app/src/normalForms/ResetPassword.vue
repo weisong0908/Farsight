@@ -12,7 +12,7 @@
     <br />
     <div class="field is-grouped">
       <div class="control">
-        <button class="button" @click="resetPassword">
+        <button class="button is-light" @click="resetPassword">
           Reset Password
         </button>
       </div>

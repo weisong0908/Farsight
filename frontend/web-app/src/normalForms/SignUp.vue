@@ -38,7 +38,7 @@
     <br />
     <div class="field is-grouped">
       <div class="control">
-        <button class="button" @click="signUp">
+        <button class="button is-light" @click="signUp">
           Sign Up
         </button>
       </div>

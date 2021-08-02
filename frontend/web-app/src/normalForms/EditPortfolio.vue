@@ -20,8 +20,11 @@
     <br />
     <div class="field is-grouped">
       <div class="control">
-        <button class="button" @click="updatePortfolio">
-          Update Portfolio
+        <button class="button is-light" @click="updatePortfolio">
+          <span>Update portfolio</span>
+          <span class="icon is-small">
+            <i class="fas fa-edit"></i>
+          </span>
         </button>
       </div>
     </div>

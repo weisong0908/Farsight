@@ -1,21 +1,27 @@
 <template>
   <nav class="pagination" role="navigation" aria-label="pagination">
     <a
-      class="pagination-previous"
+      class="pagination-previous button"
       :disabled="currentPageNumber === 1"
       @click="currentPageNumber === 1 ? true : goToPage(currentPageNumber - 1)"
-      >Previous</a
+    >
+      <span class="icon is-small"> <i class="fas fa-arrow-left"></i> </span
+      ><span>Previous</span></a
     >
     <a
-      class="pagination-next"
+      class="pagination-next button"
       :disabled="currentPageNumber >= totalPageCount"
       @click="
         currentPageNumber >= totalPageCount
           ? true
           : goToPage(currentPageNumber + 1)
       "
-      >Next page</a
     >
+      <span>Next</span>
+      <span class="icon is-small">
+        <i class="fas fa-arrow-right"></i>
+      </span>
+    </a>
     <ul class="pagination-list">
       <li v-if="currentPageNumber > 1">
         <a class="pagination-link" aria-label="Goto page 1" @click="goToPage(1)"
@@ -75,3 +81,13 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+@import "~bulma/sass/utilities/_all";
+
+$pagination-current-color: $link-dark;
+$pagination-current-background-color: $link-light;
+$pagination-current-border-color: $link-light;
+
+@import "~bulma";
+</style>

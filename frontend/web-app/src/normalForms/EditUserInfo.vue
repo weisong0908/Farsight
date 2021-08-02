@@ -54,8 +54,11 @@
     <br />
     <div class="field is-grouped">
       <div class="control">
-        <button class="button" @click="updateUserInfo">
-          Update
+        <button class="button is-light" @click="updateUserInfo">
+          <span>Update user information</span>
+          <span class="icon is-small">
+            <i class="fas fa-edit"></i>
+          </span>
         </button>
       </div>
     </div>

@@ -20,7 +20,7 @@
     <br />
     <div class="field is-grouped">
       <div class="control">
-        <button class="button" @click="changePassword">
+        <button class="button is-light" @click="changePassword">
           Change Password
         </button>
       </div>

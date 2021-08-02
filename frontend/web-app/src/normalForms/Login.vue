@@ -21,8 +21,11 @@
     <br />
     <div class="field is-grouped">
       <div class="control">
-        <button class="button" @click="login">
-          Login
+        <button class="button is-light" @click="login">
+          <span>
+            Log In
+          </span>
+          <span class="icon"> <i class="fas fa-sign-in-alt"></i> </span>
         </button>
       </div>
       <div class="control">

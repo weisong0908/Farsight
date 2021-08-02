@@ -72,8 +72,14 @@
           >
           </add-holding-modal-form>
           <div class="buttons">
-            <button class="button" @click="isAddHoldingModalFormActive = true">
-              Add New Holding
+            <button
+              class="button is-light"
+              @click="isAddHoldingModalFormActive = true"
+            >
+              <span>Add new holding</span>
+              <span class="icon is-small">
+                <i class="fas fa-plus"></i>
+              </span>
             </button>
           </div>
           <progress

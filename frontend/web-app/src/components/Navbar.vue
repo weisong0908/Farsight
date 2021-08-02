@@ -52,19 +52,24 @@
           <div class="navbar-item">
             <div class="buttons">
               <router-link
-                class="button"
+                class="button is-light"
                 :to="{
                   name: 'myAccount',
                   query: { redirectTo: this.$route.path }
                 }"
                 @click.native="isBurgerMenuActive = false"
               >
-                <span class="icon"> <i class="fas fa-user"></i> </span>
                 <span>
                   {{ $store.state.auth.user.username }}
                 </span>
+                <span class="icon"> <i class="fas fa-user"></i> </span>
               </router-link>
-              <a class="button" @click="logout">Log Out</a>
+              <a class="button is-light is-warning" @click="logout">
+                <span>
+                  Log Out
+                </span>
+                <span class="icon"> <i class="fas fa-sign-out-alt"></i> </span>
+              </a>
             </div>
           </div>
         </template>
@@ -72,7 +77,7 @@
           <div class="navbar-item">
             <div class="buttons">
               <router-link
-                class="button"
+                class="button is-dark"
                 :to="{
                   name: 'signUp',
                   query: { redirectTo: this.$route.path }
@@ -82,11 +87,15 @@
               >
 
               <router-link
-                class="button"
+                class="button is-light"
                 :to="{ name: 'login', query: { redirectTo: this.$route.path } }"
                 @click.native="isBurgerMenuActive = false"
-                >Log In</router-link
               >
+                <span>
+                  Log In
+                </span>
+                <span class="icon"> <i class="fas fa-sign-in-alt"></i> </span>
+              </router-link>
             </div>
           </div>
         </template>
