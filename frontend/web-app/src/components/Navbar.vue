@@ -83,7 +83,7 @@
 
               <router-link
                 class="button"
-                :to="{ name: 'Login', query: { redirectTo: this.$route.path } }"
+                :to="{ name: 'login', query: { redirectTo: this.$route.path } }"
                 @click.native="isBurgerMenuActive = false"
                 >Log In</router-link
               >

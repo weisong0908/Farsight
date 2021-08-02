@@ -6,7 +6,6 @@ import Portfolios from "./pages/Portfolios";
 import Portfolio from "./pages/Portfolio";
 import Holdings from "./pages/Holdings";
 import Holding from "./pages/Holding";
-import HoldingBackup from "./pages/HoldingBackup";
 import AddHoldingForm from "./pages/AddHoldingForm";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
@@ -52,12 +51,6 @@ const routerConfig = new VueRouter({
       component: Holding,
       title: "Holding",
       parent: "holdings"
-    },
-    {
-      name: "holdingBackup",
-      path: "/holdings/backup/:id",
-      component: HoldingBackup,
-      title: "Holding Backup"
     },
     {
       name: "login",
