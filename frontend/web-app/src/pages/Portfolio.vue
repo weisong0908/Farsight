@@ -7,7 +7,7 @@
             <p class="subtitle">Portfolio Summary</p>
             <p class="has-text-grey">{{ portfolioName }}</p>
           </div>
-          <nav class="level is-mobile">
+          <nav class="level">
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">Market Value</p>
@@ -81,42 +81,44 @@
             class="progress is-small"
             max="100"
           ></progress>
-          <table v-else class="table is-hoverable is-fullwidth">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Quantity</th>
-                <th>Market Price</th>
-                <th>Cost</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="holding in filteredHoldings" :key="holding.id">
-                <td>
-                  <router-link
-                    :to="{
-                      name: 'holding',
-                      params: { id: holding.id }
-                    }"
-                  >
-                    {{ holding.ticker }}
-                  </router-link>
-                </td>
-                <td>{{ holding.quantity }}</td>
-                <td>{{ holding.marketPrice }}</td>
-                <td>{{ holding.cost }}</td>
-                <td>
-                  <button
-                    class="button is-danger is-light is-small"
-                    @click="deleteHolding(holding)"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-else class="table-container">
+            <table class="table is-hoverable is-fullwidth">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Quantity</th>
+                  <th>Market Price</th>
+                  <th>Cost</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="holding in filteredHoldings" :key="holding.id">
+                  <td>
+                    <router-link
+                      :to="{
+                        name: 'holding',
+                        params: { id: holding.id }
+                      }"
+                    >
+                      {{ holding.ticker }}
+                    </router-link>
+                  </td>
+                  <td>{{ holding.quantity }}</td>
+                  <td>{{ holding.marketPrice }}</td>
+                  <td>{{ holding.cost }}</td>
+                  <td>
+                    <button
+                      class="button is-danger is-light is-small"
+                      @click="deleteHolding(holding)"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <pagination
             :currentPageNumber="currentPageNumber"
             :totalPageCount="Math.ceil(holdings.length / pageSize)"

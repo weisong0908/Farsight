@@ -23,53 +23,55 @@
           Add New Trade
         </button>
       </div>
-      <table class="table is-hoverable is-fullwidth">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
-            <th>Fees</th>
-            <th>Type</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="trade in trades" :key="trade.id">
-            <td>{{ trade.date }}</td>
-            <td>{{ trade.quantity }}</td>
-            <td>{{ trade.unitPrice }}</td>
-            <td>{{ trade.fees }}</td>
-            <td>
-              <span class="icon-text">
-                <span v-if="trade.tradeType == 'Buy'" class="icon">
-                  <i class="fas fa-caret-left"></i>
+      <div class="table-container">
+        <table class="table is-hoverable is-fullwidth">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Quantity</th>
+              <th>Unit Price</th>
+              <th>Fees</th>
+              <th>Type</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="trade in trades" :key="trade.id">
+              <td>{{ trade.date }}</td>
+              <td>{{ trade.quantity }}</td>
+              <td>{{ trade.unitPrice }}</td>
+              <td>{{ trade.fees }}</td>
+              <td>
+                <span class="icon-text">
+                  <span v-if="trade.tradeType == 'Buy'" class="icon">
+                    <i class="fas fa-caret-left"></i>
+                  </span>
+                  <span v-else-if="trade.tradeType == 'Sell'" class="icon">
+                    <i class="fas fa-caret-right"></i>
+                  </span>
+                  <span>{{ trade.tradeType }}</span>
                 </span>
-                <span v-else-if="trade.tradeType == 'Sell'" class="icon">
-                  <i class="fas fa-caret-right"></i>
-                </span>
-                <span>{{ trade.tradeType }}</span>
-              </span>
-            </td>
-            <td>
-              <div class="buttons">
-                <button
-                  class="button is-small"
-                  @click="updateEditTradeModalForm(trade)"
-                >
-                  Edit
-                </button>
-                <button
-                  class="button is-danger is-light is-small"
-                  @click="deleteTrade(trade)"
-                >
-                  Delete
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              </td>
+              <td>
+                <div class="buttons">
+                  <button
+                    class="button is-small"
+                    @click="updateEditTradeModalForm(trade)"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    class="button is-danger is-light is-small"
+                    @click="deleteTrade(trade)"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <edit-trade-modal-form
         :selectedTrade="selectedTrade"
         :isActive="isEditTradeModalFormActive"
