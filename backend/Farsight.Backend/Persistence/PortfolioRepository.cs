@@ -26,6 +26,7 @@ namespace Farsight.Backend.Persistence
             return await _dbContext.Portfolios
                 .Where(p => p.OwnerId == ownerId)
                 .Include(p => p.Holdings)
+                .ThenInclude(h => h.Trades)
                 .ToListAsync();
         }
 

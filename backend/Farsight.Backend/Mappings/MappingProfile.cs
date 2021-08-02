@@ -11,6 +11,18 @@ namespace Farsight.Backend.Mappings
     {
         public MappingProfile()
         {
+            //Dashboard widgets
+            CreateMap<Portfolio, DashboardWidgetPortfolio>();
+            CreateMap<Tuple<string, int>, DashboardWidgetHolding>()
+                .ForMember(dwh => dwh.Ticker, memberOptions =>
+                {
+                    memberOptions.MapFrom(t => t.Item1);
+                })
+                .ForMember(dwh => dwh.Quantity, memberOptions =>
+                {
+                    memberOptions.MapFrom(t => t.Item2);
+                });
+
             CreateMap<Portfolio, PortfolioSimple>()
                 .ForMember(ps => ps.HoldingCount, memberOptions => memberOptions.MapFrom(p => p.Holdings.Count));
             CreateMap<Portfolio, PortfolioDetailed>();
