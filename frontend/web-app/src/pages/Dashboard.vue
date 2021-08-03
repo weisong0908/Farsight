@@ -20,12 +20,11 @@
     <div class="columns">
       <div class="column">
         <div class="box">
-          <h1 class="title">Summary</h1>
-          <p>Capital Gain: xx</p>
-          <p>Dividend: xx</p>
-          <p>Total Return: xx</p>
+          <summary-widget></summary-widget>
         </div>
       </div>
+      <div class="column"></div>
+      <div class="column"></div>
     </div>
   </page>
 </template>
@@ -35,9 +34,16 @@ import Page from "../components/Page.vue";
 import PortfoliosWidget from "../dashboardWidgets/Portfolios.vue";
 import TopHoldingsWidget from "../dashboardWidgets/TopHoldings.vue";
 import RecentTradesWidget from "../dashboardWidgets/RecentTrades.vue";
+import SummaryWidget from "../dashboardWidgets/Summary.vue";
 
 export default {
-  components: { Page, PortfoliosWidget, TopHoldingsWidget, RecentTradesWidget },
+  components: {
+    Page,
+    PortfoliosWidget,
+    TopHoldingsWidget,
+    RecentTradesWidget,
+    SummaryWidget
+  },
   data() {
     return {};
   },

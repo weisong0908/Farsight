@@ -30,5 +30,15 @@ export default {
         }
       }
     );
+  },
+  async getSummaryWidgetData(accessToken) {
+    return await axios.get(
+      `${process.env.VUE_APP_BACKEND}/dashboardwidgets/summary`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
   }
 };

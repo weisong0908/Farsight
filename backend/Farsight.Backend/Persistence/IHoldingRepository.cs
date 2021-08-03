@@ -12,6 +12,7 @@ namespace Farsight.Backend.Persistence
         Task<Holding> GetHolding(Guid id);
         Task<IEnumerable<Holding>> GetHoldings();
         Task<IEnumerable<Holding>> GetHoldings(Guid portfolioId);
+        Task<IEnumerable<Holding>> GetHoldingsByOwnerId(Guid ownerId);
         Task<IEnumerable<Tuple<string, int>>> GetHoldingQuantityPairsByOwner(Guid ownerId);
         void UpdateHolding(Holding holding);
     }

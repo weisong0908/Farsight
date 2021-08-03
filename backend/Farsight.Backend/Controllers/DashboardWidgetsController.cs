@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Farsight.Backend.Extensions;
 using Farsight.Backend.Models;
 using Farsight.Backend.Models.DTOs;
 using Farsight.Backend.Models.DTOs.DashboardWidgets;
@@ -69,6 +70,35 @@ namespace Farsight.Backend.Controllers
             var trades = _mapper.Map<IList<RecentTrade>>(await _tradeRepository.GetRecentTradesByOwner(new Guid(ownerId)));
 
             return Ok(trades);
+        }
+
+        [HttpGet("summary")]
+        public async Task<IActionResult> GetSummaryWidgetData()
+        {
+            var ownerId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var holdings = await _holdingRepository.GetHoldingsByOwnerId(new Guid(ownerId));
+            var summary = new Summary();
+
+            foreach (var holding in holdings)
+            {
+                var trades = holding.Trades;
+                var invested = trades.GetHoldingCost();
+                var dividend = trades
+                    .Where(t => t.TradeType == TradeType.Dividend)
+                    .Sum(t => t.UnitPrice * t.Quantity - t.Fees);
+                var quantity = trades.GetHoldingQuantity();
+                var marketPrice = (await _stockService.GetPreviousClosePrice(holding.Ticker))
+                    .Results?.FirstOrDefault();
+                if (marketPrice == null)
+                    continue;
+
+                summary.CapitalGain += (marketPrice.Close - invested) * quantity;
+                summary.Invested += invested * quantity;
+                summary.Dividend += dividend;
+            }
+
+            return Ok(summary);
         }
     }
 }

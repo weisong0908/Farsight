@@ -30,6 +30,14 @@ namespace Farsight.Backend.Persistence
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Holding>> GetHoldingsByOwnerId(Guid ownerId)
+        {
+            return await _dbContext.Holdings
+                .Where(h => h.Portfolio.OwnerId == ownerId)
+                .Include(h => h.Trades)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Tuple<string, int>>> GetHoldingQuantityPairsByOwner(Guid ownerId)
         {
             var holdings = await _dbContext.Holdings
