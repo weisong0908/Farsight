@@ -11,9 +11,9 @@ export default {
       }
     );
   },
-  async getHoldingsWidgetData(accessToken) {
+  async getTopHoldingsWidgetData(accessToken) {
     return await axios.get(
-      `${process.env.VUE_APP_BACKEND}/dashboardwidgets/holdings`,
+      `${process.env.VUE_APP_BACKEND}/dashboardwidgets/topholdings`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`

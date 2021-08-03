@@ -8,7 +8,7 @@
       </div>
       <div class="column">
         <div class="box">
-          <holdings-widget></holdings-widget>
+          <top-holdings-widget></top-holdings-widget>
         </div>
       </div>
       <div class="column">
@@ -33,11 +33,11 @@
 <script>
 import Page from "../components/Page.vue";
 import PortfoliosWidget from "../dashboardWidgets/Portfolios.vue";
-import HoldingsWidget from "../dashboardWidgets/Holdings.vue";
+import TopHoldingsWidget from "../dashboardWidgets/TopHoldings.vue";
 import RecentTradesWidget from "../dashboardWidgets/RecentTrades.vue";
 
 export default {
-  components: { Page, PortfoliosWidget, HoldingsWidget, RecentTradesWidget },
+  components: { Page, PortfoliosWidget, TopHoldingsWidget, RecentTradesWidget },
   data() {
     return {};
   },

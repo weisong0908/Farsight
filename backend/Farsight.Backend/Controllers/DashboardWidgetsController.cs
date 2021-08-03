@@ -39,19 +39,17 @@ namespace Farsight.Backend.Controllers
         {
             var ownerId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var portfolios = _mapper.Map<IList<DashboardWidgetPortfolio>>(await _portfolioRepository.GetPortfolios(new Guid(ownerId)));
+            var portfolios = _mapper.Map<IList<Models.DTOs.DashboardWidgets.Portfolio>>(await _portfolioRepository.GetPortfolioNamesByOwnerId(new Guid(ownerId)));
 
-            return Ok(portfolios.Take(3));
+            return Ok(portfolios);
         }
 
-        [HttpGet("holdings")]
-        public async Task<IActionResult> GetHoldingsWidgetData()
+        [HttpGet("topHoldings")]
+        public async Task<IActionResult> GetTopHoldingsWidgetData()
         {
             var ownerId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var holdingQuantityPairs = await _holdingRepository.GetHoldingQuantityPairsByOwner(new Guid(ownerId));
-
-            var holdings = _mapper.Map<IList<DashboardWidgetHolding>>(holdingQuantityPairs);
+            var holdings = _mapper.Map<IList<TopHolding>>(await _holdingRepository.GetHoldingQuantityPairsByOwner(new Guid(ownerId)));
 
             foreach (var holding in holdings)
             {

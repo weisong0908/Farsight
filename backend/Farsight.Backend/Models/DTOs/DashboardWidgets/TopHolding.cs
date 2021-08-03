@@ -1,8 +1,6 @@
-using System;
-
-namespace Farsight.Backend.Models.DTOs
+namespace Farsight.Backend.Models.DTOs.DashboardWidgets
 {
-    public class DashboardWidgetHolding
+    public class TopHolding
     {
         public string Ticker { get; set; }
         public int Quantity { get; set; }

@@ -30,6 +30,15 @@ namespace Farsight.Backend.Persistence
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<string>> GetPortfolioNamesByOwnerId(Guid ownerId)
+        {
+            return await _dbContext.Portfolios
+                .Where(p => p.OwnerId == ownerId)
+                .Take(3)
+                .Select(p => p.Name)
+                .ToListAsync();
+        }
+
         public async Task<Portfolio> GetPortfolio(Guid id)
         {
             return await _dbContext.Portfolios

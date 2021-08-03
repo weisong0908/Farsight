@@ -1,7 +1,7 @@
 namespace Farsight.Backend.Models.DTOs.DashboardWidgets
 {
-    public class TopHoldings
+    public class Portfolio
     {
-        
+        public string Name { get; set; }
     }
 }

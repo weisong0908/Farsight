@@ -5,6 +5,7 @@ using Farsight.Backend.Models;
 using Farsight.Backend.Models.DTOs;
 using Farsight.Backend.Extensions;
 using Farsight.Backend.Models.DTOs.DashboardWidgets;
+using Portfolio = Farsight.Backend.Models.Portfolio;
 
 namespace Farsight.Backend.Mappings
 {
@@ -13,8 +14,9 @@ namespace Farsight.Backend.Mappings
         public MappingProfile()
         {
             //Dashboard widgets
-            CreateMap<Portfolio, DashboardWidgetPortfolio>();
-            CreateMap<Tuple<string, int>, DashboardWidgetHolding>()
+            CreateMap<string, Models.DTOs.DashboardWidgets.Portfolio>()
+                .ForMember(p => p.Name, memberOptions => memberOptions.MapFrom(s => s));
+            CreateMap<Tuple<string, int>, TopHolding>()
                 .ForMember(dwh => dwh.Ticker, memberOptions =>
                 {
                     memberOptions.MapFrom(t => t.Item1);

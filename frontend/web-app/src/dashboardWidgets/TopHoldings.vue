@@ -32,7 +32,7 @@ export default {
   async created() {
     const accessToken = this.getAccessToken();
 
-    const { data } = await dashboardWidgetsService.getHoldingsWidgetData(
+    const { data } = await dashboardWidgetsService.getTopHoldingsWidgetData(
       accessToken
     );
     this.holdings = data;
