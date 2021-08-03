@@ -4,6 +4,7 @@ using AutoMapper;
 using Farsight.Backend.Models;
 using Farsight.Backend.Models.DTOs;
 using Farsight.Backend.Extensions;
+using Farsight.Backend.Models.DTOs.DashboardWidgets;
 
 namespace Farsight.Backend.Mappings
 {
@@ -21,6 +22,19 @@ namespace Farsight.Backend.Mappings
                 .ForMember(dwh => dwh.Quantity, memberOptions =>
                 {
                     memberOptions.MapFrom(t => t.Item2);
+                });
+            CreateMap<Tuple<string, TradeType, int>, RecentTrade>()
+                .ForMember(rt => rt.Ticker, memberOptions =>
+                {
+                    memberOptions.MapFrom(t => t.Item1);
+                })
+                .ForMember(rt => rt.TradeType, memberOptions =>
+                {
+                    memberOptions.MapFrom(t => t.Item2);
+                })
+                .ForMember(rt => rt.Quantity, memberOptions =>
+                {
+                    memberOptions.MapFrom(t => t.Item3);
                 });
 
             CreateMap<Portfolio, PortfolioSimple>()

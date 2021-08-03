@@ -28,6 +28,18 @@ namespace Farsight.Backend.Persistence
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Tuple<string, TradeType, int>>> GetRecentTradesByOwner(Guid ownerId)
+        {
+            var trades = await _dbContext.Trades
+                .Where(t => t.Holding.Portfolio.OwnerId == ownerId)
+                .Include(t => t.Holding)
+                .OrderByDescending(t => t.Date)
+                .Take(3)
+                .ToListAsync();
+
+            return trades.Select(t => new Tuple<string, TradeType, int>(t.Holding.Ticker, t.TradeType, t.Quantity));
+        }
+
         public async Task<Trade> GetTrade(Guid id)
         {
             return await _dbContext.Trades

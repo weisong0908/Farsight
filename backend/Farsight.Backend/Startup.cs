@@ -46,15 +46,15 @@ namespace Farsight.Backend
             services.AddAutoMapper(configAction => configAction.AddProfile<MappingProfile>(), typeof(Startup));
 
             services.AddCors(setupAction =>
+            {
+                setupAction.AddPolicy("farsight", configurePolicy =>
                 {
-                    setupAction.AddPolicy("farsight", configurePolicy =>
-                    {
-                        configurePolicy
-                            .WithOrigins(Configuration.GetSection("Security:AllowedOrigins").Get<string[]>())
-                            .AllowAnyHeader()
-                            .AllowAnyMethod();
-                    });
+                    configurePolicy
+                        .WithOrigins(Configuration.GetSection("Security:AllowedOrigins").Get<string[]>())
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
                 });
+            });
 
             services
                 .AddAuthentication(configureOptions =>

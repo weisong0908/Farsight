@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Farsight.Backend.Models;
 using Farsight.Backend.Models.DTOs;
+using Farsight.Backend.Models.DTOs.DashboardWidgets;
 using Farsight.Backend.Persistence;
 using Farsight.Backend.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -20,13 +21,15 @@ namespace Farsight.Backend.Controllers
     {
         private readonly IPortfolioRepository _portfolioRepository;
         private readonly IHoldingRepository _holdingRepository;
+        private readonly ITradeRepository _tradeRepository;
         private readonly IMapper _mapper;
         private readonly IStockService _stockService;
 
-        public DashboardWidgetsController(IPortfolioRepository portfolioRepository, IHoldingRepository holdingRepository, IMapper mapper, IStockService stockService)
+        public DashboardWidgetsController(IPortfolioRepository portfolioRepository, IHoldingRepository holdingRepository, ITradeRepository tradeRepository, IMapper mapper, IStockService stockService)
         {
             _portfolioRepository = portfolioRepository;
             _holdingRepository = holdingRepository;
+            _tradeRepository = tradeRepository;
             _mapper = mapper;
             _stockService = stockService;
         }
@@ -58,6 +61,16 @@ namespace Farsight.Backend.Controllers
             }
 
             return Ok(holdings.OrderByDescending(h => h.MarketValue).Take(3));
+        }
+
+        [HttpGet("recentTrades")]
+        public async Task<IActionResult> GetRecentTradesWidgetData()
+        {
+            var ownerId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            var trades = _mapper.Map<IList<RecentTrade>>(await _tradeRepository.GetRecentTradesByOwner(new Guid(ownerId)));
+
+            return Ok(trades);
         }
     }
 }

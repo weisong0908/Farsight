@@ -12,7 +12,9 @@
         </div>
       </div>
       <div class="column">
-        <div class="box"></div>
+        <div class="box">
+          <recent-trades-widget></recent-trades-widget>
+        </div>
       </div>
     </div>
     <div class="columns">
@@ -32,9 +34,10 @@
 import Page from "../components/Page.vue";
 import PortfoliosWidget from "../dashboardWidgets/Portfolios.vue";
 import HoldingsWidget from "../dashboardWidgets/Holdings.vue";
+import RecentTradesWidget from "../dashboardWidgets/RecentTrades.vue";
 
 export default {
-  components: { Page, PortfoliosWidget, HoldingsWidget },
+  components: { Page, PortfoliosWidget, HoldingsWidget, RecentTradesWidget },
   data() {
     return {};
   },

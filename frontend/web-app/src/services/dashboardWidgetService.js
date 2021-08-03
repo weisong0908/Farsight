@@ -20,5 +20,15 @@ export default {
         }
       }
     );
+  },
+  async getRecentTradesWidgetData(accessToken) {
+    return await axios.get(
+      `${process.env.VUE_APP_BACKEND}/dashboardwidgets/recenttrades`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
   }
 };
