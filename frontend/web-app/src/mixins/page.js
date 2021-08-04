@@ -50,6 +50,11 @@ export default {
             username: this.username,
             data: resp.data
           });
+        })
+        .catch(error => {
+          this.notifyError("Error logging in", error);
+          this.$store.dispatch("auth/logout");
+          this.$router.push({ name: "login" });
         });
 
       return this.$store.state.auth.accessToken;

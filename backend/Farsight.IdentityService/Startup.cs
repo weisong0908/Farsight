@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Farsight.IdentityService.ExtensionGrantValidators;
 using Farsight.IdentityService.Models;
 using Farsight.IdentityService.Options;
@@ -42,6 +43,7 @@ namespace Farsight.IdentityService
                 .AddEntityFrameworkStores<FarsightIdentityServiceDbContext>()
                 .AddDefaultTokenProviders();
 
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
             services.AddIdentityServer()
                 .AddInMemoryClients(Configuration.GetSection("IdentityServer:Clients"))
                 .AddInMemoryIdentityResources(Config.IdentityResources())
@@ -50,7 +52,13 @@ namespace Farsight.IdentityService
                 .AddAspNetIdentity<FarsightUser>()
                 .AddDeveloperSigningCredential()
                 .AddResourceOwnerValidator<CustomResourceOwnerPasswordValidator>()
-                .AddProfileService<ProfileService>();
+                .AddProfileService<ProfileService>()
+                .AddOperationalStore(storeOptionsAction =>
+                {
+                    storeOptionsAction.ConfigureDbContext = builder =>
+                        builder.UseNpgsql(Configuration.GetConnectionString("Default"),
+                            npgsqlOptionsAction => npgsqlOptionsAction.MigrationsAssembly(migrationsAssembly));
+                });
 
             services.AddScoped<IEmailService, EmailService>();
 
