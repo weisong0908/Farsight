@@ -53,34 +53,35 @@ export default {
     };
   },
   mixins: [pageMixin],
-  created() {
+  async created() {
     const accessToken = this.$store.state.auth.accessToken;
 
-    authService.getUserInfo(accessToken).then(resp => {
+    try {
+      const { data } = await authService.getUserInfo(accessToken);
       this.isDataReady = true;
-      this.email = resp.data.email;
-      this.email_verified = resp.data.email_verified;
-      this.profilePicture = resp.data.picture;
-    });
+      this.email = data.email;
+      this.email_verified = data.email_verified;
+      this.profilePicture = data.picture;
+    } catch (error) {
+      this.notifyError("Unable to sign up", error);
+    }
   },
   methods: {
-    updateUserInfo(userInfo) {
+    async updateUserInfo(userInfo) {
       const accessToken = this.getAccessToken();
 
-      authService
-        .updateUserInfo(
+      try {
+        await authService.updateUserInfo(
           { userId: this.userId, profilePicture: userInfo.profilePicture },
           accessToken
-        )
-        .then(() => {
-          this.notifySuccess(
-            "User information updated",
-            `User information has been updated successfully.`
-          );
-        })
-        .catch(err => {
-          this.notifyError("Unable to update user info", err);
-        });
+        );
+        this.notifySuccess(
+          "User information updated",
+          `User information has been updated successfully.`
+        );
+      } catch (error) {
+        this.notifyError("Unable to update user info", error);
+      }
     }
   }
 };

@@ -43,10 +43,6 @@ export default {
     TopHoldingsWidget,
     RecentTradesWidget,
     SummaryWidget
-  },
-  data() {
-    return {};
-  },
-  mounted() {}
+  }
 };
 </script>

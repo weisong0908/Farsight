@@ -27,21 +27,20 @@ export default {
   },
   mixins: [pageMixin],
   methods: {
-    changePassword(password) {
-      authService
-        .confirmResetPassword({
+    async changePassword(password) {
+      try {
+        const { data } = await authService.confirmResetPassword({
           userId: this.userId,
           token: this.token,
           newPassword: password
-        })
-        .then(resp => {
-          this.notifySuccess("Password changed", resp.data).then(() => {
-            this.$router.replace({ name: "dashboard" });
-          });
-        })
-        .catch(err => {
-          this.notifyError("Unable to change password", err);
         });
+
+        await this.notifySuccess("Password changed", data);
+
+        this.$router.replace({ name: "dashboard" });
+      } catch (error) {
+        this.notifyError("Unable to change password", error);
+      }
     }
   }
 };

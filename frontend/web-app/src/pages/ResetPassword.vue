@@ -19,15 +19,14 @@ export default {
   components: { Page, ResetPasswordForm },
   mixins: [pageMixin],
   methods: {
-    resetPassword(email) {
-      authService
-        .resetPassword(email)
-        .then(resp => {
-          this.notifySuccess("Please check your email to continue", resp.data);
-        })
-        .catch(err => {
-          this.notifyError("Unable to reset password", err);
-        });
+    async resetPassword(email) {
+      try {
+        const { data } = await authService.resetPassword(email);
+
+        await this.notifySuccess("Please check your email to continue", data);
+      } catch (error) {
+        this.notifyError("Unable to reset password", error);
+      }
     }
   }
 };

@@ -19,17 +19,20 @@ export default {
   components: { Page, SignUpForm },
   mixins: [pageMixin],
   methods: {
-    signUp(account) {
-      authService
-        .signup(account.username, account.newPassword, account.email)
-        .then(resp => {
-          this.notifySuccess("Signed up successfully", resp).then(() => {
-            this.$router.push(this.$route.query.redirectTo || "/");
-          });
-        })
-        .catch(err => {
-          this.notifyError("Unable to sign up", err);
-        });
+    async signUp(account) {
+      try {
+        const resp = await authService.signup(
+          account.username,
+          account.newPassword,
+          account.email
+        );
+
+        await this.notifySuccess("Signed up successfully", resp);
+
+        this.$router.push(this.$route.query.redirectTo || "/");
+      } catch (error) {
+        this.notifyError("Unable to sign up", error);
+      }
     }
   }
 };

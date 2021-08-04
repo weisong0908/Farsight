@@ -74,29 +74,27 @@ export default {
     }
   },
   mixins: [pageMixin],
-  created() {
+  async created() {
     const accessToken = this.getAccessToken();
 
-    portfolioService
-      .getPortfolios(accessToken)
-      .then(resp => {
-        this.portfolios = resp.data;
-      })
-      .then(() => {
-        this.portfolios.forEach(p => {
-          portfolioService.getPortfolio(p.id, accessToken).then(resp => {
-            resp.data.holdings.forEach(h => {
-              this.holdings.push({
-                ...h,
-                portfolio: { id: resp.data.id, name: resp.data.name }
-              });
+    try {
+      const { data } = await portfolioService.getPortfolios(accessToken);
+      this.portfolios = data;
+      this.portfolios.forEach(p => {
+        portfolioService.getPortfolio(p.id, accessToken).then(resp => {
+          resp.data.holdings.forEach(h => {
+            this.holdings.push({
+              ...h,
+              portfolio: { id: resp.data.id, name: resp.data.name }
             });
           });
         });
-      })
-      .then(() => {
-        this.isDataReady = true;
       });
+
+      this.isDataReady = true;
+    } catch (error) {
+      this.notifyError("Unable to retreve holdings", error);
+    }
   }
 };
 </script>

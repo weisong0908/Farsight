@@ -46,26 +46,24 @@ export default {
   },
   mixins: [pageMixin],
   methods: {
-    changePassword(credentials) {
+    async changePassword(credentials) {
       const accessToken = this.getAccessToken();
 
-      authService
-        .changePassword(
+      try {
+        const { data } = await authService.changePassword(
           {
             userId: this.userId,
             oldPassword: credentials.currentPassword,
             newPassword: credentials.newPassword
           },
           accessToken
-        )
-        .then(resp => {
-          this.notifySuccess("Password changed", resp.data).then(() => {
-            this.$router.replace({ name: "dashboard" });
-          });
-        })
-        .catch(err => {
-          this.notifyError("Unable to change password", err);
-        });
+        );
+        await this.notifySuccess("Password changed", data);
+
+        this.$router.replace({ name: "dashboard" });
+      } catch (error) {
+        this.notifyError("Unable to change password", error);
+      }
     }
   }
 };

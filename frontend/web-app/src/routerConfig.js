@@ -6,7 +6,6 @@ import Portfolios from "./pages/Portfolios";
 import Portfolio from "./pages/Portfolio";
 import Holdings from "./pages/Holdings";
 import Holding from "./pages/Holding";
-import AddHoldingForm from "./pages/AddHoldingForm";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import ConfirmEmail from "./pages/ConfirmEmail";
@@ -38,12 +37,6 @@ const routerConfig = new VueRouter({
       component: Holdings,
       title: "Holdings",
       parent: "dashboard"
-    },
-    {
-      name: "addNewHolding",
-      path: "/holdings/new",
-      component: AddHoldingForm,
-      title: "Add New Holding"
     },
     {
       name: "holding",

@@ -28,8 +28,6 @@ export default {
       r => r.name == this.$route.name
     ).title;
     document.title = process.env.VUE_APP_TITLE + " | " + this.title;
-
-    this.getAccessToken();
   }
 };
 </script>

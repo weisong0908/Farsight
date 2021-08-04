@@ -22,17 +22,20 @@ export default {
     next();
   },
   methods: {
-    confirmEmail() {
+    async confirmEmail() {
       this.userId = this.$route.query.userId;
       this.token = this.$route.query.token;
 
-      authService.confirmEmail(this.userId, this.token).then(resp => {
-        this.$store.dispatch("alert/success", {
+      try {
+        const { data } = authService.confirmEmail(this.userId, this.token);
+        await this.$store.dispatch("alert/success", {
           heading: "Email is confirmed",
-          message: resp.data
+          message: data
         });
         this.$router.replace({ name: "dashboard" });
-      });
+      } catch (error) {
+        this.notifyError("Unable to confirm email", error);
+      }
     }
   }
 };

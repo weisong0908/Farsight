@@ -64,50 +64,50 @@ export default {
     };
   },
   mixins: [pageMixin],
-  created() {
-    portfolioService
-      .getPortfolios(this.getAccessToken())
-      .then(resp => {
-        this.portfolios = resp.data;
-      })
-      .catch(err => {
-        this.notifyError("Unable to retrieve portfolios", err);
-      });
+  async created() {
+    const accessToken = this.getAccessToken();
+
+    try {
+      const { data } = await portfolioService.getPortfolios(accessToken);
+      this.portfolios = data;
+    } catch (error) {
+      this.notifyError("Unable to retrieve portfolios", error);
+    }
   },
   methods: {
-    createPortfolio(portfolio) {
+    async createPortfolio(portfolio) {
       this.isAddPortfolioModalFormActive = false;
       const accessToken = this.getAccessToken();
       const userId = this.$store.state.auth.user.userId;
 
-      portfolioService
-        .createPortfolio({ ...portfolio, ownerId: userId }, accessToken)
-        .then(resp => {
-          this.notifySuccess(
-            "Portfolio created",
-            `New portfolio "${resp.data.name}" has been created successfully.`
-          ).then(() => {
-            this.$router.go();
-          });
-        })
-        .catch(err => {
-          this.notifyError("Unable to create portfolio", err);
-        });
+      try {
+        const { data } = await portfolioService.createPortfolio(
+          { ...portfolio, ownerId: userId },
+          accessToken
+        );
+
+        await this.notifySuccess(
+          "Portfolio created",
+          `New portfolio "${data.name}" has been created successfully.`
+        );
+        this.$router.go();
+      } catch (error) {
+        this.notifyError("Unable to create portfolio", error);
+      }
     },
-    deletePortfolio(portfolioId) {
-      portfolioService
-        .deletePortfolio(portfolioId, this.getAccessToken())
-        .then(() => {
-          this.notifySuccess(
-            "Portfolio deleted",
-            `Portfolio ${portfolioId} has been deleted.`
-          ).then(() => {
-            this.$router.go();
-          });
-        })
-        .catch(err => {
-          this.notifyError("Unable to delete portfolio", err);
-        });
+    async deletePortfolio(portfolioId) {
+      const accessToken = this.getAccessToken();
+
+      try {
+        await portfolioService.deletePortfolio(portfolioId, accessToken);
+        await this.notifySuccess(
+          "Portfolio deleted",
+          `Portfolio ${portfolioId} has been deleted.`
+        );
+        this.$router.go();
+      } catch (error) {
+        this.notifyError("Unable to delete portfolio", error);
+      }
     }
   }
 };
