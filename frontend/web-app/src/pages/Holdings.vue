@@ -40,9 +40,9 @@
                 </router-link>
               </td>
               <td>{{ holding.quantity }}</td>
-              <td>{{ holding.cost }}</td>
+              <td>{{ holding.unitCost }}</td>
               <td>
-                {{ holding.portfolio.name }}
+                {{ holding.portfolioName }}
               </td>
             </tr>
           </tbody>
@@ -55,6 +55,7 @@
 <script>
 import Page from "../components/Page.vue";
 import pageMixin from "../mixins/page";
+import holdingService from "../services/holdingService";
 import portfolioService from "../services/portfolioService";
 
 export default {
@@ -70,7 +71,7 @@ export default {
     filteredHoldings() {
       return this.selectedPortfolio === "all"
         ? this.holdings
-        : this.holdings.filter(h => h.portfolio.id === this.selectedPortfolio);
+        : this.holdings.filter(h => h.portfolioId === this.selectedPortfolio);
     }
   },
   mixins: [pageMixin],
@@ -78,18 +79,19 @@ export default {
     const accessToken = this.getAccessToken();
 
     try {
-      const { data } = await portfolioService.getPortfolios(accessToken);
-      this.portfolios = data;
-      this.portfolios.forEach(p => {
-        portfolioService.getPortfolio(p.id, accessToken).then(resp => {
-          resp.data.holdings.forEach(h => {
-            this.holdings.push({
-              ...h,
-              portfolio: { id: resp.data.id, name: resp.data.name }
-            });
-          });
-        });
-      });
+      this.portfolios = (
+        await portfolioService.getPortfolioListItems(accessToken)
+      ).data;
+
+      this.holdings = (
+        await holdingService.getHoldingListItems(accessToken)
+      ).data;
+
+      for (const holding of this.holdings) {
+        holding["portfolioName"] = this.portfolios.filter(
+          p => p.id === holding.portfolioId
+        )[0].name;
+      }
 
       this.isDataReady = true;
     } catch (error) {

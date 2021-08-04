@@ -6,6 +6,7 @@ using Farsight.Backend.Models.DTOs;
 using Farsight.Backend.Extensions;
 using Farsight.Backend.Models.DTOs.DashboardWidgets;
 using Portfolio = Farsight.Backend.Models.Portfolio;
+using Farsight.Backend.Models.DTOs.Listings;
 
 namespace Farsight.Backend.Mappings
 {
@@ -37,6 +38,22 @@ namespace Farsight.Backend.Mappings
                 .ForMember(rt => rt.Quantity, memberOptions =>
                 {
                     memberOptions.MapFrom(t => t.Item3);
+                });
+
+            //Listings
+            CreateMap<Portfolio, PortfolioListItem>()
+                .ForMember(pli => pli.HoldingCount, memberOptions => memberOptions.MapFrom(p => p.Holdings.Count));
+
+            CreateMap<Holding, HoldingListItem>()
+                .ForMember(hli => hli.Quantity, memberOptions =>
+                {
+                    memberOptions.PreCondition(h => h.Trades.Count > 0);
+                    memberOptions.MapFrom(h => h.Trades.GetHoldingQuantity());
+                })
+                .ForMember(hli => hli.UnitCost, memberOptions =>
+                {
+                    memberOptions.PreCondition(h => h.Trades.Count > 0);
+                    memberOptions.MapFrom(h => h.Trades.GetHoldingCost());
                 });
 
             CreateMap<Portfolio, PortfolioSimple>()
