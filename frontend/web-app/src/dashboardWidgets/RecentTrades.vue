@@ -3,7 +3,10 @@
     <h1 class="subtitle">Recent Trades</h1>
     <table class="table is-fullwidth">
       <tbody>
-        <tr v-for="trade in recentTrades" :key="trade.ticker">
+        <tr
+          v-for="trade in recentTrades"
+          :key="trade.ticker + trade.tradeType + trade.quantity"
+        >
           <td>{{ trade.ticker }}</td>
           <td>
             <span class="icon-text">
