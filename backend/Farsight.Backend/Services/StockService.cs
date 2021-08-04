@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -82,7 +83,6 @@ namespace Farsight.Backend.Services
                 polygonTickerDetails = JsonSerializer.Deserialize<PolygonTickerDetails>(content);
 
                 _memoryCache.Set<PolygonTickerDetails>($"tickers.details.{ticker}", polygonTickerDetails);
-
             }
             catch (HttpRequestException e)
             {
