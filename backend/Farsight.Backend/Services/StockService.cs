@@ -139,7 +139,7 @@ namespace Farsight.Backend.Services
                 previousClosePriceResponse = JsonSerializer.Deserialize<PolygonAggregatesResponse>(content);
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(System.TimeSpan.FromHours(1));
+                    .SetAbsoluteExpiration(System.TimeSpan.FromHours(12));
                 _memoryCache.Set<PolygonAggregatesResponse>($"tickers.previousClose.{ticker}", previousClosePriceResponse, cacheEntryOptions);
             }
             catch (HttpRequestException e)
