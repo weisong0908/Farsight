@@ -117,9 +117,9 @@ export default {
     }
   },
   methods: {
-    logout() {
-      this.$store.dispatch("auth/logout");
-
+    async logout() {
+      await this.$store.dispatch("auth/logout");
+      await this.$store.dispatch("auth/clearSilentRefresh");
       this.isBurgerMenuActive = false;
       this.$router.push({ name: "login" });
     }

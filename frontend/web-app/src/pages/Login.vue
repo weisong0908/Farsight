@@ -30,6 +30,11 @@ export default {
           data: data
         });
 
+        await this.$store.dispatch(
+          "auth/setSilentRefresh",
+          data.expires_in * 1000
+        );
+
         this.notifySuccess("Logged in", `Welcome back, ${account.username}.`);
 
         this.$router.push(this.$route.query.redirectTo || "/");

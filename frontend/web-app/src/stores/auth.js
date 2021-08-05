@@ -1,5 +1,6 @@
 import jwt from "../utils/jwt";
 import moment from "moment";
+import authService from "../services/authService";
 
 export default {
   state: {
@@ -11,7 +12,8 @@ export default {
     },
     accessToken: "",
     refreshToken: "",
-    expiresAt: ""
+    expiresAt: "",
+    silentRefresh: null
   },
   mutations: {
     setStatus(state, status) {
@@ -28,6 +30,9 @@ export default {
     },
     setExpiresAt(state, expiresAt) {
       state.expiresAt = expiresAt;
+    },
+    setSilentRefresh(state, silentRefresh) {
+      state.silentRefresh = silentRefresh;
     }
   },
   actions: {
@@ -55,6 +60,32 @@ export default {
       commit("setAccessToken", "");
       commit("setRefreshToken", "");
       commit("setExpiresAt", null);
+    },
+    setSilentRefresh(context, interval) {
+      const silentRefresh = setInterval(async () => {
+        console.log("silent refresh");
+        try {
+          const { data } = await authService.refreshAuth(
+            context.state.refreshToken
+          );
+
+          context.commit("setAccessToken", data.access_token);
+          context.commit("setRefreshToken", data.refresh_token);
+          const expiresAt = moment(new Date())
+            .add(data.expires_in, "s")
+            .toDate()
+            .toString();
+          context.commit("setExpiresAt", expiresAt);
+        } catch (error) {
+          console.log("error refresh login silently", error);
+        }
+      }, interval);
+
+      context.commit("setSilentRefresh", silentRefresh);
+    },
+    clearSilentRefresh(context) {
+      clearInterval(context.state.silentRefresh);
+      context.commit("setSilentRefresh", null);
     }
   }
 };

@@ -1,5 +1,3 @@
-import authService from "../services/authService";
-
 export default {
   data() {
     return {
@@ -38,25 +36,6 @@ export default {
       });
     },
     getAccessToken() {
-      const expiresAt = new Date(this.$store.state.auth.expiresAt);
-      const now = new Date();
-      if (expiresAt && expiresAt > now)
-        return this.$store.state.auth.accessToken;
-
-      authService
-        .refreshAuth(this.$store.state.auth.refreshToken)
-        .then(resp => {
-          this.$store.dispatch("auth/login", {
-            username: this.username,
-            data: resp.data
-          });
-        })
-        .catch(error => {
-          this.notifyError("Error logging in", error);
-          this.$store.dispatch("auth/logout");
-          this.$router.push({ name: "login" });
-        });
-
       return this.$store.state.auth.accessToken;
     }
   }
