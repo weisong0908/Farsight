@@ -37,13 +37,13 @@ export default {
   },
   actions: {
     login({ commit }, payload) {
-      const { access_token, refresh_token, expires_in } = payload.data;
-      const { sub, profilePicture } = jwt.decode(access_token);
+      const { access_token, refresh_token, expires_in } = payload;
+      const { sub, profilePicture, username } = jwt.decode(access_token);
 
       commit("setStatus", true);
       commit("setUser", {
         userId: sub,
-        username: payload.username,
+        username: username,
         profilePicture: profilePicture
       });
       commit("setAccessToken", access_token);

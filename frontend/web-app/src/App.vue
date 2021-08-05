@@ -13,26 +13,22 @@ export default {
   components: { Navbar },
   name: "App",
   created() {
+    console.log("created");
     if (this.$store.state.auth.isAuth) this.getAccessToken();
+    else this.$router.push({ name: "login" });
   },
   methods: {
     async getAccessToken() {
-      const expiresAt = new Date(this.$store.state.auth.expiresAt);
-      const now = new Date();
-      if (expiresAt && expiresAt > now)
-        return this.$store.state.auth.accessToken;
-
       try {
         const { data } = await authService.refreshAuth(
           this.$store.state.auth.refreshToken
         );
 
-        this.$store.dispatch("auth/login", {
-          username: data.username,
-          data: data
-        });
+        this.$store.dispatch("auth/login", data);
 
-        return this.$store.state.auth.accessToken;
+        this.$store.dispatch("auth/setSilentRefresh", data.expires_in * 1000);
+
+        return;
       } catch (error) {
         this.notifyError("Error logging in", error);
         this.$store.dispatch("auth/logout");

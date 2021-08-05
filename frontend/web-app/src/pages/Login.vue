@@ -25,15 +25,9 @@ export default {
           account.username,
           account.password
         );
-        await this.$store.dispatch("auth/login", {
-          username: account.username,
-          data: data
-        });
+        await this.$store.dispatch("auth/login", data);
 
-        await this.$store.dispatch(
-          "auth/setSilentRefresh",
-          data.expires_in * 1000
-        );
+        this.$store.dispatch("auth/setSilentRefresh", data.expires_in * 1000);
 
         this.notifySuccess("Logged in", `Welcome back, ${account.username}.`);
 

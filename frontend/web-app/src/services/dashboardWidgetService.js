@@ -3,7 +3,7 @@ import axios from "axios";
 export default {
   async getPortfoliosWidgetData(accessToken) {
     return await axios.get(
-      `${process.env.VUE_APP_BACKEND}/dashboardwidgets/portfolios`,
+      `${process.env.VUE_APP_BACKEND}/dashboardWidgets/portfolios`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`
@@ -13,7 +13,7 @@ export default {
   },
   async getTopHoldingsWidgetData(accessToken) {
     return await axios.get(
-      `${process.env.VUE_APP_BACKEND}/dashboardwidgets/topholdings`,
+      `${process.env.VUE_APP_BACKEND}/dashboardWidgets/topHoldings`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`
@@ -23,7 +23,7 @@ export default {
   },
   async getRecentTradesWidgetData(accessToken) {
     return await axios.get(
-      `${process.env.VUE_APP_BACKEND}/dashboardwidgets/recenttrades`,
+      `${process.env.VUE_APP_BACKEND}/dashboardWidgets/recentTrades`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`
@@ -33,7 +33,7 @@ export default {
   },
   async getSummaryWidgetData(accessToken) {
     return await axios.get(
-      `${process.env.VUE_APP_BACKEND}/dashboardwidgets/summary`,
+      `${process.env.VUE_APP_BACKEND}/dashboardWidgets/summary`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`
