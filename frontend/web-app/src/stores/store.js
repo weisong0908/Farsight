@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import createPersistedState from "vuex-persistedstate";
+import common from "./common.js";
 import holding from "./holding.js";
 import auth from "./auth.js";
 import alert from "./alert";
@@ -10,6 +11,10 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
+    common: {
+      namespaced: true,
+      ...common
+    },
     holding: {
       namespaced: true,
       ...holding
