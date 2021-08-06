@@ -52,8 +52,8 @@ import charting from "../utils/charting";
 export default {
   data() {
     return {
-      invested: 100,
-      capitalGain: 2,
+      invested: 0,
+      capitalGain: 0,
       dividend: 0
     };
   },
