@@ -7,6 +7,8 @@ const colours = [
   "hsl(0, 0%, 86%)"
 ];
 
+Chart.defaults.font.family = "Rubik";
+
 export default {
   plotPriceTrend(contextId, trend, title) {
     return new Chart(document.getElementById(contextId), {
