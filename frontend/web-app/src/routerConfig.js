@@ -1,6 +1,7 @@
 import VueRouter from "vue-router";
 import store from "./stores/store";
 
+import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import Portfolios from "./pages/Portfolios";
 import Portfolio from "./pages/Portfolio";
@@ -90,16 +91,22 @@ const routerConfig = new VueRouter({
     },
     {
       name: "dashboard",
-      path: "/",
+      path: "/dashboard",
       component: Dashboard,
       title: "Dashboard"
+    },
+    {
+      name: "home",
+      path: "/",
+      component: Home,
+      title: "Farsight"
     }
   ]
 });
 
 routerConfig.beforeEach((to, from, next) => {
   const publicPages = [
-    "dashboard",
+    "home",
     "login",
     "signUp",
     "confirmEmail",
@@ -112,7 +119,10 @@ routerConfig.beforeEach((to, from, next) => {
     store.state.auth.isAuth == false
   )
     next({ name: "login" });
-  else next();
+
+  if (store.state.auth.isAuth && to.path == "/") next({ name: "dashboard" });
+
+  next();
 });
 
 export default routerConfig;

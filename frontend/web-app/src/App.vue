@@ -18,7 +18,7 @@ export default {
       this.getAccessToken();
       await this.$store.dispatch("common/appIsReady");
     } else {
-      this.$router.push({ name: "login" });
+      this.$router.push({ name: "home" });
       await this.$store.dispatch("common/appIsReady");
     }
   },

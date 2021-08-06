@@ -31,7 +31,9 @@ export default {
 
         this.notifySuccess("Logged in", `Welcome back, ${account.username}.`);
 
-        this.$router.push(this.$route.query.redirectTo || "/");
+        this.$router.push(
+          this.$route.query.redirectTo || { name: "dashboard" }
+        );
       } catch (error) {
         await this.$store.dispatch("auth/logout");
         this.notifyError("Unable to log in", error);
