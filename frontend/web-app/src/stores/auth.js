@@ -81,6 +81,7 @@ export default {
         }
       }, interval);
 
+      console.log("silent refresh enabled");
       context.commit("setSilentRefresh", silentRefresh);
     },
     clearSilentRefresh(context) {

@@ -12,10 +12,15 @@ import authService from "./services/authService";
 export default {
   components: { Navbar },
   name: "App",
-  created() {
-    console.log("created");
-    if (this.$store.state.auth.isAuth) this.getAccessToken();
-    else this.$router.push({ name: "login" });
+  async created() {
+    if (this.$store.state.auth.isAuth) {
+      await this.$store.dispatch("common/appIsNotReady");
+      this.getAccessToken();
+      await this.$store.dispatch("common/appIsReady");
+    } else {
+      this.$router.push({ name: "login" });
+      await this.$store.dispatch("common/appIsReady");
+    }
   },
   methods: {
     async getAccessToken() {
@@ -27,8 +32,6 @@ export default {
         this.$store.dispatch("auth/login", data);
 
         this.$store.dispatch("auth/setSilentRefresh", data.expires_in * 1000);
-
-        return;
       } catch (error) {
         this.notifyError("Error logging in", error);
         this.$store.dispatch("auth/logout");

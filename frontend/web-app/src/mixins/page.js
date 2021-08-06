@@ -1,9 +1,13 @@
 export default {
   data() {
     return {
-      isPageReady: false,
       isDataReady: false
     };
+  },
+  computed: {
+    isAppReady() {
+      return this.$store.state.common.isAppReady;
+    }
   },
   methods: {
     /**

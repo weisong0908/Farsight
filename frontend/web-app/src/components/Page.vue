@@ -1,5 +1,5 @@
 <template>
-  <div class="section">
+  <div class="section" v-if="isAppReady">
     <breadcrumb></breadcrumb>
     <h1 class="title">{{ title }}</h1>
     <alert></alert>
