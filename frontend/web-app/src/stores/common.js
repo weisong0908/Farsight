@@ -1,18 +1,28 @@
 export default {
   state: {
-    isAppReady: false
+    isAppReady: false,
+    isBurgerMenuActive: false
   },
   mutations: {
-    setAppReadiness(state, status) {
+    setAppStatus(state, status) {
       state.isAppReady = status;
+    },
+    setNavbarBurgerMenuStatus(state, status) {
+      state.isBurgerMenuActive = status;
     }
   },
   actions: {
     appIsReady({ commit }) {
-      commit("setAppReadiness", true);
+      commit("setAppStatus", true);
     },
     appIsNotReady({ commit }) {
-      commit("setAppReadiness", false);
+      commit("setAppStatus", false);
+    },
+    openNavbarBurgerMenu({ commit }) {
+      commit("setNavbarBurgerMenuStatus", true);
+    },
+    closeNavbarBurgerMenu({ commit }) {
+      commit("setNavbarBurgerMenuStatus", false);
     }
   }
 };

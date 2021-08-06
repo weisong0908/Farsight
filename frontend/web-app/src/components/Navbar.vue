@@ -13,7 +13,7 @@
         aria-label="menu"
         aria-expanded="false"
         data-target="navbar"
-        @click="isBurgerMenuActive = !isBurgerMenuActive"
+        @click="toggleNavbarBurgerMenu"
       >
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -29,7 +29,7 @@
         <router-link
           to="/portfolios"
           class="navbar-item"
-          @click.native="isBurgerMenuActive = false"
+          @click.native="closeNavbarBurgerMenu"
         >
           Portfolios
         </router-link>
@@ -37,7 +37,7 @@
         <router-link
           to="/holdings"
           class="navbar-item"
-          @click.native="isBurgerMenuActive = false"
+          @click.native="closeNavbarBurgerMenu"
         >
           Holdings
         </router-link>
@@ -53,7 +53,7 @@
                   name: 'myAccount',
                   query: { redirectTo: this.$route.path }
                 }"
-                @click.native="isBurgerMenuActive = false"
+                @click.native="closeNavbarBurgerMenu"
               >
                 <span>
                   {{ $store.state.auth.user.username }}
@@ -78,14 +78,14 @@
                   name: 'signUp',
                   query: { redirectTo: this.$route.path }
                 }"
-                @click.native="isBurgerMenuActive = false"
+                @click.native="closeNavbarBurgerMenu"
                 ><strong>Sign Up</strong></router-link
               >
 
               <router-link
                 class="button is-light"
                 :to="{ name: 'login', query: { redirectTo: this.$route.path } }"
-                @click.native="isBurgerMenuActive = false"
+                @click.native="closeNavbarBurgerMenu"
               >
                 <span>
                   Log In
@@ -102,12 +102,10 @@
 
 <script>
 export default {
-  data() {
-    return {
-      isBurgerMenuActive: false
-    };
-  },
   computed: {
+    isBurgerMenuActive() {
+      return this.$store.state.common.isBurgerMenuActive;
+    },
     isAuth() {
       return this.$store.state.auth.isAuth;
     }
@@ -118,6 +116,17 @@ export default {
       await this.$store.dispatch("auth/clearSilentRefresh");
       this.isBurgerMenuActive = false;
       this.$router.push({ name: "login" });
+    },
+    async toggleNavbarBurgerMenu() {
+      if (this.isBurgerMenuActive)
+        await this.$store.dispatch("common/closeNavbarBurgerMenu");
+      else await this.$store.dispatch("common/openNavbarBurgerMenu");
+    },
+    async openNavbarBurgerMenu() {
+      await this.$store.dispatch("common/openNavbarBurgerMenu");
+    },
+    async closeNavbarBurgerMenu() {
+      await this.$store.dispatch("common/closeNavbarBurgerMenu");
     }
   }
 };

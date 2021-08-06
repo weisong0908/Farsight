@@ -22,6 +22,9 @@ export default {
       await this.$store.dispatch("common/appIsReady");
     }
   },
+  async updated() {
+    await this.$store.dispatch("common/closeNavbarBurgerMenu");
+  },
   methods: {
     async getAccessToken() {
       try {
