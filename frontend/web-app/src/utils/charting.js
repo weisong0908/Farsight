@@ -8,10 +8,7 @@ const colours = [
 ];
 
 export default {
-  destroyChart(chart) {
-    chart.destroy();
-  },
-  plotPriceTrend(contextId, trend) {
+  plotPriceTrend(contextId, trend, title) {
     return new Chart(document.getElementById(contextId), {
       type: "line",
       data: {
@@ -34,6 +31,12 @@ export default {
         ]
       },
       options: {
+        plugins: {
+          title: {
+            display: true,
+            text: title
+          }
+        },
         scales: {
           y: {
             min: 0

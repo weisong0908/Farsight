@@ -9,7 +9,7 @@
       <stock-info
         :stockInfo="stockInfo"
         :holdingId="holdingId"
-        :totalCost="totalCost"
+        :investedAmount="investedAmount"
       ></stock-info>
       <br />
       <div class="box">
@@ -116,7 +116,8 @@ export default {
       chartItem: {},
       isEditTradeModalFormActive: false,
       selectedTrade: {},
-      isAddTradeModalFormActive: false
+      isAddTradeModalFormActive: false,
+      investedAmount: 0
     };
   },
   mixins: [pageMixin],
@@ -137,10 +138,10 @@ export default {
 
     this.ticker = holdingResp.data.ticker;
     this.trades = holdingResp.data.trades;
-
-    const costHistory = holdingResp.data.costHistory;
+    this.investedAmount = holdingResp.data.investedAmount;
 
     if (this.trades.length > 0) {
+      const costHistory = holdingResp.data.costHistory;
       const stockPerformanceResp = await stockService.getPerformance(
         this.ticker,
         this.trades[0].date,
@@ -162,7 +163,11 @@ export default {
         });
       }
 
-      charting.plotPriceTrend("historicalPrice", this.historicalPrices);
+      charting.plotPriceTrend(
+        "historicalPrice",
+        this.historicalPrices,
+        this.ticker
+      );
     }
 
     const stockInfoResp = await stockService.getInfo(

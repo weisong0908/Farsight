@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Farsight.Backend.Models;
 using Farsight.Backend.Models.DTOs;
+using Farsight.Backend.Models.DTOs.Individuals;
 using Farsight.Backend.Models.DTOs.Listings;
 using Farsight.Backend.Persistence;
 using Microsoft.AspNetCore.Authorization;
@@ -60,7 +61,7 @@ namespace Farsight.Backend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetHolding(Guid id)
         {
-            var holding = _mapper.Map<HoldingDetailed>(await _holdingRepository.GetHolding(id));
+            var holding = _mapper.Map<HoldingItem>(await _holdingRepository.GetHolding(id));
 
             return Ok(holding);
         }

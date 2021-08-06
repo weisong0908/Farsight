@@ -28,7 +28,7 @@
         </p>
         <hr />
         <p>
-          Current Position: <strong>{{ totalCost }}</strong>
+          Invested Amount: <strong>{{ investedAmount }}</strong>
         </p>
         <p class="has-text-grey">Holding ID: {{ holdingId }}</p>
       </div>
@@ -38,6 +38,6 @@
 
 <script>
 export default {
-  props: ["stockInfo", "holdingId", "totalCost"]
+  props: ["stockInfo", "holdingId", "investedAmount"]
 };
 </script>

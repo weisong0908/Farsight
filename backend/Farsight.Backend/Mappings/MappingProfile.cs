@@ -76,6 +76,12 @@ namespace Farsight.Backend.Mappings
                     memberOptions.MapFrom(h => 10);
                 });
 
+            CreateMap<Holding, HoldingItem>()
+                .ForMember(hi => hi.CostHistory, memberOptions => memberOptions.MapFrom(h => h.Trades.GetHoldingItemCostHistory()))
+                .ForMember(hi => hi.InvestedAmount, memberOptions => memberOptions.MapFrom(h => h.Trades.GetHoldingQuantity() * h.Trades.GetHoldingUnitCost()));
+            CreateMap<Trade, HoldingItemTrade>()
+                .ForMember(tit => tit.Date, memberOptions => memberOptions.MapFrom(t => t.Date.GetDateString()));
+
 
             CreateMap<Portfolio, PortfolioSimple>()
                 .ForMember(ps => ps.HoldingCount, memberOptions => memberOptions.MapFrom(p => p.Holdings.Count));
@@ -99,8 +105,8 @@ namespace Farsight.Backend.Mappings
                     memberOptions.PreCondition(h => h.Trades.Count > 0);
                     memberOptions.MapFrom(h => 10);
                 });
-            CreateMap<Holding, HoldingDetailed>()
-                .ForMember(hd => hd.CostHistory, memberOptions => memberOptions.MapFrom(h => h.Trades.GetHoldingCostHistory()));
+            // CreateMap<Holding, HoldingDetailed>()
+            //     .ForMember(hd => hd.CostHistory, memberOptions => memberOptions.MapFrom(h => h.Trades.GetHoldingCostHistory()));
             CreateMap<HoldingCreate, Holding>();
             CreateMap<HoldingUpdate, Holding>();
 

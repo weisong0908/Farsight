@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Farsight.Backend.Models;
 using Farsight.Backend.Models.DTOs;
+using Farsight.Backend.Models.DTOs.Individuals;
 
 namespace Farsight.Backend.Extensions
 {
@@ -13,11 +14,12 @@ namespace Farsight.Backend.Extensions
             var buyTrades = trades.Where(t => t.TradeType == TradeType.Buy);
             var sellTrades = trades.Where(t => t.TradeType == TradeType.Sell);
 
-            var cost = buyTrades.Sum(t => t.Quantity * t.UnitPrice + t.Fees);
-            var profit = sellTrades.Sum(t => t.Quantity * t.UnitPrice + t.Fees);
+            var cost = buyTrades.Sum(t => t.Quantity * t.UnitPrice);
+            var profit = sellTrades.Sum(t => t.Quantity * t.UnitPrice);
+            var fees = trades.Sum(t => t.Fees);
             var quantityRemaining = buyTrades.Sum(t => t.Quantity) - sellTrades.Sum(t => t.Quantity);
 
-            return Math.Round((cost - profit) / quantityRemaining, 2);
+            return Math.Round((cost - profit + fees) / quantityRemaining, 2);
         }
 
         public static int GetHoldingQuantity(this IEnumerable<Trade> trades)
@@ -28,9 +30,9 @@ namespace Farsight.Backend.Extensions
             return buyTrades.Sum(t => t.Quantity) - sellTrades.Sum(t => t.Quantity);
         }
 
-        public static IList<HoldingCost> GetHoldingCostHistory(this IEnumerable<Trade> trades)
+        public static IList<HoldingItemCost> GetHoldingItemCostHistory(this IEnumerable<Trade> trades)
         {
-            var costHistory = new List<HoldingCost>();
+            var costHistory = new List<HoldingItemCost>();
             int quantityRemaining = 0;
             decimal investedAmount = 0;
 
@@ -50,11 +52,40 @@ namespace Farsight.Backend.Extensions
 
                 var cost = investedAmount / quantityRemaining;
 
-                costHistory.Add(new HoldingCost(trade.Date.GetDateString(), cost));
+                costHistory.Add(new HoldingItemCost(trade.Date.GetDateString(), cost));
             }
 
             return costHistory;
         }
+
+
+        // public static IList<HoldingCost> GetHoldingCostHistory(this IEnumerable<Trade> trades)
+        // {
+        //     var costHistory = new List<HoldingCost>();
+        //     int quantityRemaining = 0;
+        //     decimal investedAmount = 0;
+
+        //     foreach (var trade in trades)
+        //     {
+        //         switch (trade.TradeType)
+        //         {
+        //             case TradeType.Buy:
+        //                 quantityRemaining += trade.Quantity;
+        //                 investedAmount += trade.Quantity * trade.UnitPrice + trade.Fees;
+        //                 break;
+        //             case TradeType.Sell:
+        //                 quantityRemaining -= trade.Quantity;
+        //                 investedAmount -= trade.Quantity * trade.UnitPrice - trade.Fees;
+        //                 break;
+        //         }
+
+        //         var cost = investedAmount / quantityRemaining;
+
+        //         costHistory.Add(new HoldingCost(trade.Date.GetDateString(), cost));
+        //     }
+
+        //     return costHistory;
+        // }
 
         public static string GetDateString(this long unixMsec)
         {
