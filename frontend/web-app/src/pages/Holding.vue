@@ -12,65 +12,72 @@
         :totalCost="totalCost"
       ></stock-info>
       <br />
-      <p class="subtitle">Trade History</p>
-      <add-trade-modal-form
-        :isActive="isAddTradeModalFormActive"
-        @close="isAddTradeModalFormActive = false"
-        @submit="addTrade"
-      ></add-trade-modal-form>
-      <div class="buttons">
-        <button class="button" @click="isAddTradeModalFormActive = true">
-          Add New Trade
-        </button>
-      </div>
-      <div class="table-container">
-        <table class="table is-hoverable is-fullwidth">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Quantity</th>
-              <th>Unit Price</th>
-              <th>Fees</th>
-              <th>Type</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="trade in trades" :key="trade.id">
-              <td>{{ trade.date }}</td>
-              <td>{{ trade.quantity }}</td>
-              <td>{{ trade.unitPrice }}</td>
-              <td>{{ trade.fees }}</td>
-              <td>
-                <span class="icon-text">
-                  <span v-if="trade.tradeType == 'Buy'" class="icon">
-                    <i class="fas fa-caret-left"></i>
+      <div class="box">
+        <p class="subtitle">Trade History</p>
+        <add-trade-modal-form
+          :isActive="isAddTradeModalFormActive"
+          @close="isAddTradeModalFormActive = false"
+          @submit="addTrade"
+        ></add-trade-modal-form>
+        <div class="buttons">
+          <button class="button" @click="isAddTradeModalFormActive = true">
+            Add New Trade
+          </button>
+        </div>
+        <div v-if="trades.length > 0" class="table-container">
+          <table class="table is-hoverable is-fullwidth">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Fees</th>
+                <th>Type</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="trade in trades" :key="trade.id">
+                <td>{{ trade.date }}</td>
+                <td>{{ trade.quantity }}</td>
+                <td>{{ trade.unitPrice }}</td>
+                <td>{{ trade.fees }}</td>
+                <td>
+                  <span class="icon-text">
+                    <span v-if="trade.tradeType == 'Buy'" class="icon">
+                      <i class="fas fa-caret-left"></i>
+                    </span>
+                    <span v-else-if="trade.tradeType == 'Sell'" class="icon">
+                      <i class="fas fa-caret-right"></i>
+                    </span>
+                    <span>{{ trade.tradeType }}</span>
                   </span>
-                  <span v-else-if="trade.tradeType == 'Sell'" class="icon">
-                    <i class="fas fa-caret-right"></i>
-                  </span>
-                  <span>{{ trade.tradeType }}</span>
-                </span>
-              </td>
-              <td>
-                <div class="buttons">
-                  <button
-                    class="button is-small"
-                    @click="updateEditTradeModalForm(trade)"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    class="button is-danger is-light is-small"
-                    @click="deleteTrade(trade)"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </td>
+                <td>
+                  <div class="buttons">
+                    <button
+                      class="button is-small"
+                      @click="updateEditTradeModalForm(trade)"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      class="button is-danger is-light is-small"
+                      @click="deleteTrade(trade)"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <article v-else class="message is-warning">
+          <div class="message-body">
+            There is no trade record found for this holding
+          </div>
+        </article>
       </div>
       <edit-trade-modal-form
         :selectedTrade="selectedTrade"
@@ -79,7 +86,7 @@
         @submit="updateTrade"
       ></edit-trade-modal-form>
     </template>
-    <div>
+    <div v-if="trades.length > 0" class="box">
       <canvas id="historicalPrice"></canvas>
     </div>
   </page>
@@ -123,61 +130,48 @@ export default {
   async created() {
     this.holdingId = this.$route.params.id;
 
-    const accessToken = this.getAccessToken();
-
     const holdingResp = await holdingService.getHolding(
       this.holdingId,
-      accessToken
+      this.accessToken
     );
 
     this.ticker = holdingResp.data.ticker;
+    this.trades = holdingResp.data.trades;
 
-    for (const trade of holdingResp.data.trades) {
-      this.trades.push({
-        id: trade.id,
-        date: trade.date,
-        quantity: trade.quantity,
-        unitPrice: trade.unitPrice,
-        fees: trade.fees,
-        tradeType: trade.tradeType
-      });
+    const costHistory = holdingResp.data.costHistory;
+
+    if (this.trades.length > 0) {
+      const stockPerformanceResp = await stockService.getPerformance(
+        this.ticker,
+        this.trades[0].date,
+        dateConverter.toString(new Date()),
+        this.accessToken
+      );
+
+      let cost = 0;
+      for (const stockClosePrice of stockPerformanceResp.data) {
+        const date = stockClosePrice.date;
+        const index = costHistory.findIndex(ch => ch.date === date);
+        if (index != -1) {
+          cost = costHistory[index].cost;
+        }
+        this.historicalPrices.push({
+          date,
+          closePrice: stockClosePrice.closePrice,
+          cost
+        });
+      }
+
+      charting.plotPriceTrend("historicalPrice", this.historicalPrices);
     }
 
-    const costHistory = [];
-    for (const ch of holdingResp.data.costHistory) {
-      costHistory.push({
-        date: ch.date,
-        cost: ch.cost
-      });
-    }
-
-    const stockInfoResp = await stockService.getInfo(this.ticker, accessToken);
+    const stockInfoResp = await stockService.getInfo(
+      this.ticker,
+      this.accessToken
+    );
     this.stockInfo = stockInfoResp.data;
 
-    const stockPerformanceResp = await stockService.getPerformance(
-      this.ticker,
-      this.trades[0].date,
-      dateConverter.toString(new Date()),
-      accessToken
-    );
-
-    let cost = 0;
-    for (const stockClosePrice of stockPerformanceResp.data) {
-      const date = stockClosePrice.date;
-      const index = costHistory.findIndex(ch => ch.date === date);
-      if (index != -1) {
-        cost = costHistory[index].cost;
-      }
-      this.historicalPrices.push({
-        date,
-        closePrice: stockClosePrice.closePrice,
-        cost
-      });
-    }
-
     this.isDataReady = true;
-
-    charting.plotPriceTrend("historicalPrice", this.historicalPrices);
   },
   methods: {
     updateEditTradeModalForm(trade) {
@@ -185,15 +179,13 @@ export default {
       this.isEditTradeModalFormActive = true;
     },
     async addTrade(trade) {
-      const accessToken = this.getAccessToken();
-
       try {
         await tradeService.createTrade(
           {
             ...trade,
             holdingId: this.holdingId
           },
-          accessToken
+          this.accessToken
         );
         await this.notifySuccess("Trade added", `Trade has been added.`);
       } catch (error) {
@@ -204,8 +196,6 @@ export default {
       this.isAddTradeModalFormActive = false;
     },
     async updateTrade(trade) {
-      const accessToken = this.getAccessToken();
-
       try {
         await tradeService.updateTrade(
           {
@@ -213,7 +203,7 @@ export default {
             ...trade,
             holdingId: this.holdingId
           },
-          accessToken
+          this.accessToken
         );
 
         await this.notifySuccess(
@@ -228,9 +218,8 @@ export default {
       this.isEditTradeModalFormActive = false;
     },
     async deleteTrade(trade) {
-      const accessToken = this.getAccessToken();
       try {
-        await tradeService.deleteTrade(trade.id, accessToken);
+        await tradeService.deleteTrade(trade.id, this.accessToken);
 
         await this.notifySuccess(
           "Trade deleted",

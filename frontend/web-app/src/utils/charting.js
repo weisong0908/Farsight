@@ -8,8 +8,11 @@ const colours = [
 ];
 
 export default {
+  destroyChart(chart) {
+    chart.destroy();
+  },
   plotPriceTrend(contextId, trend) {
-    new Chart(document.getElementById(contextId), {
+    return new Chart(document.getElementById(contextId), {
       type: "line",
       data: {
         labels: trend.map(t => t.date),
