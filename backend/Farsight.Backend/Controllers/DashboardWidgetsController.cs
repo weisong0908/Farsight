@@ -83,7 +83,7 @@ namespace Farsight.Backend.Controllers
             foreach (var holding in holdings)
             {
                 var trades = holding.Trades;
-                var invested = trades.GetHoldingCost();
+                var invested = trades.GetHoldingUnitCost();
                 var dividend = trades
                     .Where(t => t.TradeType == TradeType.Dividend)
                     .Sum(t => t.UnitPrice * t.Quantity - t.Fees);

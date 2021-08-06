@@ -40,11 +40,27 @@
               </div>
             </div>
           </nav>
-          <nav class="level is-mobile">
+          <nav class="level">
             <div class="level-item has-text-centered">
               <div>
                 <p class="heading">Number of Holdings</p>
                 <p class="title">{{ holdings.length }}</p>
+              </div>
+            </div>
+            <div class="level-item has-text-centered">
+              <div>
+                <p class="heading">Number of Types</p>
+                <p class="title">
+                  {{ groupHoldingsBy("type").length }}
+                </p>
+              </div>
+            </div>
+            <div class="level-item has-text-centered">
+              <div>
+                <p class="heading">Number of Sectors</p>
+                <p class="title">
+                  {{ groupHoldingsBy("sector").length }}
+                </p>
               </div>
             </div>
           </nav>
@@ -94,7 +110,7 @@
                   <th>Name</th>
                   <th>Quantity</th>
                   <th>Market Price</th>
-                  <th>Cost</th>
+                  <th>Unit Cost</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -112,7 +128,7 @@
                   </td>
                   <td>{{ holding.quantity }}</td>
                   <td>{{ holding.marketPrice }}</td>
-                  <td>{{ holding.cost }}</td>
+                  <td>{{ holding.unitCost }}</td>
                   <td>
                     <button
                       class="button is-danger is-light is-small"
@@ -192,25 +208,15 @@ export default {
     }
   },
   async created() {
-    const accessToken = this.getAccessToken();
-
     const { data } = await portfolioService.getPortfolio(
       this.portfolioId,
-      accessToken
+      this.accessToken
     );
 
     this.portfolioName = data.name;
     this.holdings = data.holdings;
-
-    this.portfolioMarketValue = this.holdings.reduce(
-      (pv, cv) => pv + cv.quantity * cv.marketPrice,
-      0
-    );
-
-    this.portfolioCost = this.holdings.reduce(
-      (pv, cv) => pv + cv.quantity * cv.cost,
-      0
-    );
+    this.portfolioMarketValue = data.marketValue;
+    this.portfolioCost = data.cost;
 
     const holdingsBySector = this.groupHoldingsBy("sector");
     const holdingsByType = this.groupHoldingsBy("type");
@@ -232,13 +238,12 @@ export default {
   },
   methods: {
     async updatePortfolio(portfolio) {
-      const accessToken = this.getAccessToken();
       const userId = this.$store.state.auth.user.userId;
 
       try {
         await portfolioService.updatePortfolio(
           { ...portfolio, ownerId: userId },
-          accessToken
+          this.accessToken
         );
 
         this.notifySuccess(
@@ -255,15 +260,13 @@ export default {
       this.currentPageNumber = pageNumber;
     },
     addHolding(holding, trade) {
-      const accessToken = this.getAccessToken();
-
       holdingService
         .createHolding(
           {
             ticker: holding.ticker,
             portfolioId: this.portfolioId
           },
-          accessToken
+          this.accessToken
         )
         .then(resp =>
           tradeService.createTrade(
@@ -276,7 +279,7 @@ export default {
               date: trade.date,
               holdingId: resp.data.id
             },
-            accessToken
+            this.accessToken
           )
         )
         .then(resp => {
@@ -292,7 +295,7 @@ export default {
     },
     deleteHolding(holding) {
       holdingService
-        .deleteHolding(holding.id, this.getAccessToken())
+        .deleteHolding(holding.id, this.accessToken)
         .then(() => {
           this.notifySuccess(
             "Holding deleted",

@@ -7,6 +7,7 @@ using Farsight.Backend.Extensions;
 using Farsight.Backend.Models.DTOs.DashboardWidgets;
 using Portfolio = Farsight.Backend.Models.Portfolio;
 using Farsight.Backend.Models.DTOs.Listings;
+using Farsight.Backend.Models.DTOs.Individuals;
 
 namespace Farsight.Backend.Mappings
 {
@@ -53,8 +54,28 @@ namespace Farsight.Backend.Mappings
                 .ForMember(hli => hli.UnitCost, memberOptions =>
                 {
                     memberOptions.PreCondition(h => h.Trades.Count > 0);
-                    memberOptions.MapFrom(h => h.Trades.GetHoldingCost());
+                    memberOptions.MapFrom(h => h.Trades.GetHoldingUnitCost());
                 });
+
+            //Individual items
+            CreateMap<Portfolio, PortfolioItem>();
+            CreateMap<Holding, PortfolioItemHolding>()
+                .ForMember(pih => pih.Quantity, memberOptions =>
+                {
+                    memberOptions.PreCondition(h => h.Trades.Count > 0);
+                    memberOptions.MapFrom(h => h.Trades.GetHoldingQuantity());
+                })
+                .ForMember(pih => pih.UnitCost, memberOptions =>
+                {
+                    memberOptions.PreCondition(h => h.Trades.Count > 0);
+                    memberOptions.MapFrom(h => h.Trades.GetHoldingUnitCost());
+                })
+                .ForMember(pih => pih.MarketPrice, memberOptions =>
+                {
+                    memberOptions.PreCondition(h => h.Trades.Count > 0);
+                    memberOptions.MapFrom(h => 10);
+                });
+
 
             CreateMap<Portfolio, PortfolioSimple>()
                 .ForMember(ps => ps.HoldingCount, memberOptions => memberOptions.MapFrom(p => p.Holdings.Count));
@@ -71,7 +92,7 @@ namespace Farsight.Backend.Mappings
                 .ForMember(hs => hs.Cost, memberOptions =>
                 {
                     memberOptions.PreCondition(h => h.Trades.Count > 0);
-                    memberOptions.MapFrom(h => h.Trades.GetHoldingCost());
+                    memberOptions.MapFrom(h => h.Trades.GetHoldingUnitCost());
                 })
                 .ForMember(hs => hs.MarketPrice, memberOptions =>
                 {

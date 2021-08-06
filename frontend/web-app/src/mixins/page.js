@@ -7,6 +7,9 @@ export default {
   computed: {
     isAppReady() {
       return this.$store.state.common.isAppReady;
+    },
+    accessToken() {
+      return this.$store.state.auth.accessToken;
     }
   },
   methods: {

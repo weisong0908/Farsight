@@ -8,7 +8,7 @@ namespace Farsight.Backend.Extensions
 {
     public static class Common
     {
-        public static decimal GetHoldingCost(this IEnumerable<Trade> trades)
+        public static decimal GetHoldingUnitCost(this IEnumerable<Trade> trades)
         {
             var buyTrades = trades.Where(t => t.TradeType == TradeType.Buy);
             var sellTrades = trades.Where(t => t.TradeType == TradeType.Sell);

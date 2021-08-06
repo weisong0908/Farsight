@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Farsight.Backend.Models;
 using Farsight.Backend.Models.DTOs;
+using Farsight.Backend.Models.DTOs.Individuals;
 using Farsight.Backend.Models.DTOs.Listings;
 using Farsight.Backend.Persistence;
 using Farsight.Backend.Services;
@@ -60,22 +61,26 @@ namespace Farsight.Backend.Controllers
             if (!await _portfolioRepository.IsOwner(id, ownerId))
                 return BadRequest();
 
-            var portfolio = await _portfolioRepository.GetPortfolio(id);
+            var portfolio = _mapper.Map<PortfolioItem>(await _portfolioRepository.GetPortfolio(id));
 
-            var detailedPortfolio = _mapper.Map<PortfolioDetailed>(portfolio);
-
-            foreach (var holding in detailedPortfolio.Holdings)
+            foreach (var holding in portfolio.Holdings)
             {
-                var marketPrice = (await _stockService.GetPreviousClosePrice(holding.Ticker)).Results?.FirstOrDefault();
-                if (marketPrice != null)
-                    holding.MarketPrice = marketPrice.Close;
+                var marketData = (await _stockService.GetPreviousClosePrice(holding.Ticker)).Results?.FirstOrDefault();
+                if (marketData != null)
+                    holding.MarketPrice = marketData.Close;
 
                 var stockInfo = _mapper.Map<StockInfo>(await _stockService.GetTickerDetails(holding.Ticker));
                 holding.Sector = stockInfo.Sector;
                 holding.Type = stockInfo.Type;
             }
 
-            return Ok(detailedPortfolio);
+            foreach (var holding in portfolio.Holdings)
+            {
+                portfolio.MarketValue += holding.MarketPrice * holding.Quantity;
+                portfolio.Cost += holding.UnitCost * holding.Quantity;
+            }
+
+            return Ok(portfolio);
         }
 
         [Authorize(Policy = "write")]
