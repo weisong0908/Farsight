@@ -11,6 +11,9 @@ namespace Farsight.Backend.Extensions
     {
         public static decimal GetHoldingUnitCost(this IEnumerable<Trade> trades)
         {
+            if (trades.Count() == 0)
+                return 0;
+
             var buyTrades = trades.Where(t => t.TradeType == TradeType.Buy);
             var sellTrades = trades.Where(t => t.TradeType == TradeType.Sell);
 
@@ -24,6 +27,9 @@ namespace Farsight.Backend.Extensions
 
         public static int GetHoldingQuantity(this IEnumerable<Trade> trades)
         {
+            if (trades.Count() == 0)
+                return 0;
+
             var buyTrades = trades.Where(t => t.TradeType == TradeType.Buy);
             var sellTrades = trades.Where(t => t.TradeType == TradeType.Sell);
 
