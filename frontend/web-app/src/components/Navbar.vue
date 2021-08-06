@@ -114,7 +114,8 @@ export default {
     async logout() {
       await this.$store.dispatch("auth/logout");
       await this.$store.dispatch("auth/clearSilentRefresh");
-      this.isBurgerMenuActive = false;
+      await this.$store.dispatch("common/closeNavbarBurgerMenu");
+
       this.$router.push({ name: "login" });
     },
     async toggleNavbarBurgerMenu() {
