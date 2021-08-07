@@ -27,6 +27,10 @@ export default {
   },
   methods: {
     async getAccessToken() {
+      const expiresAt = new Date(this.$store.state.auth.expiresAt);
+      const now = new Date();
+      if (expiresAt && expiresAt > now) return;
+
       try {
         const { data } = await authService.refreshAuth(
           this.$store.state.auth.refreshToken
