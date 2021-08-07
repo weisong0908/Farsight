@@ -23,7 +23,7 @@
         <p>
           {{ stockInfo.description }}
         </p>
-        <p v-if="stockInfo.sector">
+        <p v-if="stockInfo.sector != '-'">
           {{ stockInfo.sector }}&nbsp;&#8208;&nbsp;{{ stockInfo.industry }}
         </p>
         <hr />

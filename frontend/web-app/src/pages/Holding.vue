@@ -149,8 +149,12 @@ export default {
         this.accessToken
       );
 
-      let cost = 0;
-      for (const stockClosePrice of stockPerformanceResp.data) {
+      const stockClosePrices = stockPerformanceResp.data;
+
+      let cost = costHistory
+        .filter(ch => ch.date <= stockClosePrices[0].date)
+        .pop().cost;
+      for (const stockClosePrice of stockClosePrices) {
         const date = stockClosePrice.date;
         const index = costHistory.findIndex(ch => ch.date === date);
         if (index != -1) {
