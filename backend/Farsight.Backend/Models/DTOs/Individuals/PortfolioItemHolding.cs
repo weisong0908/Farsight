@@ -9,7 +9,7 @@ namespace Farsight.Backend.Models.DTOs.Individuals
         public int Quantity { get; set; }
         public decimal UnitCost { get; set; }
         public decimal MarketPrice { get; set; }
-        public string Sector { get; set; }
-        public string Type { get; set; }
+        public string Sector { get; set; } = "-";
+        public string Type { get; set; } = "-";
     }
 }
