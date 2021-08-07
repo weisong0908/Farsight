@@ -68,9 +68,7 @@ export default {
     const accessToken = this.getAccessToken();
 
     try {
-      const { data } = await portfolioService.getPortfolioListItems(
-        accessToken
-      );
+      const { data } = await portfolioService.getPortfolios(accessToken);
       this.portfolios = data;
     } catch (error) {
       this.notifyError("Unable to retrieve portfolios", error);

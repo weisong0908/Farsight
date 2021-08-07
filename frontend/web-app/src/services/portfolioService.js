@@ -8,13 +8,6 @@ export default {
       }
     });
   },
-  async getPortfolioListItems(accessToken) {
-    return await axios.get(`${process.env.VUE_APP_BACKEND}/portfolios/list`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    });
-  },
   async getPortfolio(portfolioId, accessToken) {
     return await axios.get(
       `${process.env.VUE_APP_BACKEND}/portfolios/${portfolioId}`,

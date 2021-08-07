@@ -8,6 +8,8 @@ using Farsight.Backend.Models.DTOs.DashboardWidgets;
 using Portfolio = Farsight.Backend.Models.Portfolio;
 using Farsight.Backend.Models.DTOs.Listings;
 using Farsight.Backend.Models.DTOs.Individuals;
+using Farsight.Backend.Models.DTOs.Requests;
+using Farsight.Backend.Models.DTOs.Responses;
 
 namespace Farsight.Backend.Mappings
 {
@@ -83,11 +85,12 @@ namespace Farsight.Backend.Mappings
                 .ForMember(tit => tit.Date, memberOptions => memberOptions.MapFrom(t => t.Date.GetDateString()));
 
 
-            CreateMap<Portfolio, PortfolioSimple>()
-                .ForMember(ps => ps.HoldingCount, memberOptions => memberOptions.MapFrom(p => p.Holdings.Count));
-            CreateMap<Portfolio, PortfolioDetailed>();
+            // Requests
             CreateMap<PortfolioCreate, Portfolio>();
             CreateMap<PortfolioUpdate, Portfolio>();
+
+            //Responses
+            CreateMap<Portfolio, PortfolioCreated>();
 
             CreateMap<Holding, HoldingSimple>()
                 .ForMember(hs => hs.Quantity, memberOptions =>

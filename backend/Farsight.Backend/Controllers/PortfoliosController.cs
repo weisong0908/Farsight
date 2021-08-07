@@ -9,6 +9,8 @@ using Farsight.Backend.Models;
 using Farsight.Backend.Models.DTOs;
 using Farsight.Backend.Models.DTOs.Individuals;
 using Farsight.Backend.Models.DTOs.Listings;
+using Farsight.Backend.Models.DTOs.Requests;
+using Farsight.Backend.Models.DTOs.Responses;
 using Farsight.Backend.Persistence;
 using Farsight.Backend.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -36,16 +38,6 @@ namespace Farsight.Backend.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetPortfolios()
-        {
-            var ownerId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            var portfolios = _mapper.Map<IList<PortfolioSimple>>(await _portfolioRepository.GetPortfolios(new Guid(ownerId)));
-
-            return Ok(portfolios);
-        }
-
-        [HttpGet("list")]
-        public async Task<IActionResult> GetPortfolioListItems()
         {
             var ownerId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
@@ -94,7 +86,7 @@ namespace Farsight.Backend.Controllers
 
             await _unitOfWork.SaveChanges();
 
-            return CreatedAtAction(nameof(GetPortfolio), new { Id = portfolio.Id }, _mapper.Map<PortfolioSimple>(portfolio));
+            return CreatedAtAction(nameof(GetPortfolio), new { Id = portfolio.Id }, _mapper.Map<PortfolioCreated>(portfolio));
         }
 
         [Authorize(Policy = "write")]

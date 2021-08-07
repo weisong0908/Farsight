@@ -80,7 +80,7 @@ export default {
 
     try {
       this.portfolios = (
-        await portfolioService.getPortfolioListItems(accessToken)
+        await portfolioService.getPortfolios(accessToken)
       ).data;
 
       this.holdings = (

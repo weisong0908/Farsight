@@ -91,7 +91,7 @@ namespace Farsight.Backend
 
             services.AddMemoryCache();
 
-            services.AddHostedService<StockDataSetupBackgroundService>();
+            // services.AddHostedService<StockDataSetupBackgroundService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
