@@ -37,7 +37,7 @@ export default {
 
         await this.notifySuccess("Password changed", data);
 
-        this.$router.replace({ name: "dashboard" });
+        this.$router.replace({ name: "login" });
       } catch (error) {
         this.notifyError("Unable to change password", error);
       }
