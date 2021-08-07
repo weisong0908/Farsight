@@ -1,6 +1,13 @@
 import axios from "axios";
 
 export default {
+  async getTrades(accessToken) {
+    return await axios.get(`${process.env.VUE_APP_BACKEND}/trades`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+  },
   async createTrade(payload, accessToken) {
     return await axios.post(`${process.env.VUE_APP_BACKEND}/trades`, payload, {
       headers: {

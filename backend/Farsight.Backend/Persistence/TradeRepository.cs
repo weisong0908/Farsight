@@ -21,10 +21,11 @@ namespace Farsight.Backend.Persistence
             return await _dbContext.Trades.ToListAsync();
         }
 
-        public async Task<IEnumerable<Trade>> GetTrades(Guid holdingId)
+        public async Task<IEnumerable<Trade>> GetTradesByOwner(Guid ownerId)
         {
             return await _dbContext.Trades
-                .Where(t => t.HoldingId == holdingId)
+                .Where(t => t.Holding.Portfolio.OwnerId == ownerId)
+                .OrderBy(t => t.Date)
                 .ToListAsync();
         }
 

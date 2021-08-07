@@ -1,10 +1,9 @@
 using System;
 
-namespace Farsight.Backend.Models.DTOs
+namespace Farsight.Backend.Models.DTOs.Requests
 {
-    public class TradeUpdate
+    public class TradeCreate
     {
-        public Guid Id { get; set; }
         public string TradeType { get; set; }
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }

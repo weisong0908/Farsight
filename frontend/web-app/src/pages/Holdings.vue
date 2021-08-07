@@ -76,14 +76,12 @@ export default {
   },
   mixins: [pageMixin],
   async created() {
-    const accessToken = this.getAccessToken();
-
     try {
       this.portfolios = (
-        await portfolioService.getPortfolios(accessToken)
+        await portfolioService.getPortfolios(this.accessToken)
       ).data;
 
-      this.holdings = (await holdingService.getHoldings(accessToken)).data;
+      this.holdings = (await holdingService.getHoldings(this.accessToken)).data;
 
       for (const holding of this.holdings) {
         holding["portfolioName"] = this.portfolios.filter(
@@ -93,7 +91,7 @@ export default {
 
       this.isDataReady = true;
     } catch (error) {
-      this.notifyError("Unable to retreve holdings", error);
+      this.notifyError("Unable to retrieve holdings", error);
     }
   }
 };

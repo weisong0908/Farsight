@@ -59,6 +59,9 @@ namespace Farsight.Backend.Mappings
                     memberOptions.MapFrom(h => h.Trades.GetHoldingUnitCost());
                 });
 
+            CreateMap<Trade, TradeListItem>()
+                .ForMember(tli => tli.Date, memberOptions => memberOptions.MapFrom(t => t.Date.GetDateString()));
+
             //Individual items
             CreateMap<Portfolio, PortfolioItem>();
             CreateMap<Holding, PortfolioItemHolding>()
@@ -84,25 +87,25 @@ namespace Farsight.Backend.Mappings
             CreateMap<Trade, HoldingItemTrade>()
                 .ForMember(tit => tit.Date, memberOptions => memberOptions.MapFrom(t => t.Date.GetDateString()));
 
+            CreateMap<Trade, TradeItem>()
+                .ForMember(ti => ti.Date, memberOptions => memberOptions.MapFrom(t => t.Date.GetDateString()));
+
             // Requests
             CreateMap<PortfolioCreate, Portfolio>();
             CreateMap<PortfolioUpdate, Portfolio>();
             CreateMap<HoldingCreate, Holding>();
             CreateMap<HoldingUpdate, Holding>();
-
-            //Responses
-            CreateMap<Portfolio, PortfolioCreated>();
-            CreateMap<Holding, HoldingCreated>();
-
-
-
-            CreateMap<Trade, TradeSimple>()
-                .ForMember(ts => ts.Date, memberOptions => memberOptions.MapFrom(t => t.Date.GetDateString()));
             CreateMap<TradeCreate, Trade>()
                 .ForMember(t => t.Date, memberOptions => memberOptions.MapFrom(tc => tc.Date.FromNewYorkThenToUtcDateTime()));
             CreateMap<TradeUpdate, Trade>()
                 .ForMember(t => t.Date, memberOptions => memberOptions.MapFrom(tu => tu.Date.FromNewYorkThenToUtcDateTime()));
 
+            //Responses
+            CreateMap<Portfolio, PortfolioCreated>();
+            CreateMap<Holding, HoldingCreated>();
+            CreateMap<Trade, TradeCreated>();
+
+            //Polygon APIs
             CreateMap<PolygonAggregateBar, StockClosePrice>()
                 .ForMember(scp => scp.ClosePrice, memberOptions => memberOptions.MapFrom(pab => pab.Close))
                 .ForMember(scp => scp.Date, memberOptions => memberOptions.MapFrom(pab => pab.Timestamp.GetDateString()));

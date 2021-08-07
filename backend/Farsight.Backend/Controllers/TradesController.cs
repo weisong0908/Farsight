@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Farsight.Backend.Models;
 using Farsight.Backend.Models.DTOs;
+using Farsight.Backend.Models.DTOs.Individuals;
+using Farsight.Backend.Models.DTOs.Listings;
+using Farsight.Backend.Models.DTOs.Requests;
+using Farsight.Backend.Models.DTOs.Responses;
 using Farsight.Backend.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,16 +33,11 @@ namespace Farsight.Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTrades([FromQuery] Guid holdingId)
+        public async Task<IActionResult> GetTrades()
         {
-            if (holdingId == Guid.Empty)
-                return BadRequest();
-
             var ownerId = new Guid(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            if (!await _tradeRepository.IsOwner(holdingId, ownerId))
-                return BadRequest();
 
-            var trades = _mapper.Map<IList<TradeSimple>>(await _tradeRepository.GetTrades(holdingId));
+            var trades = _mapper.Map<IList<TradeListItem>>(await _tradeRepository.GetTradesByOwner(ownerId));
 
             return Ok(trades);
         }
@@ -46,7 +45,7 @@ namespace Farsight.Backend.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult> GetTrade(Guid id)
         {
-            var trade = _mapper.Map<TradeSimple>(await _tradeRepository.GetTrade(id));
+            var trade = _mapper.Map<TradeItem>(await _tradeRepository.GetTrade(id));
 
             return Ok(trade);
         }
@@ -66,7 +65,7 @@ namespace Farsight.Backend.Controllers
 
             await _unitOfWork.SaveChanges();
 
-            return CreatedAtAction(nameof(GetTrade), new { Id = trade.Id }, _mapper.Map<TradeSimple>(trade));
+            return CreatedAtAction(nameof(GetTrade), new { Id = trade.Id }, _mapper.Map<TradeCreated>(trade));
         }
 
         [Authorize(Policy = "write")]

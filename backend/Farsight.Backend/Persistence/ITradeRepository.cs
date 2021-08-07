@@ -11,7 +11,7 @@ namespace Farsight.Backend.Persistence
         void DeleteTrade(Trade trade);
         Task<Trade> GetTrade(Guid id);
         Task<IEnumerable<Trade>> GetTrades();
-        Task<IEnumerable<Trade>> GetTrades(Guid holdingId);
+        Task<IEnumerable<Trade>> GetTradesByOwner(Guid ownerId);
         Task<IEnumerable<Tuple<string, TradeType, int>>> GetRecentTradesByOwner(Guid ownerId);
         void UpdateTrade(Trade trade);
         Task<bool> IsOwner(Guid holdingId, Guid ownerId);

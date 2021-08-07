@@ -1,8 +1,8 @@
 using System;
 
-namespace Farsight.Backend.Models.DTOs
+namespace Farsight.Backend.Models.DTOs.Individuals
 {
-    public class TradeSimple
+    public class TradeItem
     {
         public Guid Id { get; set; }
         public string TradeType { get; set; }
