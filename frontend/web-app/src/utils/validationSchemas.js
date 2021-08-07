@@ -43,5 +43,18 @@ export default {
     .label("Fees"),
   unitPrice: Joi.number()
     .required()
-    .label("Unit Price")
+    .label("Unit Price"),
+  date: Joi.date()
+    .required()
+    .custom((value, helpers) => {
+      const day = new Date(value).getDay();
+      if (day == 0 || day == 6) {
+        return helpers.error("any.weekendNotAllowed");
+      }
+      return value;
+    }, "weekend not allowed")
+    .messages({
+      "any.weekendNotAllowed": "Weekends are not allowed"
+    })
+    .label("Date")
 };

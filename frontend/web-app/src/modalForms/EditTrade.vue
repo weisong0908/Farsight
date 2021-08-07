@@ -24,6 +24,7 @@
           type="date"
           icon="fa-calendar"
           v-model="date"
+          :errorMessage="validationErrors.date"
         ></form-field>
         <form-field
           name="quantity"
@@ -84,7 +85,8 @@ import validationSchemas from "../utils/validationSchemas";
 const schema = Joi.object({
   quantity: validationSchemas.quantity,
   fees: validationSchemas.fees,
-  unitPrice: validationSchemas.unitPrice
+  unitPrice: validationSchemas.unitPrice,
+  date: validationSchemas.date
 });
 
 export default {
@@ -121,7 +123,8 @@ export default {
       const formData = {
         quantity: this.quantity,
         unitPrice: this.unitPrice,
-        fees: this.fees
+        fees: this.fees,
+        date: this.date
       };
 
       if (!this.validate(schema, formData)) return;
