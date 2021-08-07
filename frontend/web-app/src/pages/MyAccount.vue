@@ -68,12 +68,10 @@ export default {
   },
   methods: {
     async updateUserInfo(userInfo) {
-      const accessToken = this.getAccessToken();
-
       try {
         await authService.updateUserInfo(
           { userId: this.userId, profilePicture: userInfo.profilePicture },
-          accessToken
+          this.accessToken
         );
         this.notifySuccess(
           "User information updated",

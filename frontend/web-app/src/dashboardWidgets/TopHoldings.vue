@@ -30,10 +30,8 @@ export default {
   },
   mixins: [pageMixin],
   async created() {
-    const accessToken = this.getAccessToken();
-
     const { data } = await dashboardWidgetsService.getTopHoldingsWidgetData(
-      accessToken
+      this.accessToken
     );
     this.holdings = data;
   }

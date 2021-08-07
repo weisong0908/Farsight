@@ -38,10 +38,8 @@ export default {
   },
   mixins: [pageMixin],
   async created() {
-    const accessToken = this.getAccessToken();
-
     const { data } = await dashboardWidgetsService.getRecentTradesWidgetData(
-      accessToken
+      this.accessToken
     );
     this.recentTrades = data;
   }

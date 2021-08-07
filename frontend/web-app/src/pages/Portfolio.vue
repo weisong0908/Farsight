@@ -259,54 +259,48 @@ export default {
     goToPage(pageNumber) {
       this.currentPageNumber = pageNumber;
     },
-    addHolding(holding, trade) {
-      holdingService
-        .createHolding(
+    async addHolding(holding, trade) {
+      try {
+        const { data } = await holdingService.createHolding(
           {
             ticker: holding.ticker,
             portfolioId: this.portfolioId
           },
           this.accessToken
-        )
-        .then(resp =>
-          tradeService.createTrade(
-            {
-              tradeType: "Buy",
-              quantity: trade.quantity,
-              unitPrice: trade.unitPrice,
-              fees: trade.fees,
-              remarks: trade.remarks,
-              date: trade.date,
-              holdingId: resp.data.id
-            },
-            this.accessToken
-          )
-        )
-        .then(resp => {
-          this.notifySuccess("Holding added", resp.data);
-        })
-        .catch(err => {
-          this.notifyError("Unable to add holding", err);
-        })
-        .finally(() => {
-          this.isAddHoldingModalFormActive = false;
-          this.$router.go();
-        });
+        );
+
+        const createTradeResp = await tradeService.createTrade(
+          {
+            tradeType: "Buy",
+            quantity: trade.quantity,
+            unitPrice: trade.unitPrice,
+            fees: trade.fees,
+            remarks: trade.remarks,
+            date: trade.date,
+            holdingId: data.id
+          },
+          this.accessToken
+        );
+
+        this.notifySuccess("Holding added", createTradeResp.data);
+      } catch (error) {
+        this.notifyError("Unable to add holding", error);
+      } finally {
+        this.isAddHoldingModalFormActive = false;
+        this.$router.go();
+      }
     },
-    deleteHolding(holding) {
-      holdingService
-        .deleteHolding(holding.id, this.accessToken)
-        .then(() => {
-          this.notifySuccess(
-            "Holding deleted",
-            `Holding ${holding.ticker} has been deleted.`
-          ).then(() => {
-            this.$router.go();
-          });
-        })
-        .catch(err => {
-          this.notifyError("Unable to delete holding", err);
-        });
+    async deleteHolding(holding) {
+      try {
+        await holdingService.deleteHolding(holding.id, this.accessToken);
+        this.notifySuccess(
+          "Holding deleted",
+          `Holding ${holding.ticker} has been deleted.`
+        );
+        this.$router.go();
+      } catch (error) {
+        this.notifyError("Unable to delete holding", error);
+      }
     },
     groupHoldingsBy(property) {
       const group = this.holdings.reduce((pv, cv) => {

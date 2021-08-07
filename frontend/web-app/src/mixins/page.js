@@ -41,9 +41,6 @@ export default {
         heading,
         message
       });
-    },
-    getAccessToken() {
-      return this.$store.state.auth.accessToken;
     }
   }
 };

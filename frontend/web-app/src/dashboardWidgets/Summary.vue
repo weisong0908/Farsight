@@ -64,9 +64,8 @@ export default {
   },
   mixins: [pageMixin],
   async created() {
-    const accessToken = this.getAccessToken();
     const { data } = await dashboardWidgetsService.getSummaryWidgetData(
-      accessToken
+      this.accessToken
     );
     this.invested = data.invested;
     this.capitalGain = data.capitalGain;

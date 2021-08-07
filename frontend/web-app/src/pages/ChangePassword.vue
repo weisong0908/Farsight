@@ -47,8 +47,6 @@ export default {
   mixins: [pageMixin],
   methods: {
     async changePassword(credentials) {
-      const accessToken = this.getAccessToken();
-
       try {
         const { data } = await authService.changePassword(
           {
@@ -56,7 +54,7 @@ export default {
             oldPassword: credentials.currentPassword,
             newPassword: credentials.newPassword
           },
-          accessToken
+          this.accessToken
         );
         await this.notifySuccess("Password changed", data);
 

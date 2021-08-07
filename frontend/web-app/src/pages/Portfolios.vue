@@ -65,10 +65,8 @@ export default {
   },
   mixins: [pageMixin],
   async created() {
-    const accessToken = this.getAccessToken();
-
     try {
-      const { data } = await portfolioService.getPortfolios(accessToken);
+      const { data } = await portfolioService.getPortfolios(this.accessToken);
       this.portfolios = data;
     } catch (error) {
       this.notifyError("Unable to retrieve portfolios", error);
@@ -77,13 +75,12 @@ export default {
   methods: {
     async createPortfolio(portfolio) {
       this.isAddPortfolioModalFormActive = false;
-      const accessToken = this.getAccessToken();
       const userId = this.$store.state.auth.user.userId;
 
       try {
         const { data } = await portfolioService.createPortfolio(
           { ...portfolio, ownerId: userId },
-          accessToken
+          this.accessToken
         );
 
         await this.notifySuccess(
@@ -96,10 +93,8 @@ export default {
       }
     },
     async deletePortfolio(portfolioId) {
-      const accessToken = this.getAccessToken();
-
       try {
-        await portfolioService.deletePortfolio(portfolioId, accessToken);
+        await portfolioService.deletePortfolio(portfolioId, this.accessToken);
         await this.notifySuccess(
           "Portfolio deleted",
           `Portfolio ${portfolioId} has been deleted.`

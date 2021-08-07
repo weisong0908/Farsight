@@ -201,8 +201,8 @@ export default {
         this.notifyError("Unable to add trade", error);
       }
 
-      this.$router.go();
       this.isAddTradeModalFormActive = false;
+      this.$router.go();
     },
     async updateTrade(trade) {
       try {
@@ -223,8 +223,8 @@ export default {
         this.notifyError("Unable to update trade", error);
       }
 
-      this.$router.go();
       this.isEditTradeModalFormActive = false;
+      this.$router.go();
     },
     async deleteTrade(trade) {
       try {

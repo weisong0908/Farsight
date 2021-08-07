@@ -15,7 +15,7 @@ export default {
   async created() {
     if (this.$store.state.auth.isAuth) {
       await this.$store.dispatch("common/appIsNotReady");
-      this.getAccessToken();
+      await this.getAccessToken();
       await this.$store.dispatch("common/appIsReady");
     } else {
       this.$router.push({ name: "home" });

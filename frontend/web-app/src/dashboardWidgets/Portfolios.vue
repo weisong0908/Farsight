@@ -29,9 +29,8 @@ export default {
   },
   mixins: [pageMixin],
   async created() {
-    const accessToken = this.getAccessToken();
     const { data } = await dashboardWidgetsService.getPortfoliosWidgetData(
-      accessToken
+      this.accessToken
     );
     this.portfolios = data;
   }
