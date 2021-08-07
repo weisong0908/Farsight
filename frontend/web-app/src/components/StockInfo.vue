@@ -28,7 +28,7 @@
         </p>
         <hr />
         <p>
-          Invested Amount: <strong>{{ investedAmount }}</strong>
+          Invested Amount: <strong>{{ investedAmount.toFixed(2) }}</strong>
         </p>
         <p class="has-text-grey">Holding ID: {{ holdingId }}</p>
       </div>

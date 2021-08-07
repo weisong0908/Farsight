@@ -40,8 +40,8 @@
               <tr v-for="trade in trades" :key="trade.id">
                 <td>{{ trade.date }}</td>
                 <td>{{ trade.quantity }}</td>
-                <td>{{ trade.unitPrice }}</td>
-                <td>{{ trade.fees }}</td>
+                <td>{{ trade.unitPrice.toFixed(2) }}</td>
+                <td>{{ trade.fees.toFixed(2) }}</td>
                 <td>
                   <span class="icon-text">
                     <span v-if="trade.tradeType == 'Buy'" class="icon">

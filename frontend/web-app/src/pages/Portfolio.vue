@@ -127,8 +127,8 @@
                     </router-link>
                   </td>
                   <td>{{ holding.quantity }}</td>
-                  <td>{{ holding.marketPrice }}</td>
-                  <td>{{ holding.unitCost }}</td>
+                  <td>{{ holding.marketPrice.toFixed(2) }}</td>
+                  <td>{{ holding.unitCost.toFixed(2) }}</td>
                   <td>
                     <button
                       class="button is-danger is-light is-small"
@@ -226,7 +226,7 @@ export default {
       this.holdings.map(h => {
         return {
           name: h.ticker,
-          value: h.quantity * h.marketPrice
+          value: Number((h.quantity * h.marketPrice).toFixed(2))
         };
       }),
       "Holdings"
@@ -318,7 +318,7 @@ export default {
         );
         groupedData.push({
           name: key,
-          value: totalHoldingValue
+          value: Number(totalHoldingValue.toFixed(2))
         });
       }
 
