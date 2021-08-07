@@ -1,18 +1,8 @@
 import axios from "axios";
 
 export default {
-  async getHoldings(portfolioId, accessToken) {
-    return await axios.get(
-      `${process.env.VUE_APP_BACKEND}/holdings?portfolioId=${portfolioId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      }
-    );
-  },
-  async getHoldingListItems(accessToken) {
-    return await axios.get(`${process.env.VUE_APP_BACKEND}/holdings/list`, {
+  async getHoldings(accessToken) {
+    return await axios.get(`${process.env.VUE_APP_BACKEND}/holdings`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }

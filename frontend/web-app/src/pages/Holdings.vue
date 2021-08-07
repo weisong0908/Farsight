@@ -83,9 +83,7 @@ export default {
         await portfolioService.getPortfolios(accessToken)
       ).data;
 
-      this.holdings = (
-        await holdingService.getHoldingListItems(accessToken)
-      ).data;
+      this.holdings = (await holdingService.getHoldings(accessToken)).data;
 
       for (const holding of this.holdings) {
         holding["portfolioName"] = this.portfolios.filter(

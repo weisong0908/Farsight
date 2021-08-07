@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
 
-namespace Farsight.Backend.Models.DTOs
+namespace Farsight.Backend.Models.DTOs.Requests
 {
     public class HoldingCreate
     {

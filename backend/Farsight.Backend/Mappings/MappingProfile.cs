@@ -84,34 +84,17 @@ namespace Farsight.Backend.Mappings
             CreateMap<Trade, HoldingItemTrade>()
                 .ForMember(tit => tit.Date, memberOptions => memberOptions.MapFrom(t => t.Date.GetDateString()));
 
-
             // Requests
             CreateMap<PortfolioCreate, Portfolio>();
             CreateMap<PortfolioUpdate, Portfolio>();
+            CreateMap<HoldingCreate, Holding>();
+            CreateMap<HoldingUpdate, Holding>();
 
             //Responses
             CreateMap<Portfolio, PortfolioCreated>();
+            CreateMap<Holding, HoldingCreated>();
 
-            CreateMap<Holding, HoldingSimple>()
-                .ForMember(hs => hs.Quantity, memberOptions =>
-                {
-                    memberOptions.PreCondition(h => h.Trades.Count > 0);
-                    memberOptions.MapFrom(h => h.Trades.GetHoldingQuantity());
-                })
-                .ForMember(hs => hs.Cost, memberOptions =>
-                {
-                    memberOptions.PreCondition(h => h.Trades.Count > 0);
-                    memberOptions.MapFrom(h => h.Trades.GetHoldingUnitCost());
-                })
-                .ForMember(hs => hs.MarketPrice, memberOptions =>
-                {
-                    memberOptions.PreCondition(h => h.Trades.Count > 0);
-                    memberOptions.MapFrom(h => 10);
-                });
-            // CreateMap<Holding, HoldingDetailed>()
-            //     .ForMember(hd => hd.CostHistory, memberOptions => memberOptions.MapFrom(h => h.Trades.GetHoldingCostHistory()));
-            CreateMap<HoldingCreate, Holding>();
-            CreateMap<HoldingUpdate, Holding>();
+
 
             CreateMap<Trade, TradeSimple>()
                 .ForMember(ts => ts.Date, memberOptions => memberOptions.MapFrom(t => t.Date.GetDateString()));
