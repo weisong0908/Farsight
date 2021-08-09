@@ -18,8 +18,8 @@ export default {
     if (this.$store.state.auth.isAuth) {
       await this.$store.dispatch("common/appIsNotReady");
       await this.getAccessToken();
-      await this.$store.dispatch("common/appIsReady");
     }
+    await this.$store.dispatch("common/appIsReady");
   },
   async updated() {
     await this.$store.dispatch("common/closeNavbarBurgerMenu");
@@ -47,14 +47,3 @@ export default {
   }
 };
 </script>
-
-<style>
-html {
-  height: 100%;
-}
-body {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-</style>
