@@ -44,7 +44,6 @@ export default {
   components: { Page, EditUserInfoForm },
   data() {
     return {
-      isDataReady: false,
       userId: this.$store.state.auth.user.userId,
       username: this.$store.state.auth.user.username,
       email: "",
@@ -54,16 +53,14 @@ export default {
   },
   mixins: [pageMixin],
   async created() {
-    const accessToken = this.$store.state.auth.accessToken;
-
     try {
-      const { data } = await authService.getUserInfo(accessToken);
-      this.isDataReady = true;
+      const { data } = await authService.getUserInfo(this.accessToken);
       this.email = data.email;
       this.email_verified = data.email_verified;
       this.profilePicture = data.picture;
+      this.isDataReady = true;
     } catch (error) {
-      this.notifyError("Unable to sign up", error);
+      this.notifyError("Unable to retrieve user information", error);
     }
   },
   methods: {
@@ -78,7 +75,7 @@ export default {
           `User information has been updated successfully.`
         );
       } catch (error) {
-        this.notifyError("Unable to update user info", error);
+        this.notifyError("Unable to update user information", error);
       }
     }
   }

@@ -1,6 +1,6 @@
-namespace Farsight.IdentityService.Models
+namespace Farsight.IdentityService.Models.Requests
 {
-    public class ResetPasswordRequest
+    public class PasswordReset
     {
         public string UserId { get; set; }
         public string Token { get; set; }

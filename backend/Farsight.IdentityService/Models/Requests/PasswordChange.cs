@@ -1,6 +1,6 @@
-namespace Farsight.IdentityService.Models
+namespace Farsight.IdentityService.Models.Requests
 {
-    public class ChangePasswordRequest
+    public class PasswordChange
     {
         public string UserId { get; set; }
         public string OldPassword { get; set; }

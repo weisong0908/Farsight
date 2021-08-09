@@ -1,6 +1,6 @@
-namespace Farsight.IdentityService.Models
+namespace Farsight.IdentityService.Models.Requests
 {
-    public class UpdateUserInfoRequest
+    public class UserInfoUpdate
     {
         public string UserId { get; set; }
         public byte[] ProfilePicture { get; set; }

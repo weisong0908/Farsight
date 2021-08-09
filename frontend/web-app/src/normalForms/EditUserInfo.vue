@@ -47,6 +47,7 @@
       v-model="email"
       type="email"
       icon="fa-envelope"
+      :icon2="email_verified ? 'fa-check' : 'fa-exclamation-triangle'"
       :readonly="true"
       :errorMessage="email_verified ? '' : 'Email has not been verified yet'"
     >

@@ -5,6 +5,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using System.Web;
 using Farsight.IdentityService.Models;
+using Farsight.IdentityService.Models.Requests;
 using Farsight.IdentityService.Options;
 using Farsight.IdentityService.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace Farsight.IdentityService.Controllers
 {
@@ -23,12 +25,14 @@ namespace Farsight.IdentityService.Controllers
         private readonly IEmailService _emailSender;
         private readonly UserManager<FarsightUser> _userManager;
         private readonly IntegrationOptions _options;
+        private readonly ILogger _logger;
 
-        public AccountsController(IEmailService emailSender, UserManager<FarsightUser> userManager, IOptions<IntegrationOptions> optionAccessor)
+        public AccountsController(IEmailService emailSender, UserManager<FarsightUser> userManager, IOptions<IntegrationOptions> optionAccessor, ILogger logger)
         {
             _emailSender = emailSender;
             _userManager = userManager;
             _options = optionAccessor.Value;
+            _logger = logger;
         }
 
         [HttpPost("resendEmailConfirmation")]
@@ -92,11 +96,10 @@ namespace Farsight.IdentityService.Controllers
 
         [HttpPut("update")]
         [Consumes(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> UpdateUserInfo(UpdateUserInfoRequest request)
+        public async Task<IActionResult> UpdateUserInfo(UserInfoUpdate request)
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var userRole = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            if (userId != request.UserId && userRole != "Admin")
+            if (userId != request.UserId)
                 return Unauthorized();
 
             var user = await _userManager.FindByIdAsync(request.UserId);
@@ -113,11 +116,10 @@ namespace Farsight.IdentityService.Controllers
 
         [HttpPost("changePassword")]
         [Consumes(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
+        public async Task<IActionResult> ChangePassword(PasswordChange request)
         {
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var userRole = HttpContext.User.FindFirst(ClaimTypes.Role)?.Value;
-            if (userId != request.UserId && userRole != "Admin")
+            if (userId != request.UserId)
                 return Unauthorized();
 
             var user = await _userManager.FindByIdAsync(request.UserId);
@@ -133,9 +135,10 @@ namespace Farsight.IdentityService.Controllers
         [HttpPost("generatePasswordResetToken")]
         public async Task<IActionResult> GeneratePasswordResetToken([FromQuery] string email)
         {
-            Serilog.Log.Information("{@email}", email);
             var user = await _userManager.FindByEmailAsync(email.ToUpper());
-            Serilog.Log.Information("{@user}", user);
+
+            _logger.Information("{@email} - {@user}", email, user);
+
             if (user == null)
                 return NotFound();
 
@@ -153,7 +156,7 @@ namespace Farsight.IdentityService.Controllers
         [AllowAnonymous]
         [HttpPost("resetPassword")]
         [Consumes(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        public async Task<IActionResult> ResetPassword(PasswordReset request)
         {
             var user = await _userManager.FindByIdAsync(request.UserId);
             if (user == null)
