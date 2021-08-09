@@ -1,5 +1,5 @@
 <template>
-  <div id="app" style="flex:1">
+  <div id="app">
     <navbar></navbar>
     <router-view></router-view>
     <footer-bar></footer-bar>
