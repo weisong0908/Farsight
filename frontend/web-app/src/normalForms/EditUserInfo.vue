@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <p class="subtitle">Edit User Information</p>
-    <p class="has-text-grey">Username: {{ username }}</p>
+    <p class="has-text-grey has-text-weight-light">@{{ username }}</p>
     <br />
     <div class="field">
       <figure class="image is-128x128">

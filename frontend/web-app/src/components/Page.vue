@@ -1,7 +1,7 @@
 <template>
   <div class="section" v-if="isAppReady">
     <breadcrumb></breadcrumb>
-    <h1 class="title">{{ title }}</h1>
+    <h1 class="title has-text-weight-bold">{{ title }}</h1>
     <alert></alert>
     <slot></slot>
   </div>

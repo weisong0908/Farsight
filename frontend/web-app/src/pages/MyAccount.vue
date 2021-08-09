@@ -9,7 +9,7 @@
           <ul class="menu-list">
             <li>
               <router-link class="is-active" to="/myAccount">
-                My Account
+                User Information
               </router-link>
             </li>
             <li>
