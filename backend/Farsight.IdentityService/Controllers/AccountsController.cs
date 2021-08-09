@@ -46,7 +46,7 @@ namespace Farsight.IdentityService.Controllers
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             var subject = "Confirm your email";
-            var callbackUrl = $"https://localhost:8080/confirmEmail?userId={user.Id}&code={code}";
+            var callbackUrl = $"{_options.WebApp}/confirmEmail?userId={user.Id}&code={code}";
             var content = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
 
             await _emailSender.SendEmailAsync(email, subject, content);
@@ -68,6 +68,22 @@ namespace Farsight.IdentityService.Controllers
             var result = await _userManager.ConfirmEmailAsync(user, token);
 
             return result.Succeeded ? Ok() : BadRequest(result.Errors);
+        }
+
+        [HttpGet("confirmEmailChange")]
+        public async Task<IActionResult> ConfirmEmailChange(string userId, string email, string token)
+        {
+            if (userId == null || token == null || email == null)
+                return BadRequest();
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return NotFound();
+
+            token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            var result = await _userManager.ChangeEmailAsync(user, email, token);
+
+            return result.Succeeded ? Ok(email) : BadRequest(result.Errors);
         }
 
         [HttpPost("signup")]
@@ -108,6 +124,19 @@ namespace Farsight.IdentityService.Controllers
 
             if (user.ProfilePicture != request.ProfilePicture)
                 user.ProfilePicture = request.ProfilePicture;
+
+            var email = await _userManager.GetEmailAsync(user);
+            if (request.Email.ToLower() != email.ToLower())
+            {
+                var token = await _userManager.GenerateChangeEmailTokenAsync(user, request.Email);
+                token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+                var encodedEmail = UrlEncoder.Default.Encode(request.Email);
+                var subject = "Confirm your email";
+                var callbackUrl = $"{_options.WebApp}/confirmEmailChange?userId={user.Id}&email={encodedEmail}&token={token}";
+                var content = $"Please confirm your email change by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
+                _logger.Information(content);
+                await _emailSender.SendEmailAsync(user.Email, subject, content);
+            }
 
             var result = await _userManager.UpdateAsync(user);
 

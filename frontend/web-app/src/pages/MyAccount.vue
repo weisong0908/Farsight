@@ -67,12 +67,16 @@ export default {
     async updateUserInfo(userInfo) {
       try {
         await authService.updateUserInfo(
-          { userId: this.userId, profilePicture: userInfo.profilePicture },
+          {
+            userId: this.userId,
+            email: userInfo.email,
+            profilePicture: userInfo.profilePicture
+          },
           this.accessToken
         );
         this.notifySuccess(
           "User information updated",
-          `User information has been updated successfully.`
+          `User information has been updated successfully. If there is an email address update, please confirm your email address by clicking the link sent to your new email.`
         );
       } catch (error) {
         this.notifyError("Unable to update user information", error);

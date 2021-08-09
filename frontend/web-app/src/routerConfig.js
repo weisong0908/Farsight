@@ -11,6 +11,7 @@ import Trades from "./pages/Trades";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import ConfirmEmail from "./pages/ConfirmEmail";
+import ConfirmEmailChange from "./pages/ConfirmEmailChange";
 import MyAccount from "./pages/MyAccount";
 import ChangePassword from "./pages/ChangePassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -71,6 +72,12 @@ const routerConfig = new VueRouter({
       path: "/confirmEmail",
       component: ConfirmEmail,
       title: "Confirm Email"
+    },
+    {
+      name: "confirmEmailChange",
+      path: "/confirmEmailChange",
+      component: ConfirmEmailChange,
+      title: "Confirm Email Change"
     },
     {
       name: "myAccount",

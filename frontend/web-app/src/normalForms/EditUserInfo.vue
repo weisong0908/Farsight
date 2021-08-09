@@ -44,12 +44,11 @@
     <form-field
       name="email"
       title="Email"
-      v-model="email"
+      v-model="userInfo.email"
       type="email"
       icon="fa-envelope"
       :icon2="email_verified ? 'fa-check' : 'fa-exclamation-triangle'"
-      :readonly="true"
-      :errorMessage="email_verified ? '' : 'Email has not been verified yet'"
+      :errorMessage="validationErrors.email"
     >
     </form-field>
     <br />
@@ -70,13 +69,20 @@
 import FormField from "../components/FormField.vue";
 import formMixin from "../mixins/form";
 import imageConverter from "../utils/imageConverter";
+import validationSchemas from "../utils/validationSchemas";
+import Joi from "joi";
+
+const schema = Joi.object({
+  email: validationSchemas.email
+});
 
 export default {
   props: ["username", "email", "email_verified", "profilePicture"],
   data() {
     return {
       userInfo: {
-        profilePicture: this.profilePicture
+        profilePicture: this.profilePicture,
+        email: this.email
       },
       profilePictureName: "",
       profilePicturePreview: "data:image/png;base64," + this.profilePicture,
@@ -96,6 +102,13 @@ export default {
       });
     },
     updateUserInfo() {
+      if (
+        !this.validate(schema, {
+          email: this.userInfo.email
+        })
+      )
+        return;
+
       this.$emit("submit", this.userInfo);
     }
   }
