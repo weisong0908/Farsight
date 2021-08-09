@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using Farsight.IdentityService.ExtensionGrantValidators;
+using Farsight.IdentityService.HealthChecks;
 using Farsight.IdentityService.Models;
 using Farsight.IdentityService.Options;
 using Farsight.IdentityService.Persistence;
@@ -99,6 +100,10 @@ namespace Farsight.IdentityService
                 options.KnownNetworks.Clear();
                 options.KnownProxies.Clear();
             });
+
+            services.AddHealthChecks()
+                .AddCheck<HealthCheck>("health_check")
+                .AddCheck<DbContextHealthCheck>("dbContext_health_check");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -129,6 +134,7 @@ namespace Farsight.IdentityService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
             });
         }
     }

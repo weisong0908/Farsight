@@ -20,6 +20,10 @@ export default {
       await this.getAccessToken();
     }
     await this.$store.dispatch("common/appIsReady");
+
+    await this.$store.dispatch("common/clearSilentHealthCheck");
+    this.$store.commit("common/setIsSystemHealthy", false);
+    await this.$store.dispatch("common/setSilentHealthCheck");
   },
   async updated() {
     await this.$store.dispatch("common/closeNavbarBurgerMenu");

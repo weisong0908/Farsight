@@ -1,5 +1,6 @@
 using System;
 using Farsight.Backend.BackgroundServices;
+using Farsight.Backend.HealthChecks;
 using Farsight.Backend.Mappings;
 using Farsight.Backend.Persistence;
 using Farsight.Backend.Requirements;
@@ -93,8 +94,13 @@ namespace Farsight.Backend
             });
 
             services.AddMemoryCache();
+
             if (!_env.IsDevelopment())
                 services.AddHostedService<StockDataSetupBackgroundService>();
+
+            services.AddHealthChecks()
+                .AddCheck<HealthCheck>("health_check")
+                .AddCheck<DbContextHealthCheck>("dbContext_health_check");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -121,6 +127,7 @@ namespace Farsight.Backend
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
             });
         }
     }

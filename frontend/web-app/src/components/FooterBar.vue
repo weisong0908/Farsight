@@ -4,11 +4,15 @@
       <div class="level-item">
         <p class="icon-text">
           <span
-            :class="status ? 'icon has-text-success' : 'icon has-text-danger'"
+            :class="
+              isSystemHealthy ? 'icon has-text-success' : 'icon has-text-danger'
+            "
           >
             <i class="fas fa-circle"></i>
           </span>
-          <span>{{ status ? "Online" : "Offline" }}</span>
+          <span>{{
+            isSystemHealthy ? "System Healthy" : "System Unhealthy"
+          }}</span>
         </p>
       </div>
     </div>
@@ -39,9 +43,13 @@
 export default {
   data() {
     return {
-      status: this.$store.state.common.isAppReady,
       announcement: this.$store.state.common.announcement
     };
+  },
+  computed: {
+    isSystemHealthy() {
+      return this.$store.state.common.isSystemHealthy;
+    }
   },
   created() {
     this.$store.commit("common/setAnnouncement", {
