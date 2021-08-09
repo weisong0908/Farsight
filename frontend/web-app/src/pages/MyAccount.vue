@@ -26,8 +26,9 @@
           :username="username"
           :displayName="displayName"
           :email="email"
-          :email_verified="email_verified"
+          :isEmailVerified="isEmailVerified"
           :profilePicture="profilePicture"
+          @resendEmailConfirmation="resendEmailConfirmation"
           @submit="updateUserInfo"
         ></edit-user-info-form>
       </div>
@@ -49,7 +50,7 @@ export default {
       username: this.$store.state.auth.user.username,
       displayName: "",
       email: "",
-      email_verified: false,
+      isEmailVerified: false,
       profilePicture: ""
     };
   },
@@ -58,7 +59,7 @@ export default {
     try {
       const { data } = await authService.getUserInfo(this.accessToken);
       this.email = data.email;
-      this.email_verified = data.email_verified;
+      this.isEmailVerified = data.email_verified;
       this.displayName = data.displayName;
       this.profilePicture = data.picture;
       this.isDataReady = true;
@@ -67,6 +68,17 @@ export default {
     }
   },
   methods: {
+    async resendEmailConfirmation(email) {
+      alert(encodeURIComponent(email));
+      try {
+        await authService.resendEmailConfirmation(
+          encodeURIComponent(email),
+          this.accessToken
+        );
+      } catch (error) {
+        this.notifyError("Unable to send email confirmation", error);
+      }
+    },
     async updateUserInfo(userInfo) {
       try {
         const { data } = await authService.updateUserInfo(

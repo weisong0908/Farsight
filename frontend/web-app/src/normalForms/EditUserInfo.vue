@@ -4,6 +4,7 @@
     <p class="has-text-grey has-text-weight-light">@{{ username }}</p>
     <br />
     <div class="field">
+      <label :for="profilePicture" class="label">Profile Picture</label>
       <figure class="image is-128x128">
         <img
           :src="
@@ -16,6 +17,7 @@
       <div class="file has-name">
         <label class="file-label">
           <input
+            id="profilePicture"
             class="file-input"
             type="file"
             name="resume"
@@ -49,10 +51,23 @@
       v-model="userInfo.email"
       type="email"
       icon="fa-envelope"
-      :icon2="email_verified ? 'fa-check' : 'fa-exclamation-triangle'"
       :errorMessage="validationErrors.email"
     >
     </form-field>
+    <article v-if="!isEmailVerified" class="message is-warning">
+      <div class="message-body">
+        <p>
+          This email address has not been verified. Please check your
+          <strong>inbox/junk mails</strong> for an email titled "Confirm Email"
+          and follow the instructions. Alternatively, you can also generate the
+          email confirmation again by clicking the button below.
+        </p>
+        <br />
+        <button class="button is-outlined" @click="resendEmailConfirmation">
+          Resend Email Confirmation
+        </button>
+      </div>
+    </article>
     <br />
     <div class="field is-grouped">
       <div class="control">
@@ -83,7 +98,7 @@ export default {
   props: [
     "username",
     "email",
-    "email_verified",
+    "isEmailVerified",
     "displayName",
     "profilePicture"
   ],
@@ -110,6 +125,9 @@ export default {
       imageConverter.imageToBase64(file).then(result => {
         this.userInfo.profilePicture = result.split(",")[1];
       });
+    },
+    resendEmailConfirmation() {
+      this.$emit("resendEmailConfirmation", this.email);
     },
     updateUserInfo() {
       if (

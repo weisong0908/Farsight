@@ -135,7 +135,8 @@ routerConfig.beforeEach((to, from, next) => {
   )
     next({ name: "login" });
 
-  if (store.state.auth.isAuth && to.path == "/") next({ name: "dashboard" });
+  if (store.state.auth.isAuth && (to.path == "/" || to.name == "signUp"))
+    next({ name: "dashboard" });
 
   next();
 });

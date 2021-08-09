@@ -112,5 +112,16 @@ export default {
       `${process.env.VUE_APP_IDENTITY_SERVICE}/accounts/resetPassword`,
       payload
     );
+  },
+  async resendEmailConfirmation(email, accessToken) {
+    return await axios.post(
+      `${process.env.VUE_APP_IDENTITY_SERVICE}/accounts/resendEmailConfirmation?email=${email}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
   }
 };

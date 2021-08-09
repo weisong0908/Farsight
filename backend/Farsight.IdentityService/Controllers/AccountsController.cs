@@ -53,6 +53,7 @@ namespace Farsight.IdentityService.Controllers
             return Ok();
         }
 
+        [AllowAnonymous]
         [HttpGet("confirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
@@ -85,6 +86,7 @@ namespace Farsight.IdentityService.Controllers
             return result.Succeeded ? Ok(email) : BadRequest(result.Errors);
         }
 
+        [AllowAnonymous]
         [HttpPost("signup")]
         public async Task<IActionResult> SignUp(SignUpRequest signUpRequest)
         {
@@ -92,7 +94,7 @@ namespace Farsight.IdentityService.Controllers
             {
                 UserName = signUpRequest.Username,
                 DisplayName = signUpRequest.Username,
-                Email = signUpRequest.Email
+                Email = signUpRequest.Email,
             };
 
             var result = await _userManager.CreateAsync(user, signUpRequest.Password);
