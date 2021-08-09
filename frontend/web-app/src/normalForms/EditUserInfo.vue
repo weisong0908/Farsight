@@ -1,6 +1,8 @@
 <template>
   <div class="box">
     <p class="subtitle">Edit User Information</p>
+    <p class="has-text-grey">Username: {{ username }}</p>
+    <br />
     <div class="field">
       <figure class="image is-128x128">
         <img
@@ -33,14 +35,6 @@
         </label>
       </div>
     </div>
-    <form-field
-      name="username"
-      title="Username"
-      v-model="username"
-      type="text"
-      icon="fa-user"
-      :readonly="true"
-    ></form-field>
     <form-field
       name="displayName"
       title="Display Name"
