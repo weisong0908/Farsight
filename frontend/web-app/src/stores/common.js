@@ -1,7 +1,11 @@
 export default {
   state: {
     isAppReady: false,
-    isBurgerMenuActive: false
+    isBurgerMenuActive: false,
+    announcement: {
+      title: "",
+      url: ""
+    }
   },
   mutations: {
     setAppStatus(state, status) {
@@ -9,6 +13,9 @@ export default {
     },
     setNavbarBurgerMenuStatus(state, status) {
       state.isBurgerMenuActive = status;
+    },
+    setAnnouncement(state, announcement) {
+      state.announcement = announcement;
     }
   },
   actions: {
