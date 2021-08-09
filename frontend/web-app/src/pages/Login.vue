@@ -29,7 +29,10 @@ export default {
 
         this.$store.dispatch("auth/setSilentRefresh", data.expires_in * 1000);
 
-        this.notifySuccess("Logged in", `Welcome back, ${account.username}.`);
+        this.notifySuccess(
+          "Logged in",
+          `Welcome back, ${this.$store.state.auth.user.displayName}.`
+        );
 
         this.$router.push(
           this.$route.query.redirectTo || { name: "dashboard" }
