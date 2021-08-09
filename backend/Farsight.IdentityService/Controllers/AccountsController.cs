@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using Farsight.IdentityService.Models;
 using Farsight.IdentityService.Models.Requests;
+using Farsight.IdentityService.Models.Responses;
 using Farsight.IdentityService.Options;
 using Farsight.IdentityService.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -92,6 +93,7 @@ namespace Farsight.IdentityService.Controllers
             var user = new FarsightUser()
             {
                 UserName = signUpRequest.Username,
+                DisplayName = signUpRequest.Username,
                 Email = signUpRequest.Email
             };
 
@@ -125,6 +127,9 @@ namespace Farsight.IdentityService.Controllers
             if (user.ProfilePicture != request.ProfilePicture)
                 user.ProfilePicture = request.ProfilePicture;
 
+            if (user.DisplayName != request.DisplayName)
+                user.DisplayName = request.DisplayName;
+
             var email = await _userManager.GetEmailAsync(user);
             if (request.Email.ToLower() != email.ToLower())
             {
@@ -140,7 +145,7 @@ namespace Farsight.IdentityService.Controllers
 
             var result = await _userManager.UpdateAsync(user);
 
-            return result.Succeeded ? Ok() : BadRequest(result.Errors);
+            return result.Succeeded ? Ok(new UserInfoUpdated(request.DisplayName)) : BadRequest(result.Errors);
         }
 
         [HttpPost("changePassword")]

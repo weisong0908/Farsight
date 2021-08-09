@@ -4,6 +4,9 @@ export default {
   username: Joi.string()
     .required()
     .label("Username"),
+  displayName: Joi.string()
+    .required()
+    .label("Display name"),
   email: Joi.string()
     .email({ tlds: { allow: false } })
     .required()

@@ -56,7 +56,7 @@
                 @click.native="closeNavbarBurgerMenu"
               >
                 <span>
-                  {{ $store.state.auth.user.username }}
+                  {{ $store.state.auth.user.displayName }}
                 </span>
                 <span class="icon"> <i class="fas fa-user"></i> </span>
               </router-link>

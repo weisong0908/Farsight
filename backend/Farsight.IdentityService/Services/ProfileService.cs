@@ -38,6 +38,7 @@ namespace Farsight.IdentityService.Services
             }
 
             claims.Add(new Claim("username", user.UserName));
+            claims.Add(new Claim("displayName", user.DisplayName ?? user.UserName));
 
             context.IssuedClaims = claims;
         }

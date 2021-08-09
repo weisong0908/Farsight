@@ -42,6 +42,14 @@
       :readonly="true"
     ></form-field>
     <form-field
+      name="displayName"
+      title="Display Name"
+      v-model="userInfo.displayName"
+      type="text"
+      icon="fa-user"
+      :errorMessage="validationErrors.displayName"
+    ></form-field>
+    <form-field
       name="email"
       title="Email"
       v-model="userInfo.email"
@@ -73,15 +81,23 @@ import validationSchemas from "../utils/validationSchemas";
 import Joi from "joi";
 
 const schema = Joi.object({
-  email: validationSchemas.email
+  email: validationSchemas.email,
+  displayName: validationSchemas.displayName
 });
 
 export default {
-  props: ["username", "email", "email_verified", "profilePicture"],
+  props: [
+    "username",
+    "email",
+    "email_verified",
+    "displayName",
+    "profilePicture"
+  ],
   data() {
     return {
       userInfo: {
         profilePicture: this.profilePicture,
+        displayName: this.displayName,
         email: this.email
       },
       profilePictureName: "",
@@ -104,7 +120,8 @@ export default {
     updateUserInfo() {
       if (
         !this.validate(schema, {
-          email: this.userInfo.email
+          email: this.userInfo.email,
+          displayName: this.userInfo.displayName
         })
       )
         return;

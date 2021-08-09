@@ -8,6 +8,7 @@ export default {
     user: {
       userId: "",
       username: "",
+      displayName: "",
       profilePicture: ""
     },
     accessToken: "",
@@ -21,6 +22,9 @@ export default {
     },
     setUser(state, user) {
       state.user = user;
+    },
+    setDisplayName(state, displayName) {
+      state.user.displayName = displayName;
     },
     setAccessToken(state, accessToken) {
       state.accessToken = accessToken;
@@ -38,12 +42,15 @@ export default {
   actions: {
     login({ commit }, payload) {
       const { access_token, refresh_token, expires_in } = payload;
-      const { sub, profilePicture, username } = jwt.decode(access_token);
+      const { sub, profilePicture, username, displayName } = jwt.decode(
+        access_token
+      );
 
       commit("setStatus", true);
       commit("setUser", {
         userId: sub,
         username: username,
+        displayName: displayName,
         profilePicture: profilePicture
       });
       commit("setAccessToken", access_token);

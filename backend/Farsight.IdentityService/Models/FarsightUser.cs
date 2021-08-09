@@ -8,5 +8,7 @@ namespace Farsight.IdentityService.Models
     {
         [PersonalData]
         public byte[] ProfilePicture { get; set; }
+        [PersonalData]
+        public string DisplayName { get; set; }
     }
 }
