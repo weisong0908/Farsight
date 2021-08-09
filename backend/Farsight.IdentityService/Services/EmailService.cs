@@ -6,19 +6,22 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Farsight.IdentityService.Models;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace Farsight.IdentityService.Services
 {
     public class EmailService : IEmailService
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ILogger _logger;
 
-        public EmailService(IHttpClientFactory httpClientFactory)
+        public EmailService(IHttpClientFactory httpClientFactory, ILogger logger)
         {
             _httpClientFactory = httpClientFactory;
+            _logger = logger;
         }
 
-        public async Task SendEmailAsync(string email, string subject, string content)
+        public async Task SendEmailAsync(string email, EmailPurpose emailPurpose, string callbackUrl)
         {
             var request = new SendEmailRequest()
             {
@@ -26,16 +29,22 @@ namespace Farsight.IdentityService.Services
                 {
                     email
                 },
-                Subject = subject,
-                Content = content
+                EmailPurpose = emailPurpose,
+                CallbackUrl = callbackUrl
             };
-            var client = _httpClientFactory.CreateClient("common service");
 
-            var httpContent = new StringContent(JsonSerializer.Serialize<SendEmailRequest>(request), Encoding.UTF8, MediaTypeNames.Application.Json);
+            try
+            {
+                var client = _httpClientFactory.CreateClient("common service");
+                var httpContent = new StringContent(JsonSerializer.Serialize<SendEmailRequest>(request), Encoding.UTF8, MediaTypeNames.Application.Json);
+                var response = await client.PostAsync("/email", httpContent);
 
-            var response = await client.PostAsync("/email", httpContent);
-
-            response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException e)
+            {
+                _logger.Error(e.ToString());
+            }
         }
     }
 }

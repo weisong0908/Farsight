@@ -27,14 +27,32 @@ namespace Farsight.CommonService.Controllers
         public async Task<IActionResult> Send(SendEmailRequest request)
         {
             var client = new SendGridClient(_options.ApiKey);
+
+            string templateId;
+            switch (request.EmailPurpose)
+            {
+                case EmailPurpose.ConfirmEmail:
+                    templateId = _options.ConfirmEmailTemplateId;
+                    break;
+                case EmailPurpose.ConfirmEmailChange:
+                    templateId = _options.ConfirmEmailChangeTemplateId;
+                    break;
+                case EmailPurpose.ConfirmPasswordReset:
+                    templateId = _options.ConfirmPasswordResetTemplateId;
+                    break;
+                default:
+                    templateId = string.Empty;
+                    break;
+            }
+
+            _logger.Information("Sending email: {@request}", request);
+
             var message = new SendGridMessage()
             {
                 From = new EmailAddress(_options.SenderEmail, _options.SenderName),
-                Subject = request.Subject,
-                PlainTextContent = request.Content,
-                HtmlContent = request.Content
+                TemplateId = templateId
             };
-
+            message.SetTemplateData(new { callbackUrl = request.CallbackUrl });
             message.AddTos(request.Recipients.Select(r => new EmailAddress(r)).ToList());
 
             var response = await client.SendEmailAsync(message);

@@ -44,13 +44,11 @@ namespace Farsight.IdentityService.Controllers
             if (user == null)
                 return NotFound();
 
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var subject = "Confirm your email";
-            var callbackUrl = $"{_options.WebApp}/confirmEmail?userId={user.Id}&code={code}";
-            var content = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            var callbackUrl = $"{_options.WebApp}/confirmEmail?userId={user.Id}&token={token}";
 
-            await _emailSender.SendEmailAsync(email, subject, content);
+            await _emailSender.SendEmailAsync(email, EmailPurpose.ConfirmEmail, callbackUrl);
 
             return Ok();
         }
@@ -103,11 +101,9 @@ namespace Farsight.IdentityService.Controllers
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-            var subject = "Confirm your email";
             var callbackUrl = $"{_options.WebApp}/confirmEmail?userId={user.Id}&token={token}";
-            var content = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
 
-            await _emailSender.SendEmailAsync(user.Email, subject, content);
+            await _emailSender.SendEmailAsync(user.Email, EmailPurpose.ConfirmEmail, callbackUrl);
 
             return Ok();
         }
@@ -136,11 +132,8 @@ namespace Farsight.IdentityService.Controllers
                 var token = await _userManager.GenerateChangeEmailTokenAsync(user, request.Email);
                 token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
                 var encodedEmail = UrlEncoder.Default.Encode(request.Email);
-                var subject = "Confirm your email";
                 var callbackUrl = $"{_options.WebApp}/confirmEmailChange?userId={user.Id}&email={encodedEmail}&token={token}";
-                var content = $"Please confirm your email change by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
-                _logger.Information(content);
-                await _emailSender.SendEmailAsync(user.Email, subject, content);
+                await _emailSender.SendEmailAsync(user.Email, EmailPurpose.ConfirmEmailChange, callbackUrl);
             }
 
             var result = await _userManager.UpdateAsync(user);
@@ -178,11 +171,9 @@ namespace Farsight.IdentityService.Controllers
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
-            var subject = "Reset your password";
             var callbackUrl = $"{_options.WebApp}/confirmResetPassword?userId={user.Id}&token={token}";
-            var content = $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
 
-            await _emailSender.SendEmailAsync(user.Email, subject, content);
+            await _emailSender.SendEmailAsync(user.Email, EmailPurpose.ConfirmPasswordReset, callbackUrl);
 
             return Ok();
         }
