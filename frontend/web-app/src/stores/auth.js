@@ -65,7 +65,13 @@ export default {
     },
     logout({ commit }) {
       commit("setStatus", false);
-      commit("setUser", null);
+      commit("setUser", {
+        userId: "",
+        role: "",
+        username: "",
+        displayName: "",
+        profilePicture: ""
+      });
       commit("setAccessToken", "");
       commit("setRefreshToken", "");
       commit("setExpiresAt", null);

@@ -136,6 +136,8 @@ routerConfig.beforeEach((to, from, next) => {
     "confirmResetPassword"
   ];
 
+  if (to.path == "/admin" && store.state.auth.user.role !== "Admin") next(from);
+
   if (
     publicPages.find(p => p == to.name) == undefined &&
     store.state.auth.isAuth == false
