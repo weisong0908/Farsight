@@ -16,12 +16,6 @@
             </div>
             <div class="level-item has-text-centered">
               <div>
-                <p class="heading">Cost</p>
-                <p class="title">{{ portfolioCost.toFixed(2) }}</p>
-              </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <div>
                 <p class="heading">Profit/Loss</p>
                 <p
                   :class="
@@ -43,24 +37,14 @@
           <nav class="level">
             <div class="level-item has-text-centered">
               <div>
+                <p class="heading">Cost</p>
+                <p class="title">{{ portfolioCost.toFixed(2) }}</p>
+              </div>
+            </div>
+            <div class="level-item has-text-centered">
+              <div>
                 <p class="heading">Number of Holdings</p>
                 <p class="title">{{ holdings.length }}</p>
-              </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Number of Types</p>
-                <p class="title">
-                  {{ groupHoldingsBy("type").length }}
-                </p>
-              </div>
-            </div>
-            <div class="level-item has-text-centered">
-              <div>
-                <p class="heading">Number of Sectors</p>
-                <p class="title">
-                  {{ groupHoldingsBy("sector").length }}
-                </p>
               </div>
             </div>
           </nav>

@@ -24,7 +24,6 @@
         </div>
       </div>
       <div class="column"></div>
-      <div class="column"></div>
     </div>
   </page>
 </template>
