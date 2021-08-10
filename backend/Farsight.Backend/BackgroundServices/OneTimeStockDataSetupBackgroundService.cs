@@ -11,12 +11,12 @@ using Serilog;
 
 namespace Farsight.Backend.BackgroundServices
 {
-    public class StockDataSetupBackgroundService : BackgroundService
+    public class OneTimeStockDataSetupBackgroundService : BackgroundService
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger _logger;
 
-        public StockDataSetupBackgroundService(IServiceScopeFactory serviceScopeFactory, ILogger logger)
+        public OneTimeStockDataSetupBackgroundService(IServiceScopeFactory serviceScopeFactory, ILogger logger)
         {
             _serviceScopeFactory = serviceScopeFactory;
             _logger = logger;
@@ -24,10 +24,10 @@ namespace Farsight.Backend.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.Information($"{nameof(StockDataSetupBackgroundService)} starting...");
+            _logger.Information($"{nameof(OneTimeStockDataSetupBackgroundService)} starting...");
 
             stoppingToken.Register(() =>
-                _logger.Information($"{nameof(StockDataSetupBackgroundService)} stopping..."));
+                _logger.Information($"{nameof(OneTimeStockDataSetupBackgroundService)} stopping..."));
 
             using (var scope = _serviceScopeFactory.CreateScope())
             {
@@ -42,12 +42,11 @@ namespace Farsight.Backend.BackgroundServices
                     .ToList();
 
                 Task A = GetTickersDetails(allTickersInDb, stockService, stoppingToken);
-                Task B = GetPreviousClosePrices(allTickersInDb, stockService, stoppingToken);
 
-                Task.WaitAll(new Task[] { A, B }, stoppingToken);
+                Task.WaitAll(new Task[] { A }, stoppingToken);
             }
 
-            _logger.Information($"{nameof(StockDataSetupBackgroundService)} completed...");
+            _logger.Information($"{nameof(OneTimeStockDataSetupBackgroundService)} completed...");
         }
 
         private async Task GetTickersDetails(IList<string> tickers, IStockService stockService, CancellationToken stoppingToken, int callLimit = 5)
@@ -62,18 +61,6 @@ namespace Farsight.Backend.BackgroundServices
                 await stockService.GetTickerDetails(tickers[i]);
             }
 
-        }
-
-        private async Task GetPreviousClosePrices(IList<string> tickers, IStockService stockService, CancellationToken stoppingToken, int callLimit = 5)
-        {
-            for (int i = 0; i < tickers.Count(); i++)
-            {
-                if (i % callLimit == 0 && i != 0)
-                    await Task.Delay(70000, stoppingToken);
-
-                _logger.Information("Get ticker previous close price for {@ticker}. Call number {@index} ", tickers[i], i + 1);
-                await stockService.GetPreviousClosePrice(tickers[i]);
-            }
         }
     }
 }

@@ -96,7 +96,10 @@ namespace Farsight.Backend
             services.AddMemoryCache();
 
             if (!_env.IsDevelopment())
-                services.AddHostedService<StockDataSetupBackgroundService>();
+            {
+                services.AddHostedService<OneTimeStockDataSetupBackgroundService>();
+                services.AddHostedService<ScheduledStockDataSetupBackgroundService>();
+            }
 
             services.AddHealthChecks()
                 .AddCheck<HealthCheck>("health_check")

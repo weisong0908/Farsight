@@ -86,7 +86,7 @@ namespace Farsight.Backend.Services
             }
             catch (HttpRequestException e)
             {
-                _logger.Error(e.ToString());
+                _logger.Error($"ticker: {ticker}. {e.ToString()}");
             }
 
             return polygonTickerDetails;
@@ -110,12 +110,12 @@ namespace Farsight.Backend.Services
                 dailyPriceResponse = JsonSerializer.Deserialize<PolygonAggregatesResponse>(content);
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(System.TimeSpan.FromHours(12));
+                    .SetAbsoluteExpiration(System.TimeSpan.FromMinutes(120));
                 _memoryCache.Set<PolygonAggregatesResponse>($"tickers.dailyClose.{ticker}.{from}.{to}", dailyPriceResponse, cacheEntryOptions);
             }
             catch (HttpRequestException e)
             {
-                _logger.Error(e.ToString());
+                _logger.Error($"ticker: {ticker}. {e.ToString()}");
             }
 
             return dailyPriceResponse;
@@ -139,12 +139,12 @@ namespace Farsight.Backend.Services
                 previousClosePriceResponse = JsonSerializer.Deserialize<PolygonAggregatesResponse>(content);
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(System.TimeSpan.FromHours(12));
+                    .SetAbsoluteExpiration(System.TimeSpan.FromMinutes(120));
                 _memoryCache.Set<PolygonAggregatesResponse>($"tickers.previousClose.{ticker}", previousClosePriceResponse, cacheEntryOptions);
             }
             catch (HttpRequestException e)
             {
-                _logger.Error(e.ToString());
+                _logger.Error($"ticker: {ticker}. {e.ToString()}");
             }
 
             return previousClosePriceResponse;
