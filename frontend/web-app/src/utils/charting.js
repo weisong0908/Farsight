@@ -41,7 +41,12 @@ export default {
         },
         scales: {
           y: {
-            min: 0
+            min: Math.round(
+              Math.min(
+                ...trend.map(t => t.cost),
+                ...trend.map(t => t.closePrice)
+              ) * 0.5
+            )
           }
         }
       }
