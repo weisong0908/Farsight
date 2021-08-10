@@ -37,13 +37,20 @@
         >
           Portfolios
         </router-link>
-
         <router-link
           to="/holdings"
           class="navbar-item"
           @click.native="closeNavbarBurgerMenu"
         >
           Holdings
+        </router-link>
+        <router-link
+          v-if="role === 'Admin'"
+          to="/admin"
+          class="navbar-item"
+          @click.native="closeNavbarBurgerMenu"
+        >
+          Administration
         </router-link>
       </div>
 
@@ -112,6 +119,9 @@ export default {
     },
     isAuth() {
       return this.$store.state.auth.isAuth;
+    },
+    role() {
+      return this.$store.state.auth.user.role;
     }
   },
   methods: {

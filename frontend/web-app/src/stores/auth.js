@@ -7,6 +7,7 @@ export default {
     isAuth: false,
     user: {
       userId: "",
+      role: "",
       username: "",
       displayName: "",
       profilePicture: ""
@@ -42,13 +43,14 @@ export default {
   actions: {
     login({ commit }, payload) {
       const { access_token, refresh_token, expires_in } = payload;
-      const { sub, profilePicture, username, displayName } = jwt.decode(
+      const { sub, role, profilePicture, username, displayName } = jwt.decode(
         access_token
       );
 
       commit("setStatus", true);
       commit("setUser", {
         userId: sub,
+        role: role,
         username: username,
         displayName: displayName,
         profilePicture: profilePicture

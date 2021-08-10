@@ -2,11 +2,14 @@ using System;
 using System.Reflection;
 using Farsight.IdentityService.ExtensionGrantValidators;
 using Farsight.IdentityService.HealthChecks;
+using Farsight.IdentityService.Mappings;
 using Farsight.IdentityService.Models;
 using Farsight.IdentityService.Options;
 using Farsight.IdentityService.Persistence;
+using Farsight.IdentityService.Requirements;
 using Farsight.IdentityService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -38,7 +41,10 @@ namespace Farsight.IdentityService
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Farsight.IdentityService", Version = "v1" });
             });
 
+            services.AddAutoMapper(configAction => configAction.AddProfile<MappingProfile>(), typeof(Startup));
+
             services.AddDbContext<FarsightIdentityServiceDbContext>(optionsAction => optionsAction.UseNpgsql(Configuration.GetConnectionString("Default")));
+            services.AddScoped<IUsersRepository, UsersRepository>();
 
             services.AddIdentity<FarsightUser, IdentityRole>()
                 .AddEntityFrameworkStores<FarsightIdentityServiceDbContext>()
@@ -92,6 +98,12 @@ namespace Farsight.IdentityService
                     configureOptions.Authority = Configuration["Authentication:Authority"];
                     configureOptions.Audience = Configuration["Authentication:Audience"];
                 });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("admin", policy => policy.Requirements.Add(new HasRoleRequirement("Admin", Configuration["Authentication:Authority"])));
+            });
+            services.AddSingleton<IAuthorizationHandler, HasRoleHandler>();
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {

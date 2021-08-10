@@ -16,6 +16,7 @@ import MyAccount from "./pages/MyAccount";
 import ChangePassword from "./pages/ChangePassword";
 import ResetPassword from "./pages/ResetPassword";
 import ConfirmResetPassword from "./pages/ConfirmResetPassword";
+import Admin from "./pages/Admin";
 
 const routerConfig = new VueRouter({
   mode: "history",
@@ -103,6 +104,12 @@ const routerConfig = new VueRouter({
       path: "/confirmResetPassword",
       component: ConfirmResetPassword,
       title: "Confirm Reset Password"
+    },
+    {
+      name: "admin",
+      path: "/admin",
+      component: Admin,
+      title: "Administration"
     },
     {
       name: "dashboard",
