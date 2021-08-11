@@ -22,5 +22,12 @@ export default {
       console.error(error);
       return false;
     }
+  },
+  async getSystemHealth(serviceHostUrl) {
+    try {
+      return (await axios.get(`${serviceHostUrl}/health`)).data;
+    } catch (error) {
+      return "Unhealthy";
+    }
   }
 };

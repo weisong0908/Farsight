@@ -25,6 +25,16 @@
           <p class="title">{{ trades.length }}</p>
         </div>
       </div>
+      <div class="level-item has-text-centered">
+        <div>
+          <p class="heading">Healthy System</p>
+          <p class="title">
+            {{
+              systemHealth.filter(s => s.status == "Healthy").length
+            }}&frasl;{{ systemHealth.length }}
+          </p>
+        </div>
+      </div>
     </nav>
     <br />
     <div class="tabs is-centered">
@@ -52,6 +62,12 @@
           @click="goToTab('trades')"
         >
           <a>Trades</a>
+        </li>
+        <li
+          :class="selectedTab == 'system' ? 'is-active' : ''"
+          @click="goToTab('system')"
+        >
+          <a>System</a>
         </li>
       </ul>
     </div>
@@ -188,6 +204,39 @@
         @goToPage="goToPage"
       ></pagination>
     </div>
+    <div v-if="selectedTab === 'system'">
+      <div class="table-container">
+        <table class="table is-hoverable">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Url</th>
+              <th>Health Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="service in systemHealth" :key="service.name">
+              <td>{{ service.name }}</td>
+              <td>{{ service.url }}</td>
+              <td>
+                <span class="icon-text">
+                  <span
+                    :class="
+                      service.status == 'Healthy'
+                        ? 'icon has-text-success'
+                        : 'icon has-text-danger'
+                    "
+                  >
+                    <i class="fas fa-circle"></i>
+                  </span>
+                  <span>{{ service.status }}</span>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </page>
 </template>
 
@@ -196,6 +245,7 @@ import Page from "../components/Page.vue";
 import Pagination from "../components/Pagination.vue";
 import pageMixin from "../mixins/page";
 import adminService from "../services/adminService";
+import healthCheckService from "../services/healthCheckService";
 
 export default {
   components: { Page, Pagination },
@@ -207,7 +257,24 @@ export default {
       users: [],
       portfolios: [],
       holdings: [],
-      trades: []
+      trades: [],
+      systemHealth: [
+        {
+          name: "Backend",
+          url: process.env.VUE_APP_BACKEND,
+          status: ""
+        },
+        {
+          name: "Identity Service",
+          url: process.env.VUE_APP_IDENTITY_SERVICE,
+          status: ""
+        },
+        {
+          name: "Common Service",
+          url: process.env.VUE_APP_COMMON_SERVICE,
+          status: ""
+        }
+      ]
     };
   },
   computed: {
@@ -244,6 +311,10 @@ export default {
     ).data;
     this.holdings = (await adminService.getAllHoldings(this.accessToken)).data;
     this.trades = (await adminService.getAllTrades(this.accessToken)).data;
+
+    for (const system of this.systemHealth) {
+      system.status = await healthCheckService.getSystemHealth(system.url);
+    }
   },
   methods: {
     goToTab(tabName) {
