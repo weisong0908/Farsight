@@ -76,9 +76,11 @@ namespace Farsight.Backend
             {
                 options.AddPolicy("read", policy => policy.Requirements.Add(new HasPermissionRequirement("read", Configuration["Authentication:Authority"])));
                 options.AddPolicy("write", policy => policy.Requirements.Add(new HasPermissionRequirement("write", Configuration["Authentication:Authority"])));
+                options.AddPolicy("admin", policy => policy.Requirements.Add(new HasRoleRequirement("Admin", Configuration["Authentication:Authority"])));
             });
 
             services.AddSingleton<IAuthorizationHandler, HasPermissionHandler>();
+            services.AddSingleton<IAuthorizationHandler, HasRoleHandler>();
 
             services.AddHttpClient("polygon", configureClient =>
             {
