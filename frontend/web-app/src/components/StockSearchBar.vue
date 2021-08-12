@@ -21,15 +21,15 @@
           <a
             class="dropdown-item"
             v-for="item in filteredSuggestions"
-            :key="item[indexKey]"
+            :key="item.ticker"
             @click="selectItem(item)"
           >
-            <p>{{ item[indexKey] }}</p>
+            <p>{{ item.ticker }}</p>
             <p
-              v-if="item[indexDescription]"
+              v-if="item.name"
               class="has-text-grey has-text-weight-light is-size-7"
             >
-              {{ item[indexDescription] }}
+              {{ item.name }}
             </p>
           </a>
         </div>
@@ -41,13 +41,7 @@
 
 <script>
 export default {
-  props: [
-    "title",
-    "suggestions",
-    "indexKey",
-    "indexDescription",
-    "errorMessage"
-  ],
+  props: ["title", "suggestions", "errorMessage"],
   data() {
     return {
       isActive: false,

@@ -7,15 +7,13 @@
         <button class="delete" aria-label="close" @click="close"></button>
       </header>
       <section class="modal-card-body">
-        <search-bar
+        <stock-search-bar
           v-if="suggestions.length > 0"
           title="Ticker"
           :suggestions="suggestions"
           :errorMessage="validationErrors.ticker"
           v-model="ticker"
-          indexKey="ticker"
-          indexDescription="name"
-        ></search-bar>
+        ></stock-search-bar>
         <form-field
           name="date"
           title="Date"
@@ -74,7 +72,7 @@
 
 <script>
 import FormField from "../components/FormField.vue";
-import SearchBar from "../components/SearchBar.vue";
+import StockSearchBar from "../components/StockSearchBar.vue";
 import stockService from "../services/stockService";
 import dateConverter from "../utils/dateConverter";
 import formMixin from "../mixins/form";
@@ -102,7 +100,7 @@ export default {
     };
   },
   mixins: [formMixin],
-  components: { FormField, SearchBar },
+  components: { FormField, StockSearchBar },
   async created() {
     await this.$store.dispatch(
       "stock/setStocks",

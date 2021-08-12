@@ -72,6 +72,12 @@
       </ul>
     </div>
     <div v-if="selectedTab === 'users'">
+      <search-field
+        title="Search Users"
+        description="Search with username"
+        v-model="usernameSearchText"
+      ></search-field>
+      <br />
       <div class="table-container">
         <table class="table is-hoverable">
           <thead>
@@ -88,8 +94,8 @@
               <td>
                 {{ user.id }}
               </td>
-              <td>{{ user.email }}</td>
               <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
               <td>
                 {{ user.isEmailVerified ? "Yes" : "No" }}
               </td>
@@ -105,13 +111,18 @@
       ></pagination>
     </div>
     <div v-if="selectedTab === 'portfolios'">
+      <search-field
+        title="Search Portfolios"
+        description="Search with owner name"
+        v-model="portfolioOwnerSearchText"
+      ></search-field>
       <div class="table-container">
         <table class="table is-hoverable">
           <thead>
             <tr>
               <th>Portfolio ID</th>
               <th>Name</th>
-              <th>Owner Id</th>
+              <th>Owner</th>
             </tr>
           </thead>
           <tbody>
@@ -120,7 +131,7 @@
                 {{ portfolios.id }}
               </td>
               <td>{{ portfolios.name }}</td>
-              <td>{{ portfolios.ownerId }}</td>
+              <td>{{ portfolios.owner }}</td>
             </tr>
           </tbody>
         </table>
@@ -132,14 +143,19 @@
       ></pagination>
     </div>
     <div v-if="selectedTab === 'holdings'">
+      <search-field
+        title="Search Holdings"
+        description="Search with ticker"
+        v-model="holdingTickerSearchText"
+      ></search-field>
       <div class="table-container">
         <table class="table is-hoverable">
           <thead>
             <tr>
               <th>Holding ID</th>
               <th>Ticker</th>
-              <th>Portfolio ID</th>
-              <th>Owner ID</th>
+              <th>Portfolio</th>
+              <th>Owner</th>
             </tr>
           </thead>
           <tbody>
@@ -148,12 +164,8 @@
                 {{ holding.id }}
               </td>
               <td>{{ holding.ticker }}</td>
-              <td>{{ holding.portfolioId }}</td>
-              <td>
-                {{
-                  portfolios.filter(p => p.id == holding.portfolioId)[0].ownerId
-                }}
-              </td>
+              <td>{{ holding.portfolio }}</td>
+              <td>{{ holding.owner }}</td>
             </tr>
           </tbody>
         </table>
@@ -172,8 +184,9 @@
               <th>Trade ID</th>
               <th>Trade Type</th>
               <th>Quantity</th>
-              <th>Holding ID</th>
-              <th>Owner ID</th>
+              <th>Holding</th>
+              <th>Portfolio</th>
+              <th>Owner</th>
             </tr>
           </thead>
           <tbody>
@@ -183,17 +196,9 @@
               </td>
               <td>{{ trade.tradeType }}</td>
               <td>{{ trade.quantity }}</td>
-              <td>{{ trade.holdingId }}</td>
-              <td>
-                {{
-                  portfolios.filter(
-                    p =>
-                      p.id ==
-                      holdings.filter(h => h.id == trade.holdingId)[0]
-                        .portfolioId
-                  )[0].ownerId
-                }}
-              </td>
+              <td>{{ trade.holding }}</td>
+              <td>{{ trade.portfolio }}</td>
+              <td>{{ trade.owner }}</td>
             </tr>
           </tbody>
         </table>
@@ -243,12 +248,13 @@
 <script>
 import Page from "../components/Page.vue";
 import Pagination from "../components/Pagination.vue";
+import SearchField from "../components/SearchField.vue";
 import pageMixin from "../mixins/page";
 import adminService from "../services/adminService";
 import healthCheckService from "../services/healthCheckService";
 
 export default {
-  components: { Page, Pagination },
+  components: { Page, Pagination, SearchField },
   data() {
     return {
       selectedTab: "users",
@@ -274,27 +280,48 @@ export default {
           url: process.env.VUE_APP_COMMON_SERVICE,
           status: ""
         }
-      ]
+      ],
+      usernameSearchText: "",
+      portfolioOwnerSearchText: "",
+      holdingTickerSearchText: ""
     };
   },
   computed: {
     filteredUsers() {
-      return this.users.slice(
-        (this.currentPageNumber - 1) * this.pageSize,
-        this.currentPageNumber * this.pageSize
-      );
+      return this.users
+        .filter(u =>
+          u.username
+            .toLowerCase()
+            .includes(this.usernameSearchText.toLowerCase())
+        )
+        .slice(
+          (this.currentPageNumber - 1) * this.pageSize,
+          this.currentPageNumber * this.pageSize
+        );
     },
     filteredPortfolios() {
-      return this.portfolios.slice(
-        (this.currentPageNumber - 1) * this.pageSize,
-        this.currentPageNumber * this.pageSize
-      );
+      return this.portfolios
+        .filter(p =>
+          p.owner
+            .toLowerCase()
+            .includes(this.portfolioOwnerSearchText.toLowerCase())
+        )
+        .slice(
+          (this.currentPageNumber - 1) * this.pageSize,
+          this.currentPageNumber * this.pageSize
+        );
     },
     filteredHoldings() {
-      return this.holdings.slice(
-        (this.currentPageNumber - 1) * this.pageSize,
-        this.currentPageNumber * this.pageSize
-      );
+      return this.holdings
+        .filter(h =>
+          h.ticker
+            .toLowerCase()
+            .includes(this.holdingTickerSearchText.toLowerCase())
+        )
+        .slice(
+          (this.currentPageNumber - 1) * this.pageSize,
+          this.currentPageNumber * this.pageSize
+        );
     },
     filteredTrades() {
       return this.trades.slice(
@@ -306,11 +333,34 @@ export default {
   mixins: [pageMixin],
   async created() {
     this.users = (await adminService.getAllUsers(this.accessToken)).data;
-    this.portfolios = (
-      await adminService.getAllPortfolios(this.accessToken)
-    ).data;
-    this.holdings = (await adminService.getAllHoldings(this.accessToken)).data;
-    this.trades = (await adminService.getAllTrades(this.accessToken)).data;
+
+    const portfolios = (await adminService.getAllPortfolios(this.accessToken))
+      .data;
+    this.portfolios = portfolios.map(p => {
+      return {
+        ...p,
+        owner: this.users.filter(u => u.id === p.ownerId)[0].username
+      };
+    });
+
+    const holdings = (await adminService.getAllHoldings(this.accessToken)).data;
+    this.holdings = holdings.map(h => {
+      return {
+        ...h,
+        portfolio: this.portfolios.filter(p => p.id === h.portfolioId)[0].name,
+        owner: this.portfolios.filter(p => p.id === h.portfolioId)[0].owner
+      };
+    });
+
+    const trades = (await adminService.getAllTrades(this.accessToken)).data;
+    this.trades = trades.map(t => {
+      return {
+        ...t,
+        holding: this.holdings.filter(h => h.id === t.holdingId)[0].ticker,
+        portfolio: this.holdings.filter(h => h.id === t.holdingId)[0].portfolio,
+        owner: this.holdings.filter(h => h.id === t.holdingId)[0].owner
+      };
+    });
 
     for (const system of this.systemHealth) {
       system.status = await healthCheckService.getSystemHealth(system.url);
