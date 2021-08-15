@@ -18,6 +18,7 @@
         <p class="subtitle">Trade History</p>
         <add-trade-modal-form
           :isActive="isAddTradeModalFormActive"
+          :maxSellableQuantity="this.quantity"
           @close="isAddTradeModalFormActive = false"
           @submit="addTrade"
         ></add-trade-modal-form>
@@ -84,6 +85,7 @@
       <edit-trade-modal-form
         :selectedTrade="selectedTrade"
         :isActive="isEditTradeModalFormActive"
+        :maxSellableQuantity="maxSellableQuantity"
         @close="isEditTradeModalFormActive = false"
         @submit="updateTrade"
       ></edit-trade-modal-form>
@@ -130,6 +132,13 @@ export default {
       return this.trades
         .map(t => t.unitPrice * t.quantity + t.fees)
         .reduce((a, b) => a + b, 0);
+    },
+    maxSellableQuantity() {
+      const trades = this.trades.filter(t => t.id != this.selectedTrade.id);
+
+      return trades.reduce((pv, cv) => {
+        return cv.tradeType === "Buy" ? pv + cv.quantity : pv - cv.quantity;
+      }, 0);
     }
   },
   async created() {
@@ -243,7 +252,8 @@ export default {
 
         this.$router.go();
       } catch (error) {
-        this.notifyError("Unable to delete trade", error);
+        console.log("error", error);
+        this.notifyError("Unable to delete trade", error.resp);
       }
     }
   }

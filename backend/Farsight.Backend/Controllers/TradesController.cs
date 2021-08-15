@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mime;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Farsight.Backend.Models;
-using Farsight.Backend.Models.DTOs;
 using Farsight.Backend.Models.DTOs.Individuals;
 using Farsight.Backend.Models.DTOs.Listings;
 using Farsight.Backend.Models.DTOs.Requests;
@@ -61,6 +61,9 @@ namespace Farsight.Backend.Controllers
 
             var trade = _mapper.Map<Trade>(tradeCreate);
 
+            if (!(await _tradeRepository.CanCreate(tradeCreate)))
+                return BadRequest("Resulting holding quantity cannot be less than 0");
+
             _tradeRepository.CreateTrade(trade);
 
             await _unitOfWork.SaveChanges();
@@ -79,6 +82,9 @@ namespace Farsight.Backend.Controllers
             var ownerId = new Guid(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             if (!await _tradeRepository.IsOwner(tradeUpdate.HoldingId, ownerId))
                 return BadRequest();
+
+            if (!(await _tradeRepository.CanUpdate(tradeUpdate)))
+                return BadRequest("Resulting holding quantity cannot be less than 0");
 
             var trade = _mapper.Map<Trade>(tradeUpdate);
 

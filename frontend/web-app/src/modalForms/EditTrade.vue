@@ -82,15 +82,8 @@ import formMixin from "../mixins/form";
 import Joi from "joi";
 import validationSchemas from "../utils/validationSchemas";
 
-const schema = Joi.object({
-  quantity: validationSchemas.quantity,
-  fees: validationSchemas.fees,
-  unitPrice: validationSchemas.unitPrice,
-  date: validationSchemas.date
-});
-
 export default {
-  props: ["isActive", "selectedTrade"],
+  props: ["isActive", "selectedTrade", "maxSellableQuantity"],
   data() {
     return {
       id: "",
@@ -111,15 +104,27 @@ export default {
   },
   methods: {
     updateData(trade) {
-      this.id = trade.id;
-      this.tradeType = trade.tradeType;
-      this.date = trade.date;
-      this.quantity = trade.quantity;
-      this.unitPrice = trade.unitPrice;
-      this.fees = trade.fees;
-      this.remarks = trade.remarks;
+      this.validationErrors = {};
+      this.id = trade == undefined ? "" : trade.id;
+      this.tradeType = trade == undefined ? "Buy" : trade.tradeType;
+      this.date =
+        trade == undefined ? dateConverter.toString(new Date()) : trade.date;
+      this.quantity = trade == undefined ? 1 : trade.quantity;
+      this.unitPrice = trade == undefined ? 0 : trade.unitPrice;
+      this.fees = trade == undefined ? 0 : trade.fees;
+      this.remarks = trade == undefined ? "" : trade.remarks;
     },
     submit() {
+      const schema = Joi.object({
+        quantity:
+          this.tradeType === "Sell"
+            ? validationSchemas.quantity.max(this.maxSellableQuantity)
+            : validationSchemas.quantity,
+        fees: validationSchemas.fees,
+        unitPrice: validationSchemas.unitPrice,
+        date: validationSchemas.date
+      });
+
       const formData = {
         quantity: this.quantity,
         unitPrice: this.unitPrice,
@@ -140,6 +145,7 @@ export default {
       });
     },
     close() {
+      this.updateData();
       this.$emit("close");
     }
   }

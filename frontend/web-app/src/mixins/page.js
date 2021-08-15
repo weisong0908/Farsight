@@ -35,6 +35,7 @@ export default {
       const message = err.response
         ? err.response.data.error_description ||
           err.response.data.title ||
+          err.response.data ||
           err.response.statusText
         : "No connection";
       return this.$store.dispatch("alert/danger", {

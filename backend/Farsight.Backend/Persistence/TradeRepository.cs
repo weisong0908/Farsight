@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Farsight.Backend.Extensions;
 using Farsight.Backend.Models;
+using Farsight.Backend.Models.DTOs.Requests;
 using Microsoft.EntityFrameworkCore;
 
 namespace Farsight.Backend.Persistence
@@ -60,6 +62,25 @@ namespace Farsight.Backend.Persistence
         public void DeleteTrade(Trade trade)
         {
             _dbContext.Remove<Trade>(trade);
+        }
+
+        public async Task<bool> CanCreate(TradeCreate trade)
+        {
+            var holding = await _dbContext.Holdings.Include(h => h.Trades).AsNoTracking().SingleOrDefaultAsync(h => h.Id == trade.HoldingId);
+            var holdingQuantity = holding.Trades.GetHoldingQuantity();
+            if (trade.TradeType == TradeType.Sell.ToString() && trade.Quantity > holdingQuantity)
+                return false;
+
+            return true;
+        }
+        public async Task<bool> CanUpdate(TradeUpdate trade)
+        {
+            var holding = await _dbContext.Holdings.Include(h => h.Trades).AsNoTracking().SingleOrDefaultAsync(h => h.Id == trade.HoldingId);
+            var holdingQuantity = holding.Trades.Where(t => t.Id != trade.Id).GetHoldingQuantity();
+            if (trade.TradeType == TradeType.Sell.ToString() && trade.Quantity > holdingQuantity)
+                return false;
+
+            return true;
         }
 
         public async Task<bool> IsOwner(Guid holdingId, Guid ownerId)

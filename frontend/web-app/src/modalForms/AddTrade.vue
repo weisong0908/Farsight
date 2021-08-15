@@ -82,15 +82,8 @@ import formMixin from "../mixins/form";
 import Joi from "joi";
 import validationSchemas from "../utils/validationSchemas";
 
-const schema = Joi.object({
-  quantity: validationSchemas.quantity,
-  fees: validationSchemas.fees,
-  unitPrice: validationSchemas.unitPrice,
-  date: validationSchemas.date
-});
-
 export default {
-  props: ["isActive"],
+  props: ["isActive", "maxSellableQuantity"],
   data() {
     return {
       tradeType: "Buy",
@@ -105,6 +98,16 @@ export default {
   components: { FormField },
   methods: {
     submit() {
+      const schema = Joi.object({
+        quantity:
+          this.tradeType === "Sell"
+            ? validationSchemas.quantity.max(this.maxSellableQuantity)
+            : validationSchemas.quantity,
+        fees: validationSchemas.fees,
+        unitPrice: validationSchemas.unitPrice,
+        date: validationSchemas.date
+      });
+
       const formData = {
         quantity: this.quantity,
         unitPrice: this.unitPrice,
@@ -124,6 +127,7 @@ export default {
       });
     },
     close() {
+      this.validationErrors = {};
       this.tradeType = "Buy";
       this.date = dateConverter.toString(new Date());
       this.quantity = 1;
