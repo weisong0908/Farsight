@@ -18,11 +18,13 @@ namespace Farsight.Backend.Extensions
             var sellTrades = trades.Where(t => t.TradeType == TradeType.Sell);
 
             var cost = buyTrades.Sum(t => t.Quantity * t.UnitPrice);
-            var profit = sellTrades.Sum(t => t.Quantity * t.UnitPrice);
+            var proceeds = sellTrades.Sum(t => t.Quantity * t.UnitPrice);
             var fees = trades.Sum(t => t.Fees);
             var quantityRemaining = buyTrades.Sum(t => t.Quantity) - sellTrades.Sum(t => t.Quantity);
 
-            return Math.Round((cost - profit + fees) / quantityRemaining, 2);
+            return quantityRemaining == 0 ?
+                0 :
+                Math.Round((cost - proceeds + fees) / quantityRemaining, 2);
         }
 
         public static int GetHoldingQuantity(this IEnumerable<Trade> trades)
@@ -56,7 +58,7 @@ namespace Farsight.Backend.Extensions
                         break;
                 }
 
-                var cost = investedAmount / quantityRemaining;
+                var cost = quantityRemaining == 0 ? 0 : investedAmount / quantityRemaining;
 
                 costHistory.Add(new HoldingItemCost(trade.Date.GetDateString(), cost));
             }

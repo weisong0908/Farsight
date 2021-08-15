@@ -25,6 +25,7 @@
               <th>Quantity</th>
               <th>Unit Cost</th>
               <th>Portfolio</th>
+              <th>Position</th>
             </tr>
           </thead>
           <tbody>
@@ -43,6 +44,16 @@
               <td>{{ holding.unitCost }}</td>
               <td>
                 {{ holding.portfolioName }}
+              </td>
+              <td>
+                <span
+                  :class="
+                    holding.hasPosition
+                      ? 'tag is-primary is-light'
+                      : 'tag is-danger is-light'
+                  "
+                  >{{ holding.hasPosition ? "Open" : "Closed" }}</span
+                >
               </td>
             </tr>
           </tbody>

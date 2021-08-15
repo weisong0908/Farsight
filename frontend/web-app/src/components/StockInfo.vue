@@ -28,7 +28,16 @@
         </p>
         <hr />
         <p>
-          Invested Amount: <strong>{{ investedAmount.toFixed(2) }}</strong>
+          <span
+            :class="
+              hasPosition ? 'tag is-primary is-light' : 'tag is-danger is-light'
+            "
+            >{{ hasPosition ? "Open" : "Closed" }} Position</span
+          >
+        </p>
+        <p>
+          Invested <strong>{{ quantity }}</strong> share(s) @
+          <strong>{{ investedAmount.toFixed(2) }}</strong>
         </p>
         <p class="has-text-grey">Holding ID: {{ holdingId }}</p>
       </div>
@@ -38,6 +47,6 @@
 
 <script>
 export default {
-  props: ["stockInfo", "holdingId", "investedAmount"]
+  props: ["stockInfo", "holdingId", "investedAmount", "quantity", "hasPosition"]
 };
 </script>

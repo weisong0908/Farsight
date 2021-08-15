@@ -10,6 +10,8 @@
         :stockInfo="stockInfo"
         :holdingId="holdingId"
         :investedAmount="investedAmount"
+        :quantity="quantity"
+        :hasPosition="hasPosition"
       ></stock-info>
       <br />
       <div class="box">
@@ -117,7 +119,9 @@ export default {
       isEditTradeModalFormActive: false,
       selectedTrade: {},
       isAddTradeModalFormActive: false,
-      investedAmount: 0
+      investedAmount: 0,
+      quantity: 0,
+      hasPosition: false
     };
   },
   mixins: [pageMixin],
@@ -139,6 +143,8 @@ export default {
     this.ticker = holdingResp.data.ticker;
     this.trades = holdingResp.data.trades;
     this.investedAmount = holdingResp.data.investedAmount;
+    this.quantity = holdingResp.data.quantity;
+    this.hasPosition = holdingResp.data.hasPosition;
 
     if (this.trades.length > 0) {
       const costHistory = holdingResp.data.costHistory;
