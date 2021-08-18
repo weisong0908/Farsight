@@ -3,15 +3,17 @@ using System;
 using Farsight.Backend.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Farsight.Backend.Migrations
 {
     [DbContext(typeof(FarsightBackendDbContext))]
-    partial class FarsightBackendDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210818155923_LinkHoldingCategoryWithPortfolio")]
+    partial class LinkHoldingCategoryWithPortfolio
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,7 +146,7 @@ namespace Farsight.Backend.Migrations
                         new
                         {
                             Id = new Guid("5df7c00b-3cfd-48e7-a674-6aee0f120313"),
-                            Date = new DateTime(2021, 8, 19, 22, 24, 54, 896, DateTimeKind.Local).AddTicks(8410),
+                            Date = new DateTime(2021, 8, 18, 23, 59, 22, 591, DateTimeKind.Local).AddTicks(9810),
                             Fees = 0m,
                             HoldingId = new Guid("6865a7fa-6866-4516-9002-53cc8386991e"),
                             Quantity = 10,
@@ -154,7 +156,7 @@ namespace Farsight.Backend.Migrations
                         new
                         {
                             Id = new Guid("850941ee-b257-4439-b8b6-95a0edc55200"),
-                            Date = new DateTime(2021, 8, 19, 14, 24, 54, 901, DateTimeKind.Utc).AddTicks(7060),
+                            Date = new DateTime(2021, 8, 18, 15, 59, 22, 596, DateTimeKind.Utc).AddTicks(9900),
                             Fees = 1m,
                             HoldingId = new Guid("f5f1e765-a3bb-44bb-89b9-52ab8eab9db4"),
                             Quantity = 6,
@@ -167,8 +169,7 @@ namespace Farsight.Backend.Migrations
                 {
                     b.HasOne("Farsight.Backend.Models.HoldingCategory", "HoldingCategory")
                         .WithMany("Holdings")
-                        .HasForeignKey("HoldingCategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("HoldingCategoryId");
 
                     b.HasOne("Farsight.Backend.Models.Portfolio", "Portfolio")
                         .WithMany("Holdings")

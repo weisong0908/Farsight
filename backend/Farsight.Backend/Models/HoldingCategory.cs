@@ -3,18 +3,17 @@ using System.Collections.Generic;
 
 namespace Farsight.Backend.Models
 {
-    public class Portfolio
+    public class HoldingCategory
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public Guid OwnerId { get; set; }
         public IList<Holding> Holdings { get; set; }
-        public IList<HoldingCategory> HoldingCategories { get; set; }
+        public Portfolio Portfolio { get; set; }
+        public Guid PortfolioId { get; set; }
 
-        public Portfolio()
+        public HoldingCategory()
         {
             Holdings = new List<Holding>();
-            HoldingCategories = new List<HoldingCategory>();
         }
     }
 }

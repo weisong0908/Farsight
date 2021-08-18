@@ -42,6 +42,7 @@ namespace Farsight.Backend
             services.AddDbContext<FarsightBackendDbContext>(optionsAction => optionsAction.UseNpgsql(Configuration.GetConnectionString("Default")));
             services.AddScoped<IPortfolioRepository, PortfolioRepository>();
             services.AddScoped<IHoldingRepository, HoldingRepository>();
+            services.AddScoped<IHoldingCategoryRepository, HoldingCategoryRepository>();
             services.AddScoped<ITradeRepository, TradeRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

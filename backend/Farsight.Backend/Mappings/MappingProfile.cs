@@ -95,7 +95,9 @@ namespace Farsight.Backend.Mappings
             CreateMap<PortfolioCreate, Portfolio>();
             CreateMap<PortfolioUpdate, Portfolio>();
             CreateMap<HoldingCreate, Holding>();
+            CreateMap<HoldingCategoryCreate, HoldingCategory>();
             CreateMap<HoldingUpdate, Holding>();
+            CreateMap<HoldingCategoryUpdate, HoldingCategory>();
             CreateMap<TradeCreate, Trade>()
                 .ForMember(t => t.Date, memberOptions => memberOptions.MapFrom(tc => tc.Date.FromNewYorkThenToUtcDateTime()));
             CreateMap<TradeUpdate, Trade>()
@@ -104,6 +106,7 @@ namespace Farsight.Backend.Mappings
             //Responses
             CreateMap<Portfolio, PortfolioCreated>();
             CreateMap<Holding, HoldingCreated>();
+            CreateMap<HoldingCategory, HoldingCategoryCreated>();
             CreateMap<Trade, TradeCreated>();
 
             //Polygon APIs

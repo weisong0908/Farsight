@@ -10,6 +10,7 @@ namespace Farsight.Backend.Persistence
         public DbSet<Portfolio> Portfolios { get; set; }
         public DbSet<Holding> Holdings { get; set; }
         public DbSet<Trade> Trades { get; set; }
+        public DbSet<HoldingCategory> HoldingCategories { get; set; }
 
         public FarsightBackendDbContext(DbContextOptions options) : base(options)
         {
@@ -18,6 +19,12 @@ namespace Farsight.Backend.Persistence
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder
+                .Entity<Holding>()
+                .HasOne(h => h.HoldingCategory)
+                .WithMany(hc => hc.Holdings)
+                .OnDelete(DeleteBehavior.SetNull);
+
             SeedDatabase(modelBuilder);
             base.OnModelCreating(modelBuilder);
         }

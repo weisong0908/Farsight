@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Farsight.Backend.Models
@@ -10,6 +11,8 @@ namespace Farsight.Backend.Models
         public Portfolio Portfolio { get; set; }
         public Guid PortfolioId { get; set; }
         public IList<Trade> Trades { get; set; }
+        public HoldingCategory HoldingCategory { get; set; }
+        public Guid? HoldingCategoryId { get; set; }
 
         public Holding()
         {
