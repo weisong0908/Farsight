@@ -10,5 +10,15 @@ export default {
         }
       }
     );
+  },
+  async deleteHoldingCategory(holdingCategoryId, accessToken) {
+    return await axios.delete(
+      `${process.env.VUE_APP_BACKEND}/holdingCategories/${holdingCategoryId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
   }
 };

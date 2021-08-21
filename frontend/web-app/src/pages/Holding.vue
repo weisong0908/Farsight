@@ -6,19 +6,64 @@
       max="100"
     ></progress>
     <template v-else>
-      <stock-info
-        :stockInfo="stockInfo"
-        :holdingId="holdingId"
-        :investedAmount="investedAmount"
-        :quantity="quantity"
-        :hasPosition="hasPosition"
-      ></stock-info>
+      <div class="card">
+        <div class="card-content">
+          <div class="media">
+            <div class="media-left">
+              <figure class="image is-48x48">
+                <img
+                  :src="
+                    stockInfo.logo ||
+                      'https://bulma.io/images/placeholders/128x128.png'
+                  "
+                  alt="logo"
+                />
+              </figure>
+            </div>
+            <div class="media-content">
+              <p class="title is-4">{{ stockInfo.name }}</p>
+              <p class="subtitle is-6">{{ stockInfo.symbol }}</p>
+            </div>
+          </div>
+
+          <div class="content">
+            <p>
+              {{ stockInfo.description }}
+            </p>
+            <p v-if="stockInfo.sector != '-'">
+              {{ stockInfo.sector }}&nbsp;&#8208;&nbsp;{{ stockInfo.industry }}
+            </p>
+            <hr />
+            <p>
+              <span
+                :class="
+                  holding.hasPosition
+                    ? 'tag is-primary is-light'
+                    : 'tag is-danger is-light'
+                "
+                >{{ holding.hasPosition ? "Open" : "Closed" }} Position</span
+              >
+            </p>
+            <p>
+              Invested <strong>{{ holding.quantity }}</strong> share(s) @
+              <strong>{{ holding.investedAmount.toFixed(2) }}</strong>
+            </p>
+            <p class="has-text-grey">Holding ID: {{ holding.id }}</p>
+          </div>
+        </div>
+      </div>
       <br />
+      <edit-holding-form
+        :holding="holding"
+        :categories="holdingCategories"
+        @submit="updateHolding"
+        @removeCategory="removeHoldingCategory"
+      ></edit-holding-form>
       <div class="box">
         <p class="subtitle">Trade History</p>
         <add-trade-modal-form
           :isActive="isAddTradeModalFormActive"
-          :maxSellableQuantity="this.quantity"
+          :maxSellableQuantity="holding.quantity"
           @close="isAddTradeModalFormActive = false"
           @submit="addTrade"
         ></add-trade-modal-form>
@@ -27,7 +72,7 @@
             Add New Trade
           </button>
         </div>
-        <div v-if="trades.length > 0" class="table-container">
+        <div v-if="holding.trades" class="table-container">
           <table class="table is-hoverable is-fullwidth">
             <thead>
               <tr>
@@ -40,7 +85,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="trade in trades" :key="trade.id">
+              <tr v-for="trade in holding.trades" :key="trade.id">
                 <td>{{ trade.date }}</td>
                 <td>{{ trade.quantity }}</td>
                 <td>{{ trade.unitPrice.toFixed(2) }}</td>
@@ -90,7 +135,7 @@
         @submit="updateTrade"
       ></edit-trade-modal-form>
     </template>
-    <div v-if="trades.length > 0" class="box">
+    <div class="box">
       <canvas id="historicalPrice"></canvas>
     </div>
   </page>
@@ -98,43 +143,42 @@
 
 <script>
 import Page from "../components/Page.vue";
-import StockInfo from "../components/StockInfo.vue";
 import AddTradeModalForm from "../modalForms/AddTrade.vue";
 import EditTradeModalForm from "../modalForms/EditTrade.vue";
+import EditHoldingForm from "../normalForms/EditHolding.vue";
 import pageMixin from "../mixins/page";
 import holdingService from "../services/holdingService";
 import stockService from "../services/stockService";
 import tradeService from "../services/tradeService";
+import holdingCategoryService from "../services/holdingCategoryService";
 import dateConverter from "../utils/dateConverter";
 import charting from "../utils/charting";
 
 export default {
-  components: { Page, StockInfo, AddTradeModalForm, EditTradeModalForm },
+  components: { Page, AddTradeModalForm, EditTradeModalForm, EditHoldingForm },
   data() {
     return {
-      holdingId: "",
-      ticker: "",
-      trades: [],
+      holding: {},
       stockInfo: {},
       historicalPrices: [],
       chartItem: {},
       isEditTradeModalFormActive: false,
       selectedTrade: {},
       isAddTradeModalFormActive: false,
-      investedAmount: 0,
-      quantity: 0,
-      hasPosition: false
+      holdingCategories: []
     };
   },
   mixins: [pageMixin],
   computed: {
     totalCost() {
-      return this.trades
+      return this.holding.trades
         .map(t => t.unitPrice * t.quantity + t.fees)
         .reduce((a, b) => a + b, 0);
     },
     maxSellableQuantity() {
-      const trades = this.trades.filter(t => t.id != this.selectedTrade.id);
+      const trades = this.holding.trades.filter(
+        t => t.id != this.selectedTrade.id
+      );
 
       return trades.reduce((pv, cv) => {
         return cv.tradeType === "Buy" ? pv + cv.quantity : pv - cv.quantity;
@@ -142,41 +186,32 @@ export default {
     }
   },
   async created() {
-    this.holdingId = this.$route.params.id;
+    this.holding = (
+      await holdingService.getHolding(this.$route.params.id, this.accessToken)
+    ).data;
 
-    const holdingResp = await holdingService.getHolding(
-      this.holdingId,
-      this.accessToken
-    );
+    if (this.holding.trades.length > 0) {
+      const stockClosePrices = (
+        await stockService.getPerformance(
+          this.holding.ticker,
+          this.holding.trades[0].date,
+          dateConverter.toString(new Date()),
+          this.accessToken
+        )
+      ).data;
 
-    this.ticker = holdingResp.data.ticker;
-    this.trades = holdingResp.data.trades;
-    this.investedAmount = holdingResp.data.investedAmount;
-    this.quantity = holdingResp.data.quantity;
-    this.hasPosition = holdingResp.data.hasPosition;
-
-    if (this.trades.length > 0) {
-      const costHistory = holdingResp.data.costHistory;
-      const stockPerformanceResp = await stockService.getPerformance(
-        this.ticker,
-        this.trades[0].date,
-        dateConverter.toString(new Date()),
-        this.accessToken
-      );
-
-      const stockClosePrices = stockPerformanceResp.data;
-
-      let cost = costHistory
+      let cost = this.holding.costHistory
         .filter(ch => ch.date <= stockClosePrices[0].date)
         .pop().cost;
       for (const stockClosePrice of stockClosePrices) {
-        const date = stockClosePrice.date;
-        const index = costHistory.findIndex(ch => ch.date === date);
+        const index = this.holding.costHistory.findIndex(
+          ch => ch.date === stockClosePrice.date
+        );
         if (index != -1) {
-          cost = costHistory[index].cost;
+          cost = this.holding.costHistory[index].cost;
         }
         this.historicalPrices.push({
-          date,
+          date: stockClosePrice.date,
           closePrice: stockClosePrice.closePrice,
           cost
         });
@@ -185,19 +220,61 @@ export default {
       charting.plotPriceTrend(
         "historicalPrice",
         this.historicalPrices,
-        this.ticker
+        this.holding.ticker
       );
     }
 
-    const stockInfoResp = await stockService.getInfo(
-      this.ticker,
-      this.accessToken
-    );
-    this.stockInfo = stockInfoResp.data;
+    this.stockInfo = (
+      await stockService.getInfo(this.holding.ticker, this.accessToken)
+    ).data;
+
+    this.holdingCategories = (
+      await holdingCategoryService.getHoldingCategories(
+        this.accessToken,
+        this.holding.portfolioId
+      )
+    ).data;
 
     this.isDataReady = true;
   },
   methods: {
+    async updateHolding(holding) {
+      try {
+        await holdingService.updateHolding(
+          {
+            id: this.holding.id,
+            ticker: this.holding.ticker,
+            portfolioId: this.holding.portfolioId,
+            categoryName: holding.categoryName
+          },
+          this.accessToken
+        );
+
+        this.notifySuccess(
+          "Holding updated",
+          `Holding "${this.holding.ticker}" has been updated successfully.`
+        );
+        this.$router.go();
+      } catch (error) {
+        this.notifyError("Unable to update holding", error);
+      }
+    },
+    async removeHoldingCategory(holdingCategory) {
+      try {
+        await holdingCategoryService.deleteHoldingCategory(
+          holdingCategory.id,
+          this.accessToken
+        );
+
+        this.notifySuccess(
+          "Holding category removed",
+          `Holding category "${holdingCategory.name}" has been removed successfully.`
+        );
+        this.$router.go();
+      } catch (error) {
+        this.notifyError("Unable to remove holding category", error);
+      }
+    },
     updateEditTradeModalForm(trade) {
       this.selectedTrade = trade;
       this.isEditTradeModalFormActive = true;
@@ -252,7 +329,6 @@ export default {
 
         this.$router.go();
       } catch (error) {
-        console.log("error", error);
         this.notifyError("Unable to delete trade", error.resp);
       }
     }

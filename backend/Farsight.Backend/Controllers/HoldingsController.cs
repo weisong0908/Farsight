@@ -23,13 +23,15 @@ namespace Farsight.Backend.Controllers
     public class HoldingsController : ControllerBase
     {
         private readonly IHoldingRepository _holdingRepository;
+        private readonly IHoldingCategoryRepository _holdingCategoryRepository;
         private readonly IPortfolioRepository _portfolioRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public HoldingsController(IHoldingRepository holdingRepository, IPortfolioRepository portfolioRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        public HoldingsController(IHoldingRepository holdingRepository, IHoldingCategoryRepository holdingCategoryRepository, IPortfolioRepository portfolioRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _holdingRepository = holdingRepository;
+            _holdingCategoryRepository = holdingCategoryRepository;
             _portfolioRepository = portfolioRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -90,6 +92,18 @@ namespace Farsight.Backend.Controllers
                 return BadRequest();
 
             var holding = _mapper.Map<Holding>(holdingUpdate);
+
+            var categoryInDb = (await _holdingCategoryRepository.GetHoldingCategoriesByPortfolioId(holdingUpdate.PortfolioId))
+                .SingleOrDefault(hc => hc.Name.Trim().ToLower() == holdingUpdate.CategoryName.ToLower());
+
+            if (categoryInDb != null)
+                holding.HoldingCategoryId = categoryInDb.Id;
+            else
+            {
+                var newHoldingCategory = new HoldingCategory(holdingUpdate.CategoryName, holdingUpdate.PortfolioId);
+                _holdingCategoryRepository.CreateHoldingCategory(newHoldingCategory);
+                holding.HoldingCategoryId = newHoldingCategory.Id;
+            }
 
             _holdingRepository.UpdateHolding(holding);
 

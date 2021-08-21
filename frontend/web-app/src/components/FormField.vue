@@ -18,6 +18,7 @@
       />
     </div>
     <p class="help is-danger" v-if="errorMessage">{{ errorMessage }}</p>
+    <p class="help" v-if="helpMessage">{{ helpMessage }}</p>
   </div>
 </template>
 
@@ -30,6 +31,7 @@ export default {
     "icon",
     "type",
     "errorMessage",
+    "helpMessage",
     "readonly",
     "min",
     "step"

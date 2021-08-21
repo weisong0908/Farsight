@@ -15,5 +15,11 @@ namespace Farsight.Backend.Models
         {
             Holdings = new List<Holding>();
         }
+
+        public HoldingCategory(String name, Guid portfolioId)
+        {
+            Name = name;
+            PortfolioId = portfolioId;
+        }
     }
 }

@@ -12,6 +12,7 @@ namespace Farsight.Backend.Models.DTOs.Individuals
         public IList<HoldingItemCost> CostHistory { get; set; }
         public int Quantity { get; set; }
         public bool HasPosition { get { return Quantity > 0; } }
+        public HoldingItemCategory Category { get; set; }
         public Guid PortfolioId { get; set; }
     }
 }

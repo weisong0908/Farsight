@@ -84,9 +84,11 @@ namespace Farsight.Backend.Mappings
             CreateMap<Holding, HoldingItem>()
                 .ForMember(hi => hi.CostHistory, memberOptions => memberOptions.MapFrom(h => h.Trades.GetHoldingItemCostHistory()))
                 .ForMember(hi => hi.Quantity, memberOptions => memberOptions.MapFrom(h => h.Trades.GetHoldingQuantity()))
-                .ForMember(hi => hi.InvestedAmount, memberOptions => memberOptions.MapFrom(h => h.Trades.GetHoldingQuantity() * h.Trades.GetHoldingUnitCost()));
+                .ForMember(hi => hi.InvestedAmount, memberOptions => memberOptions.MapFrom(h => h.Trades.GetHoldingQuantity() * h.Trades.GetHoldingUnitCost()))
+                .ForMember(hi => hi.Category, memberOptions => memberOptions.MapFrom(h => h.HoldingCategory));
             CreateMap<Trade, HoldingItemTrade>()
                 .ForMember(tit => tit.Date, memberOptions => memberOptions.MapFrom(t => t.Date.GetDateString()));
+            CreateMap<HoldingCategory, HoldingItemCategory>();
 
             CreateMap<Trade, TradeItem>()
                 .ForMember(ti => ti.Date, memberOptions => memberOptions.MapFrom(t => t.Date.GetDateString()));

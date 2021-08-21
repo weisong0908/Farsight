@@ -62,6 +62,7 @@ namespace Farsight.Backend.Persistence
         {
             return await _dbContext.Holdings
                 .Include(h => h.Trades.OrderBy(t => t.Date))
+                .Include(h => h.HoldingCategory)
                 .SingleOrDefaultAsync(h => h.Id == id);
         }
 

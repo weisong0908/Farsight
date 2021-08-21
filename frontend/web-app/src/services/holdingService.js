@@ -29,6 +29,17 @@ export default {
       }
     );
   },
+  async updateHolding(payload, accessToken) {
+    return await axios.put(
+      `${process.env.VUE_APP_BACKEND}/holdings/${payload.id}`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+  },
   async deleteHolding(holdingId, accessToken) {
     return await axios.delete(
       `${process.env.VUE_APP_BACKEND}/holdings/${holdingId}`,
