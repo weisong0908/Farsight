@@ -75,10 +75,10 @@ namespace Farsight.Backend.Mappings
                     memberOptions.PreCondition(h => h.Trades.Count > 0);
                     memberOptions.MapFrom(h => h.Trades.GetHoldingUnitCost());
                 })
-                .ForMember(pih => pih.MarketPrice, memberOptions =>
+                .ForMember(pih => pih.Category, memberOptions =>
                 {
-                    memberOptions.PreCondition(h => h.Trades.Count > 0);
-                    memberOptions.MapFrom(h => 10);
+                    memberOptions.PreCondition(h => h.HoldingCategory != null);
+                    memberOptions.MapFrom(h => h.HoldingCategory.Name);
                 });
 
             CreateMap<Holding, HoldingItem>()

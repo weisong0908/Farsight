@@ -11,5 +11,6 @@ namespace Farsight.Backend.Models.DTOs.Individuals
         public decimal MarketPrice { get; set; }
         public string Sector { get; set; } = "-";
         public string Type { get; set; } = "-";
+        public string Category { get; set; } = "-";
     }
 }

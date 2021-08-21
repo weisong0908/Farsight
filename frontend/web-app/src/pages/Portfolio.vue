@@ -96,10 +96,15 @@
                   <th>Market Price</th>
                   <th>Unit Cost</th>
                   <th>Action</th>
+                  <th>Category</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="holding in filteredHoldings" :key="holding.id">
+                <tr
+                  v-for="holding in filteredHoldings"
+                  :key="holding.id"
+                  @click="selectedHolding = holding"
+                >
                   <td>
                     <router-link
                       :to="{
@@ -120,6 +125,11 @@
                     >
                       Delete
                     </button>
+                  </td>
+                  <td>
+                    <span class="tag">
+                      {{ holding.category || "-" }}
+                    </span>
                   </td>
                 </tr>
               </tbody>
@@ -142,7 +152,7 @@
           <canvas id="positionByType"></canvas>
         </div>
         <div class="column">
-          <canvas id="positionBySector"></canvas>
+          <canvas id="positionByCategory"></canvas>
         </div>
       </div>
     </div>
@@ -202,8 +212,8 @@ export default {
     this.portfolioMarketValue = data.marketValue;
     this.portfolioCost = data.cost;
 
-    const holdingsBySector = this.groupHoldingsBy("sector");
     const holdingsByType = this.groupHoldingsBy("type");
+    const holdingsByCategory = this.groupHoldingsBy("category");
 
     charting.plotPositionPie(
       "positionByHolding",
@@ -216,7 +226,11 @@ export default {
       "Holdings"
     );
     charting.plotPositionPie("positionByType", holdingsByType, "Types");
-    charting.plotPositionPie("positionBySector", holdingsBySector, "Sectors");
+    charting.plotPositionPie(
+      "positionByCategory",
+      holdingsByCategory,
+      "Categories"
+    );
 
     this.isDataReady = true;
   },
