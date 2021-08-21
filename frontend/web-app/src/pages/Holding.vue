@@ -1,5 +1,16 @@
 <template>
   <page>
+    <router-link
+      class="button is-light"
+      :to="{ name: 'portfolio', params: { id: holding.portfolioId } }"
+    >
+      <span class="icon is-small">
+        <i class="fas fa-arrow-left"></i>
+      </span>
+      <span>Back to portfolio</span>
+    </router-link>
+    <br />
+    <br />
     <progress
       v-if="!isDataReady"
       class="progress is-small"
