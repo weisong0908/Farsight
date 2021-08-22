@@ -295,7 +295,7 @@ export default {
         await tradeService.createTrade(
           {
             ...trade,
-            holdingId: this.holdingId
+            holdingId: this.holding.id
           },
           this.accessToken
         );
@@ -313,7 +313,7 @@ export default {
           {
             id: this.selectedTrade.id,
             ...trade,
-            holdingId: this.holdingId
+            holdingId: this.holding.id
           },
           this.accessToken
         );

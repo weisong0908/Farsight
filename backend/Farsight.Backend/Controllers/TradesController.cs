@@ -57,7 +57,7 @@ namespace Farsight.Backend.Controllers
         {
             var ownerId = new Guid(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             if (!await _tradeRepository.IsOwner(tradeCreate.HoldingId, ownerId))
-                return BadRequest();
+                return BadRequest("User is not the owner of the holding");
 
             var trade = _mapper.Map<Trade>(tradeCreate);
 
