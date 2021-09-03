@@ -15,6 +15,18 @@
           }}</span>
         </p>
       </div>
+      <div class="level-item">
+        <div class="tags has-addons">
+          <span class="tag is-dark">Version</span>
+          <span class="tag is-info">{{ appVersion }}</span>
+        </div>
+      </div>
+      <div class="level-item" v-if="appMode != 'Production'">
+        <div class="tags has-addons">
+          <span class="tag is-dark">Mode</span>
+          <span class="tag is-warning">{{ appMode }}</span>
+        </div>
+      </div>
     </div>
     <div v-if="announcement !== ''" class="level-item">
       <div class="content">
@@ -43,6 +55,8 @@
 export default {
   data() {
     return {
+      appMode: process.env.VUE_APP_MODE,
+      appVersion: process.env.VUE_APP_VERSION,
       announcement: this.$store.state.common.announcement
     };
   },
