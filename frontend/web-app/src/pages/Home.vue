@@ -7,10 +7,10 @@
           <p>Farsight is an investment portfolio tracker that:</p>
           <ul>
             <li>
-              manages holdings in each portfolio
+              manages your holdings in each portfolio,
             </li>
             <li>
-              displays portfolio performance over time
+              displays stock/portfolio performance over time, and
             </li>
             <li>
               shows component allocation for each portfolio.
@@ -18,10 +18,20 @@
           </ul>
           <p class="subtitle">Why Farsight?</p>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur
-            neque veniam nisi, earum culpa reiciendis esse cum exercitationem
-            eveniet distinctio odio recusandae eos quas illum praesentium a
-            dicta vitae. Quasi.
+            If the following statements sound like your investment style:
+          </p>
+          <ol>
+            <li>
+              You generally <b>buy and hold</b> stocks for a long period of time
+            </li>
+            <li>
+              The allocation of stocks is important in your
+              <b>portfolio management</b>
+            </li>
+            <li>You <b>rebalance</b> your portfolios over time</li>
+          </ol>
+          <p>
+            This app is tailored for you to achieve your investment goals.
           </p>
         </div>
       </div>
