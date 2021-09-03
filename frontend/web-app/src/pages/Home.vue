@@ -35,10 +35,12 @@
 <script>
 import Page from "../components/Page.vue";
 import SignUpForm from "../normalForms/SignUp.vue";
+import pageMixin from "../mixins/page";
 import authService from "../services/authService";
 
 export default {
   components: { Page, SignUpForm },
+  mixins: [pageMixin],
   methods: {
     async signUp(account) {
       try {
