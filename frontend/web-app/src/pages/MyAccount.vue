@@ -69,7 +69,6 @@ export default {
   },
   methods: {
     async resendEmailConfirmation(email) {
-      alert(encodeURIComponent(email));
       try {
         await authService.resendEmailConfirmation(
           encodeURIComponent(email),
