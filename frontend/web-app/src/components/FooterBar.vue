@@ -1,7 +1,7 @@
 <template>
   <nav class="footer navbar is-fixed-bottom level">
     <div class="level-left">
-      <div class="level-item">
+      <div class="level-item is-hidden-mobile">
         <p class="icon-text">
           <span
             :class="
@@ -16,15 +16,19 @@
         </p>
       </div>
       <div class="level-item">
-        <div class="tags has-addons">
-          <span class="tag is-dark">Version</span>
-          <span class="tag is-info">{{ appVersion }}</span>
-        </div>
-      </div>
-      <div class="level-item" v-if="appMode != 'Production'">
-        <div class="tags has-addons">
-          <span class="tag is-dark">Mode</span>
-          <span class="tag is-warning">{{ appMode }}</span>
+        <div class="field is-grouped">
+          <div class="control">
+            <div class="tags has-addons">
+              <span class="tag is-dark">Version</span>
+              <span class="tag is-info">{{ appVersion }}</span>
+            </div>
+          </div>
+          <div class="control">
+            <div v-if="appMode != 'Production'" class="tags has-addons">
+              <span class="tag is-dark">Mode</span>
+              <span class="tag is-warning">{{ appMode }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -77,7 +81,7 @@ export default {
 <style lang="scss" scoped>
 @import "~bulma/sass/utilities/_all";
 
-$footer-padding: 0.5rem 1.5rem 0.75rem;
+$footer-padding: 0.5rem 1rem 0.5rem;
 
 @import "~bulma";
 </style>
