@@ -73,8 +73,7 @@
     </div>
     <div v-if="selectedTab === 'users'">
       <search-field
-        title="Search Users"
-        description="Search with username"
+        description="Search with username..."
         v-model="usernameSearchText"
       ></search-field>
       <br />
@@ -112,8 +111,7 @@
     </div>
     <div v-if="selectedTab === 'portfolios'">
       <search-field
-        title="Search Portfolios"
-        description="Search with owner name"
+        description="Search with owner name..."
         v-model="portfolioOwnerSearchText"
       ></search-field>
       <div class="table-container">
@@ -144,8 +142,7 @@
     </div>
     <div v-if="selectedTab === 'holdings'">
       <search-field
-        title="Search Holdings"
-        description="Search with ticker"
+        description="Search with ticker..."
         v-model="holdingTickerSearchText"
       ></search-field>
       <div class="table-container">
