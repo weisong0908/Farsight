@@ -43,6 +43,7 @@ namespace Farsight.Backend
             services.AddScoped<IPortfolioRepository, PortfolioRepository>();
             services.AddScoped<IHoldingRepository, HoldingRepository>();
             services.AddScoped<IHoldingCategoryRepository, HoldingCategoryRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<ITradeRepository, TradeRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

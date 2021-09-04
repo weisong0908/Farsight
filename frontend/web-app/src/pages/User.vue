@@ -53,8 +53,14 @@
           </footer>
         </div>
       </div>
-      <div class="column">
-        <article class="media">
+      <div class="column" v-if="isDataReady">
+        <post
+          v-for="post in posts"
+          :key="post.id"
+          :post="post"
+          :user="user"
+        ></post>
+        <!-- <article class="media">
           <figure class="media-left">
             <p class="image is-64x64">
               <img src="https://bulma.io/images/placeholders/128x128.png" />
@@ -142,7 +148,7 @@
               </p>
             </div>
           </div>
-        </article>
+        </article> -->
       </div>
     </div>
   </page>
@@ -150,21 +156,45 @@
 
 <script>
 import Page from "../components/Page.vue";
+import Post from "../components/Post.vue";
 import pageMixin from "../mixins/page";
 import userService from "../services/userService";
+import postService from "../services/postService";
 
 export default {
-  components: { Page },
+  components: { Page, Post },
   mixins: [pageMixin],
   data() {
     return {
-      user: {}
+      user: {},
+      posts: []
     };
   },
   async created() {
     this.user = (
       await userService.getUser(this.$route.params.id, this.accessToken)
     ).data;
+
+    this.posts = (
+      await postService.getPosts(this.$route.params.id, this.accessToken)
+    ).data;
+
+    const users = [this.user];
+    for (const post of this.posts) {
+      for (const reply of post.replies) {
+        const user = users.find(u => u.id == reply.authorId);
+        if (user) {
+          reply.user = user;
+        } else {
+          reply.user = (
+            await userService.getUser(reply.authorId, this.accessToken)
+          ).data;
+          users.push(reply.user);
+        }
+      }
+    }
+
+    this.isDataReady = true;
   },
   methods: {
     toggleFollow() {

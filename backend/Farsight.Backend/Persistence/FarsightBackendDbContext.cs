@@ -11,6 +11,8 @@ namespace Farsight.Backend.Persistence
         public DbSet<Holding> Holdings { get; set; }
         public DbSet<Trade> Trades { get; set; }
         public DbSet<HoldingCategory> HoldingCategories { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<PostReply> PostReplies { get; set; }
 
         public FarsightBackendDbContext(DbContextOptions options) : base(options)
         {

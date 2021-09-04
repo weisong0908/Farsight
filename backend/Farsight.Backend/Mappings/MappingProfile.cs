@@ -62,6 +62,11 @@ namespace Farsight.Backend.Mappings
             CreateMap<Trade, TradeListItem>()
                 .ForMember(tli => tli.Date, memberOptions => memberOptions.MapFrom(t => t.Date.GetDateString()));
 
+            CreateMap<Post, PostListItem>()
+                .ForMember(pli => pli.DateTime, memberOptions => memberOptions.MapFrom(p => p.DateTime.ToLocalTime()));
+            CreateMap<PostReply, PostListItemReply>()
+                .ForMember(plir => plir.DateTime, memberOptions => memberOptions.MapFrom(pr => pr.DateTime.ToLocalTime()));
+
             //Individual items
             CreateMap<Portfolio, PortfolioItem>();
             CreateMap<Holding, PortfolioItemHolding>()
@@ -104,12 +109,19 @@ namespace Farsight.Backend.Mappings
                 .ForMember(t => t.Date, memberOptions => memberOptions.MapFrom(tc => tc.Date.FromNewYorkThenToUtcDateTime()));
             CreateMap<TradeUpdate, Trade>()
                 .ForMember(t => t.Date, memberOptions => memberOptions.MapFrom(tu => tu.Date.FromNewYorkThenToUtcDateTime()));
+            CreateMap<PostCreate, Post>()
+                .ForMember(p => p.DateTime, memberOptions => memberOptions.MapFrom(pc => DateTime.UtcNow));
+            CreateMap<PostUpdate, Post>();
+            CreateMap<PostReplyCreate, PostReply>()
+                .ForMember(pr => pr.DateTime, memberOptions => memberOptions.MapFrom(prc => DateTime.UtcNow));
 
             //Responses
             CreateMap<Portfolio, PortfolioCreated>();
             CreateMap<Holding, HoldingCreated>();
             CreateMap<HoldingCategory, HoldingCategoryCreated>();
             CreateMap<Trade, TradeCreated>();
+            CreateMap<Post, PostCreated>();
+            CreateMap<PostReply, PostReplyCreated>();
 
             //Polygon APIs
             CreateMap<PolygonAggregateBar, StockClosePrice>()
