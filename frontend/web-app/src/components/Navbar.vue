@@ -45,6 +45,13 @@
           Holdings
         </router-link>
         <router-link
+          to="/users"
+          class="navbar-item"
+          @click.native="closeNavbarBurgerMenu"
+        >
+          Users
+        </router-link>
+        <router-link
           v-if="role === 'Admin'"
           to="/admin"
           class="navbar-item"

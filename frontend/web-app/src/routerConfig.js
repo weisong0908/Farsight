@@ -8,6 +8,7 @@ import Portfolio from "./pages/Portfolio";
 import Holdings from "./pages/Holdings";
 import Holding from "./pages/Holding";
 import Trades from "./pages/Trades";
+import Users from "./pages/Users";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import ConfirmEmail from "./pages/ConfirmEmail";
@@ -54,6 +55,13 @@ const routerConfig = new VueRouter({
       path: "/trades",
       component: Trades,
       title: "Trades",
+      parent: "dashboard"
+    },
+    {
+      name: "users",
+      path: "/users",
+      component: Users,
+      title: "Users",
       parent: "dashboard"
     },
     {
