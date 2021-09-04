@@ -36,5 +36,10 @@ namespace Farsight.IdentityService.Persistence
 
             return new Tuple<IList<FarsightUser>, int>(results, count);
         }
+
+        public async Task<FarsightUser> GetUser(string userId)
+        {
+            return await _dbContext.Users.SingleOrDefaultAsync(u => u.Id == userId);
+        }
     }
 }

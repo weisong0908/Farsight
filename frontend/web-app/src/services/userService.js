@@ -14,5 +14,15 @@ export default {
         }
       }
     );
+  },
+  async getUser(userId, accessToken) {
+    return await axios.get(
+      `${process.env.VUE_APP_IDENTITY_SERVICE}/users/${userId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
   }
 };

@@ -9,5 +9,6 @@ namespace Farsight.IdentityService.Persistence
     {
         Task<IList<FarsightUser>> GetAllUsers();
         Task<Tuple<IList<FarsightUser>, int>> SearchUsers(string searchText, string userId, int pageNumber, int pageSize);
+        Task<FarsightUser> GetUser(string userId);
     }
 }

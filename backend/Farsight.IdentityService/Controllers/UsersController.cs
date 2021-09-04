@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
+using Farsight.IdentityService.Models.DTOs.Individuals;
 using Farsight.IdentityService.Models.DTOs.Listings;
 using Farsight.IdentityService.Persistence;
 using Microsoft.AspNetCore.Authorization;
@@ -38,7 +39,15 @@ namespace Farsight.IdentityService.Controllers
 
             var users = _mapper.Map<IList<UserCard>>(searchResults.Item1);
 
-            return Ok(new UserCardSearch(users, searchResults.Item2));
+            return Ok(new UserCards(users, searchResults.Item2));
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUser(string userId)
+        {
+            var user = _mapper.Map<UserProfile>(await _usersRepository.GetUser(userId));
+
+            return Ok(user);
         }
     }
 }
