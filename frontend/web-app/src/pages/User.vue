@@ -61,6 +61,18 @@
           @deletePost="deletePost"
           @deletePostReply="deletePostReply"
         ></post>
+        <template v-if="posts.length == 0">
+          <p
+            v-if="user.id == $store.state.auth.user.userId"
+            class="is-italic has-text-grey"
+          >
+            It is so empty here, <br />
+            how about posting some of your thoughts?
+          </p>
+          <p v-else class="is-italic has-text-grey">
+            This person hasn't left anything here...
+          </p>
+        </template>
         <new-post-form
           v-if="user.id == $store.state.auth.user.userId"
           :user="user"
