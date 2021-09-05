@@ -72,6 +72,7 @@
           <p v-else class="is-italic has-text-grey">
             This person hasn't left anything here...
           </p>
+          <hr />
         </template>
         <new-post-form
           v-if="user.id == $store.state.auth.user.userId"
