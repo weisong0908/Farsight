@@ -21,12 +21,9 @@
           <small
             ><a>Like</a> &middot;
             <a @click="showReplyForm = !showReplyForm">Reply</a> &middot;
-            <a
-              v-if="post.authorId == $store.state.auth.user.userId"
-              @click="deletePost"
-              class="has-text-danger"
-              >Delete</a
-            >
+            <template v-if="post.authorId == $store.state.auth.user.userId">
+              <a @click="deletePost" class="has-text-danger">Delete</a> &middot;
+            </template>
             {{ getElapsed(post.dateTime) }}
           </small>
         </p>
@@ -54,12 +51,14 @@
               <small
                 ><a>Like</a> &middot;
                 <a @click="showReplyForm = !showReplyForm">Reply</a> &middot;
-                <a
+                <template
                   v-if="reply.authorId == $store.state.auth.user.userId"
-                  @click="deletePostReply(reply.id)"
-                  class="has-text-danger"
-                  >Delete</a
                 >
+                  <a @click="deletePostReply(reply.id)" class="has-text-danger"
+                    >Delete</a
+                  >
+                  &middot;
+                </template>
                 {{ getElapsed(reply.dateTime) }}</small
               >
             </p>
@@ -95,7 +94,7 @@ export default {
       const hours = parseInt(minutes / 60);
       if (hours == 1) return `${hours} hr`;
       if (hours < 24) return `${hours} hrs`;
-      const days = parseInt(days / 24);
+      const days = parseInt(hours / 24);
       if (days == 1) return `${days} day`;
       if (days < 7) return `${days} days`;
       const weeks = parseInt(days / 7);
