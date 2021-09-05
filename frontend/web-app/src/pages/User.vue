@@ -131,7 +131,7 @@ export default {
       try {
         await postService.createPost({ content: content }, this.accessToken);
         this.isDataReady = false;
-        await this.loadPosts();
+        await this.loadPosts(this.$route.params.id);
         this.isDataReady = true;
       } catch (error) {
         this.notifyError("Unable to post", error);
