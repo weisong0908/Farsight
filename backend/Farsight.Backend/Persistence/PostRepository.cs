@@ -47,9 +47,20 @@ namespace Farsight.Backend.Persistence
             _dbContext.Remove<Post>(post);
         }
 
+        public async Task<PostReply> GetPostReply(Guid postReplyId)
+        {
+            return await _dbContext.PostReplies
+                .SingleOrDefaultAsync(pr => pr.Id == postReplyId);
+        }
+
         public void CreatePostReply(PostReply postReply)
         {
             _dbContext.Add<PostReply>(postReply);
+        }
+
+        public void DeletePostReply(PostReply postReply)
+        {
+            _dbContext.Remove<PostReply>(postReply);
         }
     }
 }

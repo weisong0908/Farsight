@@ -23,8 +23,28 @@ export default {
   },
   async createPostReply(postId, payload, accessToken) {
     return await axios.post(
-      `${process.env.VUE_APP_BACKEND}/posts/${postId}`,
+      `${process.env.VUE_APP_BACKEND}/posts/replies/${postId}`,
       payload,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+  },
+  async deletePost(postId, accessToken) {
+    return await axios.delete(
+      `${process.env.VUE_APP_BACKEND}/posts/${postId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      }
+    );
+  },
+  async deletePostReply(replyId, accessToken) {
+    return await axios.delete(
+      `${process.env.VUE_APP_BACKEND}/posts/replies/${replyId}`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`

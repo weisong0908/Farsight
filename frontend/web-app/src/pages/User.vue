@@ -60,6 +60,8 @@
           :post="post"
           :user="user"
           @addNewPostReply="addNewPostReply"
+          @deletePost="deletePost"
+          @deletePostReply="deletePostReply"
         ></post>
         <new-post-form
           v-if="user.id == $store.state.auth.user.userId"
@@ -143,10 +145,30 @@ export default {
           this.accessToken
         );
         this.isDataReady = false;
-        await this.loadPosts();
+        await this.loadPosts(this.$route.params.id);
         this.isDataReady = true;
       } catch (error) {
         this.notifyError("Unable to post reply", error);
+      }
+    },
+    async deletePost(postId) {
+      try {
+        await postService.deletePost(postId, this.accessToken);
+        this.isDataReady = false;
+        await this.loadPosts(this.$route.params.id);
+        this.isDataReady = true;
+      } catch (error) {
+        this.notifyError("Unable to delete post", error);
+      }
+    },
+    async deletePostReply(replyId) {
+      try {
+        await postService.deletePostReply(replyId, this.accessToken);
+        this.isDataReady = false;
+        await this.loadPosts(this.$route.params.id);
+        this.isDataReady = true;
+      } catch (error) {
+        this.notifyError("Unable to delete post reply", error);
       }
     }
   }

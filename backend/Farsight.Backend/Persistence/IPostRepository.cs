@@ -12,6 +12,8 @@ namespace Farsight.Backend.Persistence
         void CreatePost(Post post);
         void UpdatePost(Post post);
         void DeletePost(Post post);
+        void DeletePostReply(PostReply postReply);
+        Task<PostReply> GetPostReply(Guid postReplyId);
         void CreatePostReply(PostReply postReply);
     }
 }

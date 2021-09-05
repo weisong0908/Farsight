@@ -21,6 +21,12 @@
           <small
             ><a>Like</a> &middot;
             <a @click="showReplyForm = !showReplyForm">Reply</a> &middot;
+            <a
+              v-if="post.authorId == $store.state.auth.user.userId"
+              @click="deletePost"
+              class="has-text-danger"
+              >Delete</a
+            >
             {{ getElapsed(post.dateTime) }}
           </small>
         </p>
@@ -48,6 +54,12 @@
               <small
                 ><a>Like</a> &middot;
                 <a @click="showReplyForm = !showReplyForm">Reply</a> &middot;
+                <a
+                  v-if="reply.authorId == $store.state.auth.user.userId"
+                  @click="deletePostReply(reply.id)"
+                  class="has-text-danger"
+                  >Delete</a
+                >
                 {{ getElapsed(reply.dateTime) }}</small
               >
             </p>
@@ -92,6 +104,12 @@ export default {
     },
     addNewPostReply(content) {
       this.$emit("addNewPostReply", this.post.id, content);
+    },
+    deletePost() {
+      this.$emit("deletePost", this.post.id);
+    },
+    deletePostReply(replyId) {
+      this.$emit("deletePostReply", replyId);
     }
   }
 };

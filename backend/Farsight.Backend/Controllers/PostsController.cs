@@ -93,7 +93,7 @@ namespace Farsight.Backend.Controllers
             return NoContent();
         }
 
-        [HttpPost("{postId}")]
+        [HttpPost("replies/{postId}")]
         public async Task<IActionResult> CreateReply(Guid postId, PostReplyCreate postReplyCreate)
         {
             var post = await _postRepository.GetPost(postId);
@@ -111,6 +111,20 @@ namespace Farsight.Backend.Controllers
             await _unitOfWork.SaveChanges();
 
             return CreatedAtAction(nameof(GetPost), new { Id = post.Id }, _mapper.Map<PostReplyCreated>(postReply));
+        }
+
+        [HttpDelete("replies/{id}")]
+        public async Task<ActionResult> DeletePostReply(Guid id)
+        {
+            var postReply = await _postRepository.GetPostReply(id);
+            if (postReply == null)
+                return NotFound();
+
+            _postRepository.DeletePostReply(postReply);
+
+            await _unitOfWork.SaveChanges();
+
+            return NoContent();
         }
     }
 }

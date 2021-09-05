@@ -26,7 +26,7 @@
       </div>
       <div class="field">
         <p class="control">
-          <button class="button is-light" @click="post">Post</button>
+          <button class="button is-light" @click="createPost">Post</button>
         </p>
       </div>
     </div>
@@ -51,7 +51,7 @@ export default {
     };
   },
   methods: {
-    post() {
+    createPost() {
       if (
         !this.validate(schema, {
           content: this.content
