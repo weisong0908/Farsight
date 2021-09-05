@@ -11,7 +11,7 @@
         :id="name"
         :value="value"
         :class="errorMessage ? 'input is-danger' : 'input'"
-        @input="$emit('input', $event.target.value)"
+        @input="input($event.target.value)"
         :readonly="readonly"
         :min="min"
         :step="step"
@@ -19,6 +19,12 @@
     </div>
     <p class="help is-danger" v-if="errorMessage">{{ errorMessage }}</p>
     <p class="help" v-if="helpMessage">{{ helpMessage }}</p>
+    <p
+      :class="currentLength >= maxLength ? 'help is-danger' : 'help'"
+      v-if="maxLength"
+    >
+      {{ currentLength }}/{{ maxLength }}
+    </p>
   </div>
 </template>
 
@@ -34,7 +40,20 @@ export default {
     "helpMessage",
     "readonly",
     "min",
-    "step"
-  ]
+    "step",
+    "maxLength"
+  ],
+  data() {
+    return {
+      currentLength: 0
+    };
+  },
+  methods: {
+    input(value) {
+      if (this.maxLength) this.currentLength = value.length;
+
+      this.$emit("input", value);
+    }
+  }
 };
 </script>

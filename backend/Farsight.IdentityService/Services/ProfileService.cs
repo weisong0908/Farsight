@@ -35,6 +35,8 @@ namespace Farsight.IdentityService.Services
             {
                 var profilePicture = user.ProfilePicture.IsNullOrEmpty() ? "" : Convert.ToBase64String(user.ProfilePicture);
                 claims.Add(new Claim("picture", profilePicture));
+                var statusMessage = user.StatusMessage.IsNullOrEmpty() ? "" : user.StatusMessage;
+                claims.Add(new Claim("statusMessage", statusMessage));
             }
 
             claims.Add(new Claim("username", user.UserName));

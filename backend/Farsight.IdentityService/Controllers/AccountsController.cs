@@ -128,6 +128,9 @@ namespace Farsight.IdentityService.Controllers
             if (user.DisplayName != request.DisplayName)
                 user.DisplayName = request.DisplayName;
 
+            if (user.StatusMessage != request.StatusMessage)
+                user.StatusMessage = request.StatusMessage;
+
             var email = await _userManager.GetEmailAsync(user);
             if (request.Email.ToLower() != email.ToLower())
             {

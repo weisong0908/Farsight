@@ -46,6 +46,15 @@
       :errorMessage="validationErrors.displayName"
     ></form-field>
     <form-field
+      name="statusMessage"
+      title="Status Message"
+      v-model="userInfo.statusMessage"
+      type="text"
+      icon="fa-user"
+      :errorMessage="validationErrors.statusMessage"
+      :maxLength="255"
+    ></form-field>
+    <form-field
       name="email"
       title="Email"
       v-model="userInfo.email"
@@ -91,7 +100,8 @@ import Joi from "joi";
 
 const schema = Joi.object({
   email: validationSchemas.email,
-  displayName: validationSchemas.displayName
+  displayName: validationSchemas.displayName,
+  statusMessage: validationSchemas.statusMessage
 });
 
 export default {
@@ -100,6 +110,7 @@ export default {
     "email",
     "isEmailVerified",
     "displayName",
+    "statusMessage",
     "profilePicture"
   ],
   data() {
@@ -107,6 +118,7 @@ export default {
       userInfo: {
         profilePicture: this.profilePicture,
         displayName: this.displayName,
+        statusMessage: this.statusMessage,
         email: this.email
       },
       profilePictureName: "",
@@ -133,7 +145,8 @@ export default {
       if (
         !this.validate(schema, {
           email: this.userInfo.email,
-          displayName: this.userInfo.displayName
+          displayName: this.userInfo.displayName,
+          statusMessage: this.userInfo.statusMessage
         })
       )
         return;

@@ -34,9 +34,7 @@
 
             <div class="content">
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Phasellus nec iaculis mauris. <a>@bulmaio</a>.
-                <a href="#">#css</a>
+                {{ user.statusMessage }}
               </p>
               <p>
                 <small

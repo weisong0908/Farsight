@@ -7,6 +7,7 @@ namespace Farsight.IdentityService.Models.DTOs.Individuals
         public Guid Id { get; set; }
         public string Username { get; set; }
         public string DisplayName { get; set; }
+        public string StatusMessage { get; set; }
         public string ProfilePicture { get; set; }
         public bool IsFollow { get; set; }
         public int FollowerCount { get; set; }

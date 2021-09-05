@@ -8,6 +8,9 @@ export default {
   displayName: Joi.string()
     .required()
     .label("Display name"),
+  statusMessage: Joi.string()
+    .max(255)
+    .label("Status message"),
   email: Joi.string()
     .email({ tlds: { allow: false } })
     .required()

@@ -28,6 +28,7 @@
           :email="email"
           :isEmailVerified="isEmailVerified"
           :profilePicture="profilePicture"
+          :statusMessage="statusMessage"
           @resendEmailConfirmation="resendEmailConfirmation"
           @submit="updateUserInfo"
         ></edit-user-info-form>
@@ -49,6 +50,7 @@ export default {
       userId: this.$store.state.auth.user.userId,
       username: this.$store.state.auth.user.username,
       displayName: "",
+      statusMessage: "",
       email: "",
       isEmailVerified: false,
       profilePicture: ""
@@ -61,6 +63,7 @@ export default {
       this.email = data.email;
       this.isEmailVerified = data.email_verified;
       this.displayName = data.displayName;
+      this.statusMessage = data.statusMessage;
       this.profilePicture = data.picture;
       this.isDataReady = true;
     } catch (error) {
@@ -85,6 +88,7 @@ export default {
             userId: this.userId,
             email: userInfo.email,
             displayName: userInfo.displayName,
+            statusMessage: userInfo.statusMessage,
             profilePicture: userInfo.profilePicture
           },
           this.accessToken
