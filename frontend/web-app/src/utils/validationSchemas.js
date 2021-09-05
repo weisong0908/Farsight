@@ -2,6 +2,7 @@ import Joi from "joi";
 
 export default {
   username: Joi.string()
+    .trim()
     .required()
     .label("Username"),
   displayName: Joi.string()
@@ -59,5 +60,9 @@ export default {
     .messages({
       "any.weekendNotAllowed": "Weekends are not allowed"
     })
-    .label("Date")
+    .label("Date"),
+  postContent: Joi.string()
+    .trim()
+    .required()
+    .label("Content")
 };

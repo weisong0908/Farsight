@@ -68,6 +68,14 @@
               <router-link
                 class="button is-light"
                 :to="{
+                  name: 'user',
+                  params: { id: $store.state.auth.user.userId }
+                }"
+                >My Posts</router-link
+              >
+              <router-link
+                class="button is-light"
+                :to="{
                   name: 'myAccount',
                   query: { redirectTo: this.$route.path }
                 }"

@@ -19,7 +19,8 @@
           {{ post.content }}
           <br />
           <small
-            ><a>Like</a> &middot; <a>Reply</a> &middot;
+            ><a>Like</a> &middot;
+            <a @click="showReplyForm = !showReplyForm">Reply</a> &middot;
             {{ getElapsed(post.dateTime) }}
           </small>
         </p>
@@ -45,20 +46,34 @@
               {{ reply.content }}
               <br />
               <small
-                ><a>Like</a> &middot; <a>Reply</a> &middot;
+                ><a>Like</a> &middot;
+                <a @click="showReplyForm = !showReplyForm">Reply</a> &middot;
                 {{ getElapsed(reply.dateTime) }}</small
               >
             </p>
           </div>
         </div>
       </article>
+      <new-post-reply-form
+        v-if="showReplyForm"
+        :user="user"
+        @addNewPostReply="addNewPostReply"
+      ></new-post-reply-form>
     </div>
   </article>
 </template>
 
 <script>
+import NewPostReplyForm from "../normalForms/NewPostReply.vue";
+
 export default {
   props: ["post", "user"],
+  data() {
+    return {
+      showReplyForm: false
+    };
+  },
+  components: { NewPostReplyForm },
   methods: {
     getElapsed(dateTimeString) {
       const seconds = parseInt((new Date() - new Date(dateTimeString)) / 1000);
@@ -67,7 +82,16 @@ export default {
       if (minutes < 60) return `${minutes} min`;
       const hours = parseInt(minutes / 60);
       if (hours == 1) return `${hours} hr`;
-      return `${hours} hrs`;
+      if (hours < 24) return `${hours} hrs`;
+      const days = parseInt(days / 24);
+      if (days == 1) return `${days} day`;
+      if (days < 7) return `${days} days`;
+      const weeks = parseInt(days / 7);
+      if (weeks == 1) return `${weeks} wk`;
+      return `${weeks} wks`;
+    },
+    addNewPostReply(content) {
+      this.$emit("addNewPostReply", this.post.id, content);
     }
   }
 };
